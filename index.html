@@ -297,19 +297,27 @@
             const img = new Image(); // Precarica l'immagine
             img.src = images[i - 1];
         }
-        let currentIndex=0;
-
+        
+        let currentIndex = 0;
+        const imgElement = document.getElementById('profile');
+    
         function changeImage() {
-            const imgElement = document.getElementById('profile');
             imgElement.style.opacity = 0; // Fai svanire l'immagine
     
+            // Aspetta che l'immagine svanisca prima di cambiare
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % images.length;
                 imgElement.src = images[currentIndex];
-                imgElement.style.opacity = 1; // Rendi di nuovo visibile l'immagine
+    
+                // Aspetta che la nuova immagine sia caricata
+                imgElement.onload = () => {
+                    imgElement.style.opacity = 1; // Rendi di nuovo visibile l'immagine
+                };
             }, 800); // Aspetta 800ms prima di cambiare l'immagine
         }
-        setInterval(changeImage, 5000); // Cambia immagine ogni 5 secondi
+    
+        // Cambia immagine ogni 5 secondi
+        setInterval(changeImage, 5000);
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
