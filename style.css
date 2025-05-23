@@ -184,7 +184,7 @@ footer{
     gap: 1.5rem;
 }
 
-#features .feature-cards .card{
+#features .feature-cards .card, #features .card{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -192,7 +192,7 @@ footer{
     min-width: 295px;
 }
 
-#features .feature-cards .card .info i{
+#features .feature-cards .card .info i, #features .card .info i{
     color: #fff;
     font-size: 8rem;
     width: 100%;
@@ -200,23 +200,23 @@ footer{
     margin-bottom: 1.4rem;
 }
 
-#features .feature-cards .card .info a{
+#features .feature-cards .card .info a, #features .card .info a{
     color: white;
     font-size: large;
 }
 
-#features .feature-cards .card .info h1{
+#features .feature-cards .card .info h1, #features .card .info h1{
     text-align: center;
 }
 
-#features .feature-cards .card .info h2{
+#features .feature-cards .card .info h2, #features .card .info h2{
     text-align: center;
     color: burlywood;
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
-#features .feature-cards .card .info p{
+#features .feature-cards .card .info p, #features .card .info p{
     font-size: 1.1rem;
 }
 
