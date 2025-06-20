@@ -71,6 +71,12 @@ body {
     padding: 5px 20px;
     border-radius: 99px 0 0 99px;
 }
+.product .touch-icon {
+    position:absolute;
+    top:12px;
+    right:18px;
+    z-index:2;
+}
 .product img {
     width: 75%;
     position: absolute;
