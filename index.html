@@ -92,6 +92,7 @@
                     <a href="https://stars.chromeexperiments.com/" target="_blank">1000stars --> esplora l'universo</a><br><br>
                     <a href="https://www.blackjacksimulator.net/it/simulators/classic-blackjack/" target="_blank">BlackJack --> demo casinò</a><br><br>
                     <a href="https://www.google.it/search?q=emoji+kitchen/" target="_blank">Emoji Kitchen --> crea emoji dalla fusione di altre due</a><br><br>
+                    <a href="https://flagle-game.com/" target="_blank">Flagle --> indovina dinamicamente la bandiera</a><br><br>
                     <a href="https://labs.google/gentype" target="_blank">GenType --> scrivi con immagini AI</a><br><br>
                     <a href="http://geogreeting.com/main.html" target="_blank">GeoGreeting --> scrivi con le case</a><br><br>
                     <a href="https://it.higherorlowergame.com/" target="_blank">Higher or Lower --> cosa viene cercato di più su Google?</a><br>
@@ -124,6 +125,7 @@
                     <a href="https://www.enhancor.ai/" target="_blank">Enhancor --> rendi reali immagini AI</a><br><br>
 		            <a href="https://fakeface.io/" target="_blank">FakeFace --> face swap AI per video</a><br><br>
                     <a href="https://fakeyou.com/tts/" target="_blank">FakeYou --> clona voci di personaggi famosi</a><br><br>
+                    <a href="https://www.framer.com/" target="_blank">Framer --> crea sito web senza scrivere codice</a><br>
                     <a href="https://app.geospy.ai/" target="_blank">GeoSpy --> trova luogo da immagine</a><br><br>
                     <a href="https://huggingface.co/spaces" target="_blank">HuggingFace --> app AI create dalla community</a><br><br>
                     <a href="https://www.humanornot.co/" target="_blank">Human or Not --> AI tools</a><br><br>                    
@@ -157,6 +159,8 @@
                     <a href="https://www.random.org/" target="_blank">Random --> tools random</a><br><br>
                     <a href="https://veepn.com/online-sms/" target="_blank">TempNumber --> numero di telefono temporaneo</a><br><br>
                     <a href="https://www.virustotal.com/gui/home/upload/" target="_blank">VirusTotal --> rileva virus in file o URL</a><br><br>
+                    <a href="https://visualping.io" target="_blank">VisualPing --> traccia modifiche visive di qualsiasi sito</a><br><br>
+                    <a href="https://www.wolframalpha.com/" target="_blank">WolframAlpha --> motore computazionale di conoscenza</a><br><br>
 
                     <hr><h2>Educazione e test</h2>
                     <a href="https://www.idrlabs.com/tests.php?loc=it" target="_blank">Tests --> test vari</a><br><br>
@@ -312,11 +316,24 @@
                             </div>
                         </div>
                     </a><br>
-
-                    <!-- Visitator Counter --><div class="elfsight-app-e7889fc6-9727-4d12-ac07-3d9b9c097801" data-elfsight-app-lazy></div>
                     <br><br><br>
-                    <p style="text-align: center">Ultimo aggiornamento: 24/06/2025 15:24</p>
-
+                    <p id="last-update" style="text-align: center"></p>
+                    <script>
+                        // Imposta automaticamente la data e ora dell'ultimo aggiornamento
+                        document.addEventListener('DOMContentLoaded', function()
+                        {
+                            const lastUpdateElem = document.getElementById('last-update');
+                            // Ottieni la data di modifica del documento
+                            const lastModified = new Date(document.lastModified);
+                            // Formatta la data in DD/MM/YYYY - HH:MM
+                            const day = String(lastModified.getDate()).padStart(2, '0');
+                            const month = String(lastModified.getMonth() + 1).padStart(2, '0');
+                            const year = lastModified.getFullYear();
+                            const hours = String(lastModified.getHours()).padStart(2, '0');
+                            const minutes = String(lastModified.getMinutes()).padStart(2, '0');
+                            lastUpdateElem.textContent = `Ultimo aggiornamento: ${day}/${month}/${year} - ${hours}:${minutes}`;
+                        });
+                    </script>
                 </div>
             </div>
 
@@ -343,8 +360,6 @@
     <button class="scroll-top" onclick="scrollToTop()">
         <i class='bx bxs-up-arrow'></i>
     </button>
-    <!-- AI ChatBot --><script src="https://static.elfsight.com/platform/platform.js" async></script>
-    <!-- Visitator Counter --><script src="https://static.elfsight.com/platform/platform.js" async></script>
     <script>
         const images = [];
         for (let i = 1; i <= 15; i++) {

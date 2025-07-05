@@ -6,6 +6,209 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="Icon.png" style="border-radius: 12%">
+    <!-- Countdown -->
+    <style>
+        .countdown-widget {
+            background: transparent;
+            padding: 28px;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 28px auto;
+            text-align: center;
+        }
+        
+        .countdown-header {
+            margin-bottom: 28px;
+        }
+        
+        .countdown-title {
+            color: #deb887;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .countdown-emoji {
+            font-size: 28px;
+        }
+        
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-unit {
+            text-align: center;
+        }
+        
+        .countdown-numbers {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        
+        .countdown-digit {
+            background: #5f9ea0;
+            color: white;
+            font-size: 38px;
+            font-weight: bold;
+            padding: 16px 14px;
+            border-radius: 8px;
+            min-width: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-digit.flip {
+            animation: flip 0.4s cubic-bezier(0.4, 0.2, 0.2, 1);
+            backface-visibility: hidden;
+            perspective: 400px;
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            40% { transform: rotateY(80deg); }
+            60% { transform: rotateY(100deg); }
+            100% { transform: rotateY(0deg); }
+        }
+        
+        .countdown-label {
+            color: #cccccc;
+            font-size: 16px;
+            font-weight: normal;
+            text-transform: capitalize;
+            letter-spacing: 0px;
+        }
+        
+        @media (max-width: 600px) {
+            .countdown-widget {
+                padding: 18px;
+                margin: 10px;
+            }
+            
+            .countdown-title {
+                font-size: 20px;
+            }
+            
+            .countdown-digit {
+                font-size: 26px;
+                padding: 10px 8px;
+                min-width: 36px;
+            }
+            
+            .countdown-display {
+                gap: 8px;
+            }
+            .countdown-label {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <!-- Counter -->
+    <style>
+        .stats-widget {
+            background: transparent;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            color: #deb887;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #deb887;
+            margin: 0;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            font-family: inherit;
+        }
+        
+        .stat-label {
+            color: #cccccc;
+            font-size: 16px;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+        
+        .stat-item.animated .stat-number {
+            animation: countUp 2s ease-out forwards;
+        }
+        
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .stat-item {
+                min-width: 120px;
+            }
+            
+            .stat-icon {
+                font-size: 35px;
+            }
+            
+            .stat-number {
+                font-size: 40px;
+            }
+            
+            .stat-label {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+            
+            .stat-icon {
+                font-size: 30px;
+            }
+        }
+    </style>
     <title>Statistiche</title>
 </head>
 <body>
@@ -22,9 +225,78 @@
             <a href="index.html">Torna a Home</a>
         </div>
 
-        <!-- Countdown --><div class="elfsight-app-42caa1ab-8762-4182-a37f-b324e4fac8aa" data-elfsight-app-lazy></div>
-        <br><br><br><br><br>
-        <!-- Counter --><div class="elfsight-app-319ac0a2-556b-4313-b47d-682799737061" data-elfsight-app-lazy></div>
+        <!-- Countdown -->
+        <div class="countdown-widget">
+            <div class="countdown-header">
+                <h2 class="countdown-title">
+                    <span class="countdown-emoji">⚡</span>
+                    Prossimo GRANDE Aggiornamento
+                    <span class="countdown-emoji">🚀</span>
+                </h2>
+            </div>
+            
+            <div class="countdown-display">
+                <div class="countdown-unit">
+                    <div class="countdown-numbers">
+                        <div class="countdown-digit" id="countdown-days-tens">1</div>
+                        <div class="countdown-digit" id="countdown-days-ones">7</div>
+                    </div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                
+                <div class="countdown-unit">
+                    <div class="countdown-numbers">
+                        <div class="countdown-digit" id="countdown-hours-tens">1</div>
+                        <div class="countdown-digit" id="countdown-hours-ones">8</div>
+                    </div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                
+                <div class="countdown-unit">
+                    <div class="countdown-numbers">
+                        <div class="countdown-digit" id="countdown-minutes-tens">1</div>
+                        <div class="countdown-digit" id="countdown-minutes-ones">1</div>
+                    </div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                
+                <div class="countdown-unit">
+                    <div class="countdown-numbers">
+                        <div class="countdown-digit" id="countdown-seconds-tens">0</div>
+                        <div class="countdown-digit" id="countdown-seconds-ones">3</div>
+                    </div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+        <!-- Counter -->
+        <div class="stats-widget">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="55px" viewBox="0 -960 960 960" width="55px" fill="#deb887"><path d="M146.67-186.67v-466.66 466.66-19.5 19.5Zm0 66.67q-27 0-46.84-19.83Q80-159.67 80-186.67v-466.66q0-27 19.83-46.84Q119.67-720 146.67-720H320v-93.33q0-26.34 19.83-46.5Q359.67-880 386.67-880h186.66q27 0 46.84 20.17Q640-839.67 640-813.33V-720h173.33q27 0 46.84 19.83Q880-680.33 880-653.33v207q-15.33-11.67-31.67-20.84-16.33-9.16-35-16.83v-169.33H146.67v466.66h317q3.66 17.67 9.66 34.34 6 16.66 14.34 32.33h-341Zm240-600h186.66v-93.33H386.67V-720ZM720-44.67q-80.33 0-137.83-57.5-57.5-57.5-57.5-137.83 0-80.33 57.5-137.83 57.5-57.5 137.83-57.5 80.33 0 137.83 57.5 57.5 57.5 57.5 137.83 0 80.33-57.5 137.83-57.5 57.5-137.83 57.5ZM738-244v-120h-41.33v133.18l94.66 89.49 27.34-27.34L738-244Z"/></svg>
+                    <div class="stat-number" data-target="254">0</div>
+                    <div class="stat-label">ore di lavoro</div>
+                </div>
+                
+                <div class="stat-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="55px" viewBox="0 -960 960 960" width="55px" fill="#deb887"><path d="M160-391h45l23-66h104l24 66h44l-97-258h-46l-97 258Zm81-103 38-107h2l38 107h-78Zm319-76.67v-54.66q33-14 67.5-21t72.5-7q26 0 51 4t49 10v50.66q-24-9-48.5-13.5t-51.5-4.5q-38 0-73 9.5t-67 26.5Zm0 220V-406q33-13.67 67.5-20.5t72.5-6.83q26 0 51 4t49 10v50.66q-24-9-48.5-13.5t-51.5-4.5q-38 0-73 9t-67 27Zm0-110v-54.66q33-14 67.5-21t72.5-7q26 0 51 4t49 10v50.66q-24-9-48.5-13.5t-51.5-4.5q-38 0-73 9.5t-67 26.5Zm-308 154q51.38 0 100.02 11.84Q400.67-283 448-259.33v-416q-43.67-28-94.08-43t-101.92-15q-37.33 0-73.5 8.66Q142.33-716 106.67-702v421.33Q139-294 176.83-300.33q37.84-6.34 75.17-6.34Zm262.67 47.34q48-23.67 94.83-35.5 46.83-11.84 98.5-11.84 37.33 0 75.83 6t69.5 16.67v-418q-33.66-16-70.71-23.67-37.05-7.66-74.62-7.66-51.67 0-100.67 15t-92.66 43v416ZM481.33-160q-50-38-108.66-58.67Q314-239.33 252-239.33q-38.36 0-75.35 9.66-36.98 9.67-72.65 25-22.4 11-43.2-2.33Q40-220.33 40-245.33v-469.34q0-13.66 6.5-25.33Q53-751.67 66-758q43.33-21.33 90.26-31.67Q203.19-800 252-800q61.33 0 119.5 16.33 58.17 16.34 109.83 49.67 51-33.33 108.5-49.67Q647.33-800 708-800q48.58 0 95.29 10.33Q850-779.33 893.33-758q13 6.33 19.84 18 6.83 11.67 6.83 25.33v469.34q0 26.26-21.5 39.96t-43.17.7q-35-16-71.98-25.33-36.99-9.33-75.35-9.33-62 0-119.33 21-57.34 21-107.34 58.33Zm-204-336.33Z"/></svg>
+                    <div class="stat-number" data-target="15">0</div>
+                    <div class="stat-label">tempo di lettura</div>
+                </div>
+                
+                <div class="stat-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="55px" viewBox="0 -960 960 960" width="55px" fill="#deb887"><path d="M838-79 710-207v103h-60v-206h206v60H752l128 128-42 43Zm-358-1q-83 0-156-31.5T197-197q-54-54-85.5-126.36T80-478q0-83.49 31.5-156.93Q143-708.36 197-762.68 251-817 324-848.5 397-880 480-880t156 31.5q73 31.5 127 85.82 54 54.32 85.5 127.75Q880-561.49 880-478q0 23-2 44.5t-7 43.5h-63q6-21.67 9-43.33 3-21.67 3-44.47 0-22.8-2.95-45.6-2.94-22.8-8.83-45.6H648q2 23 4 45.5t2 45q0 22.5-1.25 44.5T649-390h-61q3-22 4.5-44t1.5-44q0-22.75-1.5-45.5T588-569H373.42q-3.42 23-4.92 45.5t-1.5 45q0 22.5 1.5 44.5t4.5 44h197v60H384q14 53 34 104t62 86q23 0 45-2.5t45-7.5v60q-23 5-45 7.5T480-80ZM151.78-390H312q-2.5-22-3.75-44T307-478q0-22.75 1-45.5t3-45.5H151.71q-5.85 22.8-8.78 45.6-2.93 22.8-2.93 45.6t2.95 44.47q2.94 21.66 8.83 43.33ZM172-629h149.59q11.41-48 28.91-93.5T395-810q-71 24-129.5 69.5T172-629Zm222 478q-26-41-43.5-86T323-330H172q33 67 91 114t131 65Zm-10-478h193q-13-54-36-104t-61-89q-38 40-61 89.5T384-629Zm255.34 0H788q-35-66-93-112t-129-68q27 41 44.5 86.5t28.84 93.5Z"/></svg>
+                    <div class="stat-number" data-target="105">0</div>
+                    <div class="stat-label">siti utili e curiosi</div>
+                </div>
+                
+                <div class="stat-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="55px" viewBox="0 -960 960 960" width="55px" fill="#deb887"><path d="M480-220Zm-320 60v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q7 0 13 .5t13 .5q-7 14-10.5 28.5T492-360h-12q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34h351l60 60H160Zm320-321q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42Zm0-60q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm236 471L576-300q-13-13-18.5-28t-5.5-30q0-32 23-57t59-25q28 0 44 13t38 35q20-20 36.5-34t45.5-14q37 0 59.5 25.5T880-357q0 15-6 30t-18 27L716-160Z"/></svg>
+                    <div class="stat-number" data-target="5">0</div>
+                    <div class="stat-label">donatori</div>
+                </div>
+            </div>
+        </div>
 
         <div class="donator" style="color: violet">
             <div class="info">
@@ -48,8 +320,118 @@
     <button class="scroll-top" onclick="scrollToTop()">
         <i class='bx bxs-up-arrow'></i>
     </button>
-    <!-- Counter --><script src="https://static.elfsight.com/platform/platform.js" async></script>
-    <!-- Countdown --><script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <!-- Countdown -->
+    <script>
+        // Configurazione del Countdown
+        const countdownTargetDate = new Date('2025-08-15T00:00:00').getTime();
+        
+        function updateCountdownWidget() {
+            const now = new Date().getTime();
+            const distance = countdownTargetDate - now;
+            
+            if (distance < 0) {
+                // Countdown terminato
+                document.querySelectorAll('.countdown-digit').forEach(digit => {
+                    digit.textContent = '0';
+                });
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Aggiorna i digit con animazione
+            updateCountdownDigit('countdown-days-tens', Math.floor(days / 10));
+            updateCountdownDigit('countdown-days-ones', days % 10);
+            updateCountdownDigit('countdown-hours-tens', Math.floor(hours / 10));
+            updateCountdownDigit('countdown-hours-ones', hours % 10);
+            updateCountdownDigit('countdown-minutes-tens', Math.floor(minutes / 10));
+            updateCountdownDigit('countdown-minutes-ones', minutes % 10);
+            updateCountdownDigit('countdown-seconds-tens', Math.floor(seconds / 10));
+            updateCountdownDigit('countdown-seconds-ones', seconds % 10);
+        }
+        
+        function updateCountdownDigit(id, newValue) {
+            const element = document.getElementById(id);
+            if (element && element.textContent !== newValue.toString()) {
+                element.classList.add('flip');
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.classList.remove('flip');
+                }, 300);
+            }
+        }
+        
+        // Inizializza il countdown quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCountdownWidget();
+            setInterval(updateCountdownWidget, 1000);
+        });
+    </script>
+    <!-- Counter -->
+    <script>
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                const duration = 3000; // 3 secondi
+                const increment = target / (duration / 50); // Aggiorna ogni 50ms
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    if (stat.getAttribute('data-target') === '15') {
+                        stat.textContent = Math.ceil(current) + 'min';
+                    } else if (stat.getAttribute('data-target') === '254') {
+                        stat.textContent = Math.ceil(current) + 'h';
+                    } else {
+                        stat.textContent = Math.ceil(current);
+                    }
+                }, 50);
+            });
+        }
+        
+        // Funzione per verificare se l'elemento è visibile nella viewport
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+        
+        // Inizializza l'animazione quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', function() {
+            const statsWidget = document.querySelector('.stats-widget');
+            let animated = false;
+            
+            function checkAndAnimate() {
+                if (!animated && isElementInViewport(statsWidget)) {
+                    animateStats();
+                    animated = true;
+                }
+            }
+            
+            // Controlla immediatamente
+            checkAndAnimate();
+            
+            // Controlla durante lo scroll
+            window.addEventListener('scroll', checkAndAnimate);
+            
+            // Controlla durante il resize
+            window.addEventListener('resize', checkAndAnimate);
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
