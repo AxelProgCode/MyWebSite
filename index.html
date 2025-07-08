@@ -317,26 +317,8 @@
                         </div>
                     </a><br>
 
-                    <br><p id="last-update" style="text-align: center; display: none;"></p>
-                    <script>
-                        // Mostra la data dell'ultimo aggiornamento solo se il file è stato modificato
-                        document.addEventListener('DOMContentLoaded', function() {
-                            fetch(window.location.href, { method: 'HEAD' }).then(response => {
-                                const lastModified = response.headers.get('Last-Modified');
-                                if (lastModified) {
-                                    // Mostra solo se la data è diversa da una data fissa (es: creazione)
-                                    // Puoi impostare qui la data di creazione del file
-                                    const creationDate = new Date('2024-06-07T18:30:00');
-                                    const modifiedDate = new Date(lastModified);
-                                    if (modifiedDate > creationDate) {
-                                        const elem = document.getElementById('last-update');
-                                        elem.textContent = `Ultimo aggiornamento: ${modifiedDate.toLocaleDateString()} - ${modifiedDate.toLocaleTimeString().slice(0,5)}`;
-                                        elem.style.display = '';
-                                    }
-                                }
-                            });
-                        });
-                    </script>
+                    <br><br><br>
+                    <p style="text-align: center">Ultimo aggiornamento: 08/07/2025 14:05</p>
                 </div>
             </div>
 
