@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Counter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: #00ff88;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .config {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-item label {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .config-item select,
+        .config-item input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .config-item select:focus,
+        .config-item input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .reset-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reset-btn:hover {
+            background: #ff3838;
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .card-input {
+            background: #111;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 16px 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-btn:hover {
+            background: #222;
+            transform: translateY(-2px);
+        }
+
+        .card-btn:active {
+            transform: translateY(0);
+        }
+
+        .card-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .count-value {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .card-btn.positive {
+            border-color: #00ff88;
+        }
+
+        .card-btn.positive:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .card-btn.negative {
+            border-color: #ff4757;
+        }
+
+        .card-btn.negative:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .card-btn.neutral {
+            border-color: #ffa502;
+        }
+
+        .card-btn.neutral:hover {
+            background: rgba(255, 165, 2, 0.1);
+        }
+
+        .undo-btn {
+            width: 100%;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .undo-btn:hover {
+            background: #444;
+        }
+
+        .stats-panel {
+            background: #111;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+
+        .counts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .count-display {
+            text-align: center;
+        }
+
+        .count-label {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .count-number {
+            font-size: 4rem;
+            font-weight: 100;
+            line-height: 1;
+        }
+
+        .running-count {
+            color: #00ff88;
+        }
+
+        .running-count.negative {
+            color: #ff4757;
+        }
+
+        .true-count {
+            color: #ffa502;
+        }
+
+        .true-count.negative {
+            color: #ff6b7a;
+        }
+
+        .recommendation {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-left: 4px solid #333;
+        }
+
+        .recommendation.positive {
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #00ff88;
+        }
+
+        .recommendation.negative {
+            background: rgba(255, 71, 87, 0.1);
+            border-left-color: #ff4757;
+        }
+
+        .recommendation.neutral {
+            background: rgba(255, 165, 2, 0.1);
+            border-left-color: #ffa502;
+        }
+
+        .rec-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .stat-item-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .stat-item-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .history {
+            background: #111;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-count {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .cards-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 #111;
+        }
+
+        .cards-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cards-list::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .cards-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .history-card {
+            background: #1a1a1a;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #333;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .cards-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .config {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .counts {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .count-number {
+                font-size: 3rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>Blackjack Counter</h1>
+            <p>Sistema di conteggio avanzato per blackjack</p>
+        </header>
+
+        <div class="config">
+            <div class="config-item">
+                <label>Mazzi</label>
+                <input type="number" id="totalDecks" value="6" min="1" max="8" onchange="updateCalculations()">
+            </div>
+            <div class="config-item">
+                <label>Sistema</label>
+                <select id="countingSystem" onchange="updateCalculations()">
+                    <option value="zen">Zen Count</option>
+                    <option value="hilo">Hi-Lo</option>
+                    <option value="knockout">Knock-Out</option>
+                </select>
+            </div>
+            <button class="reset-btn" onclick="resetAll()">Reset</button>
+        </div>
+
+        <div class="main-content">
+            <div class="card-input">
+                <h3 class="section-title">Carte uscite</h3>
+                <div class="cards-grid" id="cardButtons"></div>
+                <button class="undo-btn" onclick="undoLastCard()">
+                    ← Annulla ultima
+                </button>
+            </div>
+
+            <div class="stats-panel">
+                <div class="counts">
+                    <div class="count-display">
+                        <div class="count-label">Running Count</div>
+                        <div class="count-number running-count" id="runningCount">0</div>
+                    </div>
+                    <div class="count-display">
+                        <div class="count-label">True Count</div>
+                        <div class="count-number true-count" id="trueCount">0.0</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation" id="recommendation">
+                    <div class="rec-text">Situazione neutra</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-item-label">Carte</div>
+                        <div class="stat-item-value" id="cardsPlayed">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">Mazzi rim.</div>
+                        <div class="stat-item-value" id="decksRemaining">6.0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">Penetrazione</div>
+                        <div class="stat-item-value" id="penetration">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history">
+            <div class="history-header">
+                <h3 class="section-title">Cronologia</h3>
+                <span class="history-count" id="historyCount">0 carte</span>
+            </div>
+            <div class="cards-list" id="cardsHistory"></div>
+        </div>
+    </div>
+
+    <script>
+        const systems = {
+            zen: {
+                name: "Zen Count",
+                values: { 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 1, 8: 0, 9: 0, 10: -2, J: -2, Q: -2, K: -2, A: -1 }
+            },
+            hilo: {
+                name: "Hi-Lo",
+                values: { 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 0, 8: 0, 9: 0, 10: -1, J: -1, Q: -1, K: -1, A: -1 }
+            },
+            knockout: {
+                name: "Knock-Out",
+                values: { 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 0, 9: 0, 10: -1, J: -1, Q: -1, K: -1, A: -1 }
+            }
+        };
+
+        let cardsHistory = [];
+        let runningCount = 0;
+
+        function initializeCardButtons() {
+            const container = document.getElementById('cardButtons');
+            const cards = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+            const currentSystem = document.getElementById('countingSystem').value;
+            
+            container.innerHTML = '';
+            
+            cards.forEach(card => {
+                const value = systems[currentSystem].values[card];
+                const btn = document.createElement('button');
+                btn.className = `card-btn ${getCardClass(value)}`;
+                btn.onclick = () => addCard(card);
+                
+                const cardValue = document.createElement('div');
+                cardValue.className = 'card-value';
+                cardValue.textContent = card;
+                
+                const countValue = document.createElement('div');
+                countValue.className = 'count-value';
+                countValue.textContent = value > 0 ? `+${value}` : `${value}`;
+                
+                btn.appendChild(cardValue);
+                btn.appendChild(countValue);
+                container.appendChild(btn);
+            });
+        }
+
+        function getCardClass(value) {
+            if (value > 0) return 'positive';
+            if (value < 0) return 'negative';
+            return 'neutral';
+        }
+
+        function addCard(card) {
+            const currentSystem = document.getElementById('countingSystem').value;
+            const value = systems[currentSystem].values[card];
+            
+            cardsHistory.push({ card, value });
+            runningCount += value;
+            
+            updateDisplay();
+            updateHistory();
+        }
+
+        function undoLastCard() {
+            if (cardsHistory.length === 0) return;
+            
+            const lastCard = cardsHistory.pop();
+            runningCount -= lastCard.value;
+            
+            updateDisplay();
+            updateHistory();
+        }
+
+        function updateDisplay() {
+            const totalDecks = parseInt(document.getElementById('totalDecks').value);
+            const cardsPlayed = cardsHistory.length;
+            const decksRemaining = Math.max(0.5, totalDecks - (cardsPlayed / 52));
+            const trueCount = runningCount / decksRemaining;
+            const penetration = (cardsPlayed / (totalDecks * 52) * 100);
+
+            const runningElement = document.getElementById('runningCount');
+            runningElement.textContent = runningCount > 0 ? `+${runningCount}` : runningCount;
+            runningElement.className = `count-number running-count ${runningCount < 0 ? 'negative' : ''}`;
+
+            const trueElement = document.getElementById('trueCount');
+            trueElement.textContent = trueCount > 0 ? `+${trueCount.toFixed(1)}` : trueCount.toFixed(1);
+            trueElement.className = `count-number true-count ${trueCount < 0 ? 'negative' : ''}`;
+
+            document.getElementById('cardsPlayed').textContent = cardsPlayed;
+            document.getElementById('decksRemaining').textContent = decksRemaining.toFixed(1);
+            document.getElementById('penetration').textContent = penetration.toFixed(1) + '%';
+
+            updateRecommendation(trueCount);
+        }
+
+        function updateRecommendation(trueCount) {
+            const recElement = document.getElementById('recommendation');
+            let message, className;
+
+            if (trueCount >= 1.5) {
+                message = `🔥 Situazione favorevole - Aumenta le puntate`;
+                className = 'positive';
+            } else if (trueCount <= -1.5) {
+                message = `❄️ Situazione sfavorevole - Punta minimo`;
+                className = 'negative';
+            } else if (trueCount > 0.5) {
+                message = `📈 Leggermente favorevole`;
+                className = 'neutral';
+            } else {
+                message = `⚖️ Situazione neutra`;
+                className = 'neutral';
+            }
+
+            recElement.innerHTML = `<div class="rec-text">${message}</div>`;
+            recElement.className = `recommendation ${className}`;
+        }
+
+        function updateHistory() {
+            const historyContainer = document.getElementById('cardsHistory');
+            const historyCount = document.getElementById('historyCount');
+            
+            historyCount.textContent = `${cardsHistory.length} carte`;
+            
+            historyContainer.innerHTML = cardsHistory.map(item => 
+                `<div class="history-card">${item.card}</div>`
+            ).join('');
+            
+            historyContainer.scrollTop = historyContainer.scrollHeight;
+        }
+
+        function updateCalculations() {
+            runningCount = 0;
+            const currentSystem = document.getElementById('countingSystem').value;
+            
+            cardsHistory.forEach(item => {
+                const newValue = systems[currentSystem].values[item.card];
+                runningCount += newValue;
+                item.value = newValue;
+            });
+            
+            initializeCardButtons();
+            updateDisplay();
+            updateHistory();
+        }
+
+        function resetAll() {
+            cardsHistory = [];
+            runningCount = 0;
+            updateDisplay();
+            updateHistory();
+        }
+
+        // Inizializzazione
+        initializeCardButtons();
+        updateDisplay();
+        updateHistory();
+    </script>
+</body>
+</html>
