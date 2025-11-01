@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Fira Mono', monospace;
+    font-size: 18px;
+    background-color: #212e3b;
+    color: #fff;
+    line-height: 1;
+    height: 100vh;
+}
+
+pre{
+    text-align: center;
+    color: #4a93aa;
+}
+
+.content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex-direction: column;
+}
+
+.input-box, .notif-box{
+    text-align: center;
+}
+
+input{
+    outline: none;
+    border: none;
+    margin: 0 0 20px 10px;
+    padding: 8px 5px 0 0;
+    background: transparent;
+    color: #fff;
+    font-size: 20px;
+    border-bottom: 1px dashed #5b727f;
+}
+
+button{
+    background-color: transparent;
+    border: 1px dashed #fff;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.number-box{
+    text-align: center;
+}
+
+.divider{
+    color: #5b727f;
+    margin: 20px 0;
+}
+
+.number{
+    font-size: 36px;
+    color: #f45957;
+}
+
+.info-box{
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.level{
+    color: #f4c025;
+}
+
+.mistakes{
+    color: #f45957;
+}

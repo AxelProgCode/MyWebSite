@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoCard3D</title>
+    <link rel="icon" href="images/icon.jpg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .header {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: #fff;
+            text-align: center;
+            padding: 60px 20px 40px 20px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            width: 80%;
+            max-width: 750px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            background-image: url('images/icon.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .header h1 {
+            background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .header p {
+            font-size: 1.2rem;
+            margin: 8px 0;
+        }
+        .scroll-indicator {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .scroll-text {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .scroll-icon {
+            display: block;
+            width: 24px;
+            height: 36px;
+            border: 2px solid #fff;
+            border-radius: 12px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .scroll-icon::after {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: 8px;
+            transform: translateX(-50%);
+            animation: scroll-dot 1.2s infinite;
+        }
+        @keyframes scroll-dot {
+            0% { top: 8px; opacity: 1; }
+            70% { top: 22px; opacity: 0.5; }
+            100% { top: 8px; opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.4rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+            .header .card {
+                width: 80%;
+            }
+        }
+        footer {
+            background: linear-gradient(90deg, blue 0%, red 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            padding: 20px 0 20px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="card"></div>
+        <div class="scroll-indicator">
+            <span class="scroll-text">Scrolla</span>
+            <span class="scroll-icon"></span>
+        </div>
+    </div>
+
+    <div class="card bmw">
+        <div class="product">
+            <span class="number"></span>
+            <span class="car">BMW</span>
+            <span class="price">€ 107.000</span>
+            <span class="touch-icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e8eaed"><path d="M445-80q-29 0-56-12t-45-35L127-403l21-23q14-15 34.5-18.5T221-438l99 53v-365q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v465l-144-77 156 198q10 12 23.76 18 13.76 6 29.24 6h205q38 0 64-26t26-64v-170q0-25.5-17.25-42.75T680-460H460v-60h219.65q50.14 0 85.25 35 35.1 35 35.1 85v170q0 63-43.5 106.5T650-80H445ZM203-665q-11.07-18.75-17.04-40.49-5.96-21.74-5.96-44.76 0-70.75 49.73-120.25Q279.45-920 350-920t120.27 49.74Q520-820.52 520-749.96q0 22.96-5.96 44.62Q508.07-683.68 497-665l-52-30q7-12 11-26t4-29.48Q460-796 427.88-828q-32.12-32-78-32T272-827.92q-32 32.09-32 77.92 0 15 4 29t11 26l-52 30Zm285 335Z"/></svg></span>
+            <img src="images/bmw-m4.png">
+        </div>
+        <div class="title">
+            <h2>M4 Competition</h2>
+        </div>
+    </div>
+
+    <div class="card ferrari">
+        <div class="product">
+            <span class="number"></span>
+            <span class="car">FERRARI</span>
+            <span class="price">€ 390.000</span>
+            <span class="touch-icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e8eaed"><path d="M445-80q-29 0-56-12t-45-35L127-403l21-23q14-15 34.5-18.5T221-438l99 53v-365q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v465l-144-77 156 198q10 12 23.76 18 13.76 6 29.24 6h205q38 0 64-26t26-64v-170q0-25.5-17.25-42.75T680-460H460v-60h219.65q50.14 0 85.25 35 35.1 35 35.1 85v170q0 63-43.5 106.5T650-80H445ZM203-665q-11.07-18.75-17.04-40.49-5.96-21.74-5.96-44.76 0-70.75 49.73-120.25Q279.45-920 350-920t120.27 49.74Q520-820.52 520-749.96q0 22.96-5.96 44.62Q508.07-683.68 497-665l-52-30q7-12 11-26t4-29.48Q460-796 427.88-828q-32.12-32-78-32T272-827.92q-32 32.09-32 77.92 0 15 4 29t11 26l-52 30Zm285 335Z"/></svg></span>
+            <img src="images/ferrari-purosangue.png">
+        </div>
+        <div class="title">
+            <h2>Purosangue</h2>
+        </div>
+    </div>
+
+    <div class="card lamborghini">
+        <div class="product">
+            <span class="number"></span>
+            <span class="car">LAMBORGHINI</span>
+            <span class="price">€ 230.000</span>
+            <span class="touch-icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e8eaed"><path d="M445-80q-29 0-56-12t-45-35L127-403l21-23q14-15 34.5-18.5T221-438l99 53v-365q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v465l-144-77 156 198q10 12 23.76 18 13.76 6 29.24 6h205q38 0 64-26t26-64v-170q0-25.5-17.25-42.75T680-460H460v-60h219.65q50.14 0 85.25 35 35.1 35 35.1 85v170q0 63-43.5 106.5T650-80H445ZM203-665q-11.07-18.75-17.04-40.49-5.96-21.74-5.96-44.76 0-70.75 49.73-120.25Q279.45-920 350-920t120.27 49.74Q520-820.52 520-749.96q0 22.96-5.96 44.62Q508.07-683.68 497-665l-52-30q7-12 11-26t4-29.48Q460-796 427.88-828q-32.12-32-78-32T272-827.92q-32 32.09-32 77.92 0 15 4 29t11 26l-52 30Zm285 335Z"/></svg></span>
+            <img src="images/lamborghini-urus.png">
+        </div>
+        <div class="title">
+            <h2>Urus</h2>
+        </div>
+    </div>
+
+    <div class="card nissan">
+        <div class="product">
+            <span class="number"></span>
+            <span class="car">NISSAN</span>
+            <span class="price">€ 210.000</span>
+            <span class="touch-icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e8eaed"><path d="M445-80q-29 0-56-12t-45-35L127-403l21-23q14-15 34.5-18.5T221-438l99 53v-365q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v465l-144-77 156 198q10 12 23.76 18 13.76 6 29.24 6h205q38 0 64-26t26-64v-170q0-25.5-17.25-42.75T680-460H460v-60h219.65q50.14 0 85.25 35 35.1 35 35.1 85v170q0 63-43.5 106.5T650-80H445ZM203-665q-11.07-18.75-17.04-40.49-5.96-21.74-5.96-44.76 0-70.75 49.73-120.25Q279.45-920 350-920t120.27 49.74Q520-820.52 520-749.96q0 22.96-5.96 44.62Q508.07-683.68 497-665l-52-30q7-12 11-26t4-29.48Q460-796 427.88-828q-32.12-32-78-32T272-827.92q-32 32.09-32 77.92 0 15 4 29t11 26l-52 30Zm285 335Z"/></svg></span>
+            <img src="images/nissan-gt-r.png">
+        </div>
+        <div class="title">
+            <h2>GT-R</h2>
+        </div>
+    </div>
+
+    <div class="card porsche">
+        <div class="product">
+            <span class="number"></span>
+            <span class="car">PORSCHE</span>
+            <span class="price">€ 258.000</span>
+            <span class="touch-icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e8eaed"><path d="M445-80q-29 0-56-12t-45-35L127-403l21-23q14-15 34.5-18.5T221-438l99 53v-365q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v465l-144-77 156 198q10 12 23.76 18 13.76 6 29.24 6h205q38 0 64-26t26-64v-170q0-25.5-17.25-42.75T680-460H460v-60h219.65q50.14 0 85.25 35 35.1 35 35.1 85v170q0 63-43.5 106.5T650-80H445ZM203-665q-11.07-18.75-17.04-40.49-5.96-21.74-5.96-44.76 0-70.75 49.73-120.25Q279.45-920 350-920t120.27 49.74Q520-820.52 520-749.96q0 22.96-5.96 44.62Q508.07-683.68 497-665l-52-30q7-12 11-26t4-29.48Q460-796 427.88-828q-32.12-32-78-32T272-827.92q-32 32.09-32 77.92 0 15 4 29t11 26l-52 30Zm285 335Z"/></svg></span>
+            <img src="images/porsche-911-gt3-rs.png">
+        </div>
+        <div class="title">
+            <h2>911 GT3 RS</h2>
+        </div>
+    </div>
+
+    <footer><p>AutoCard3D &copy; 2025</p></footer>
+
+    <script src="script.js"></script>
+    <script type="text/javascript">
+        // Inizializza l'effetto 3D tilt su tutte le card usando VanillaTilt
+        VanillaTilt.init(document.querySelectorAll(".card"),{
+            max: 25,           // Angolo massimo di inclinazione
+            speed: 5000,        // Velocità dell'animazione (ms)
+            glare: true,       // Abilita l'effetto riflesso
+            'max-glare': 0.3,  // Intensità massima del riflesso
+        });
+
+        // Numerazione automatica delle card
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, idx) => {
+            if (idx === 0) return; // salta la prima card (titolo)
+            const numberSpan = card.querySelector('.number');
+            if (numberSpan) numberSpan.textContent = String(idx).padStart(2, '0');
+        });
+    </script>
+</body>
+</html>

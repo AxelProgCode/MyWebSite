@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trolley Problem</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            color: #222;
+            text-align: center;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #1a2980;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-shadow: 1px 2px 8px #b0c4de;
+        }
+        button {
+            padding: 12px 28px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 25px;
+            background: #1a2980;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(26, 41, 128, 0.15);
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(180deg, #1a2980 25%, #26d0ce 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        #game {
+            margin: 0 auto;
+            margin-top: 30px;
+            background: rgba(255,255,255,0.95);
+            padding: 32px 24px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(26, 41, 128, 0.13);
+            max-width: 480px;
+        }
+        p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        i {
+            color: #b0c4de;
+        }
+        @media (max-width: 600px) {
+            #game {
+                padding: 18px 6px;
+                max-width: 98vw;
+            }
+            h1 {
+                font-size: 1.4em;
+            }
+            p {
+                font-size: 1em;
+            }
+            button {
+                font-size: 1em;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Trolley Problem - 5 Livelli</h1>
+    <div id="game"></div>
+    <script>
+        const levels = [
+            {
+                question: "<b>Livello 1:</b><br>Devi scegliere se deviare il treno su un binario dove c'è una persona, oppure lasciarlo andare dove ci sono cinque persone.<br><br>Cosa fai?",
+                options: [
+                    {
+                        text: "Devio il treno<br><i>(1 muore, 5 si salvano)</i>",
+                        result: "Hai scelto di deviare il treno."
+                    },
+                    {
+                        text: "Non faccio nulla<br><i>(5 muoiono, 1 si salva)</i>",
+                        result: "Hai scelto di non intervenire."
+                    }
+                ]
+            },
+            {
+                question: "<b>Livello 2:</b><br>Sul binario alternativo c'è un tuo caro amico, sull'altro 5 sconosciuti.<br><br>Cosa fai?",
+                options: [
+                    {
+                        text: "Devio il treno<br><i>(muore il tuo amico)</i>",
+                        result: "Hai sacrificato il tuo amico."
+                    },
+                    {
+                        text: "Non faccio nulla<br><i>(muoiono 5 sconosciuti)</i>",
+                        result: "Hai sacrificato 5 sconosciuti."
+                    }
+                ]
+            },
+            {
+                question: "<b>Livello 3:</b><br>Puoi fermare il treno solo spingendo una persona molto corpulenta sui binari, salvando 5 persone.<br><br>Cosa fai?",
+                options: [
+                    {
+                        text: "Spingi la persona<br><i>(1 muore, 5 si salvano)</i>",
+                        result: "Hai spinto la persona."
+                    },
+                    {
+                        text: "Non faccio nulla<br><i>(5 muoiono)</i>",
+                        result: "Hai scelto di non intervenire."
+                    }
+                ]
+            },
+            {
+                question: "<b>Livello 4:</b><br>Sul binario alternativo ci sono 2 bambini, sull'altro 5 anziani.<br><br>Cosa fai?",
+                options: [
+                    {
+                        text: "Devio il treno<br><i>(muoiono 2 bambini)</i>",
+                        result: "Hai sacrificato 2 bambini."
+                    },
+                    {
+                        text: "Non faccio nulla<br><i>(muoiono 5 anziani)</i>",
+                        result: "Hai sacrificato 5 anziani."
+                    }
+                ]
+            },
+            {
+                question: "<b>Livello 5:</b><br>Sul binario alternativo c'è un medico che salverà molte vite in futuro, sull'altro 5 persone comuni.<br><br>Cosa fai?",
+                options: [
+                    {
+                        text: "Devio il treno<br><i>(muore il medico)</i>",
+                        result: "Hai sacrificato il medico."
+                    },
+                    {
+                        text: "Non faccio nulla<br><i>(muoiono 5 persone comuni)</i>",
+                        result: "Hai sacrificato 5 persone comuni."
+                    }
+                ]
+            }
+        ];
+
+        let currentLevel = 0;
+        const gameDiv = document.getElementById('game');
+        let summary = [];
+        let stats = {
+            deviate: 0,
+            noAction: 0
+        };
+
+        function showLevel() {
+            if (currentLevel >= levels.length) {
+            let recap = "<h2>Hai completato tutti i livelli!</h2><h3>Resoconto delle tue scelte:</h3><ul>";
+            summary.forEach((item, i) => {
+                recap += `<li><b>Livello ${i + 1}:</b> ${item}</li>`;
+            });
+            recap += "</ul>";
+
+            // Calcolo morti e salvati
+            let morti = 0, salvati = 0;
+            // Per ogni livello, conta in base alla scelta
+            levels.forEach((level, i) => {
+                // idx 0 = devio, idx 1 = non faccio nulla
+                let scelta = summary[i];
+                if (i === 0) {
+                // Livello 1: devio (1 muore, 5 salvati), non faccio nulla (5 muoiono, 1 salvato)
+                if (scelta.includes("deviare") || scelta.includes("Devio")) {
+                    morti += 1; salvati += 5;
+                } else {
+                    morti += 5; salvati += 1;
+                }
+                } else if (i === 1) {
+                // Livello 2: devio (1 muore), non faccio nulla (5 muoiono)
+                if (scelta.includes("amico")) {
+                    morti += 1; salvati += 5;
+                } else {
+                    morti += 5; salvati += 1;
+                }
+                } else if (i === 2) {
+                // Livello 3: spingi (1 muore, 5 salvati), non fai nulla (5 muoiono)
+                if (scelta.includes("spinto")) {
+                    morti += 1; salvati += 5;
+                } else {
+                    morti += 5;
+                }
+                } else if (i === 3) {
+                // Livello 4: devio (2 muoiono), non faccio nulla (5 muoiono)
+                if (scelta.includes("2 bambini")) {
+                    morti += 2; salvati += 5;
+                } else {
+                    morti += 5; salvati += 2;
+                }
+                } else if (i === 4) {
+                // Livello 5: devio (1 muore), non faccio nulla (5 muoiono)
+                if (scelta.includes("medico")) {
+                    morti += 1; salvati += 5;
+                } else {
+                    morti += 5; salvati += 1;
+                }
+                }
+            });
+
+            // Analisi delle scelte
+            let conclusion = "";
+            if (stats.deviate === 5) {
+                conclusion = "<b>Conclusione:</b> Tendi a prendere decisioni attive per salvare il maggior numero di persone, anche a costo di sacrificare qualcuno. Sei utilitarista.";
+            } else if (stats.noAction === 5) {
+                conclusion = "<b>Conclusione:</b> Preferisci non intervenire direttamente, lasciando che gli eventi seguano il loro corso. Sei più deontologico.";
+            } else if (stats.deviate > stats.noAction) {
+                conclusion = "<b>Conclusione:</b> In genere scegli di agire per ridurre il danno, ma non sempre. Mostri una tendenza utilitarista, ma con eccezioni.";
+            } else if (stats.noAction > stats.deviate) {
+                conclusion = "<b>Conclusione:</b> Spesso preferisci non intervenire, ma a volte fai delle eccezioni. Mostri una tendenza deontologica, ma non assoluta.";
+            } else {
+                conclusion = "<b>Conclusione:</b> Le tue scelte sono bilanciate tra agire e non agire. Valuti caso per caso.";
+            }
+
+            // Statistiche scelte
+            let statsHtml = `<hr><h3>Statistiche delle tue scelte:</h3><b>Scelte di deviare il treno:</b> ${stats.deviate}<br><b>Scelte di non fare nulla:</b> ${stats.noAction}`;
+            // Statistiche morti/salvati
+            statsHtml += `<br><br><b>Persone morte:</b> ${morti}<br><b>Persone salvate:</b> ${salvati}`;
+            // Barra colorata con etichette fisse a sinistra e destra
+            let total = morti + salvati;
+            let percentMorti = total ? Math.round((morti / total) * 100) : 0;
+            let percentSalvati = total ? Math.round((salvati / total) * 100) : 0;
+            statsHtml += `
+            <div style="margin:24px auto 0 auto; max-width:340px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-size:14px; font-weight:bold;">
+                    <span style="color:#ff4e50;">Morti</span>
+                    <span style="color:#43cea2;">Salvati</span>
+                </div>
+                <div style="height:28px; width:100%; background:#eee; border-radius:16px; overflow:hidden; display:flex; box-shadow:0 2px 8px #b0c4de55;">
+                    <div style="width:${percentMorti}%; background:linear-gradient(90deg,#ff4e50,#f9d423); color:#fff; display:flex; align-items:center; justify-content:${percentMorti>10?'center':'flex-start'}; font-weight:bold; font-size:15px;">
+                        ${percentMorti>7?percentMorti+'%':''}
+                    </div>
+                    <div style="width:${percentSalvati}%; background:linear-gradient(90deg,#43cea2,#185a9d); color:#fff; display:flex; align-items:center; justify-content:${percentSalvati>10?'center':'flex-end'}; font-weight:bold; font-size:15px;">
+                        ${percentSalvati>7?percentSalvati+'%':''}
+                    </div>
+                </div>
+            </div>
+            `;
+
+            // Bottone Gioca Ancora
+            let playAgainBtn = `<br><br><button onclick="restartGame()" style="margin-right: 12px;">Gioca ancora</button>`;
+            // Bottone per chiudere la pagina
+            playAgainBtn += `<button onclick="window.close()" id="closeBtn">Chiudi</button>`;
+
+            // Aggiungi stile per il bottone Chiudi rosso su hover
+            if (!document.getElementById('closeBtnStyle')) {
+                const style = document.createElement('style');
+                style.id = 'closeBtnStyle';
+                style.innerHTML = `
+                #closeBtn:hover {
+                    background: linear-gradient(180deg, #1a2980 0%, #ff0000 100%) !important;
+                    color: #fff !important;
+                }
+                `;
+                document.head.appendChild(style);
+            }
+
+            gameDiv.innerHTML = recap + "<br>" + conclusion + statsHtml + playAgainBtn;
+            return;
+            }
+            const level = levels[currentLevel];
+            let html = `<p>${level.question}</p>`;
+            level.options.forEach((opt, idx) => {
+            html += `<button onclick="chooseOption(${idx})">${opt.text}</button><br>`;
+            });
+            gameDiv.innerHTML = html;
+        }
+
+        window.chooseOption = function(idx) {
+            summary.push(levels[currentLevel].options[idx].result);
+            // Aggiorna statistiche
+            if (idx === 0) {
+                stats.deviate++;
+            } else {
+                stats.noAction++;
+            }
+            currentLevel++;
+            setTimeout(showLevel, 200);
+        };
+
+        window.restartGame = function() {
+            currentLevel = 0;
+            summary = [];
+            stats = { deviate: 0, noAction: 0 };
+            showLevel();
+        };
+
+        showLevel();
+    </script>
+</body>
+</html>

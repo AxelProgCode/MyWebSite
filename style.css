@@ -258,10 +258,6 @@ body{
     font-size: 14px;
 }
 
-.about .info button{
-    margin-top: 30px;
-}
-
 .skills{
     display: flex;
     justify-content: space-around;
@@ -460,6 +456,13 @@ footer .cols .news-col form button:hover{
 
 footer .cols .news-col form button i{
     font-size: 22px;
+}
+
+footer .copyright-col{
+    color: white;
+    font-size: 12px;
+    margin-top: 40px;
+    text-align: center;
 }
 
 /* Tablet e Desktop Piccoli (fino a 1200px) */

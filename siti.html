@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="siti.css">
+    <title>Siti | Ghost</title>
+</head>
+<body>
+    <div class="navbar">
+        <h2>GHOST</h2>
+        <ul>
+            <li><a href="siti.html">Siti</a></li>
+            <li><a href="progetti.html">Progetti</a></li>
+            <li><a href="statistiche.html">Statistiche</a></li>
+        </ul>
+        <a href="index.html"><button class="hire-btn">Home</button></a>
+    </div>
+
+    <div class="sites-container">
+        <header class="sites-header">
+            <h1>🌐 Siti Utili e Curiosi</h1>
+            <p class="subtitle">Raccolta di siti web utili e curiosi</p>
+        </header>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="controls-container">
+
+            <div class="filter-section">
+                <div class="section-title">🏷️ Categoria</div>
+                <div class="filter-grid">
+                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn" data-filter="utili">🔧 Utili</button>
+                    <button class="filter-btn" data-filter="curiosi">🎨 Curiosi</button>
+                    <button class="filter-btn" data-filter="giochi">🎮 Giochi</button>
+                    <button class="filter-btn" data-filter="AI">⚡ AI</button>
+                </div>
+            </div>
+
+            <div class="sort-section">
+                <div class="section-title">📊 Ordina</div>
+                <div class="sort-grid">
+                    <button class="sort-btn active" data-sort="name">A-Z</button>
+                    <button class="sort-btn" data-sort="category">Categoria</button>
+                    <button class="sort-btn" data-sort="shuffle">Casuale</button>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <div class="section-title">🔎 Cerca</div>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Cerca per nome, descrizione o tag...">
+                </div>
+            </div>
+
+            <div class="view-toggle-section">
+                <div class="section-title">👁️ Vista</div>
+                <div class="view-grid">
+                    <button class="view-toggle-btn active" data-view="grid" title="Vista a Griglia"><i class='bx bx-grid-alt'></i></button>
+                    <button class="view-toggle-btn" data-view="list" title="Vista a Lista"><i class='bx bx-list-ul'></i></button>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="site-cards-container" id="site-cards-container">
+            <!-- I siti saranno renderizzati qui dallo script -->
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="cols">
+            <div class="about-col">
+                <h3>Ghost.</h3>
+                <p>Creative Web Developer</p>
+            </div>
+            <div class="links-col">
+                <h4>Link Utili</h4>
+                <a href="index.html">Home</a>
+                <a href="siti.html">Siti</a>
+                <a href="progetti.html">Progetti</a>
+                <a href="sondaggi.html">Sondaggi</a>
+                <a href="form.html">Form</a>
+                <a href="statistiche.html">Statistiche</a>
+            </div>
+            <div class="news-col">
+                <h4>NewsLetter</h4>
+                <p>Inserisci la tua email e ricevi aggiornamenti sulle novità.</p>
+                <form action="https://docs.google.com/forms/d/e/1FAIpQLSdftgL9248dAGeSujT9foBLlxPQjv37RJt-aKVGrdJex15FbQ/viewform" target="_blank">
+                    <input type="email" placeholder="Il tuo indirizzo email">
+                    <button type="submit"><i class='bx bxl-telegram'></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="copyright-col">
+            <p>Copyright &copy; 2024 Ghost. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sitesData = [
+            { name: "Chatbot", url: "https://www.copilot.microsoft.com/", category: "AI", description: "Chatbot AI basato su GPT-4", tag: ["AI", "Chat", "Microsoft"] },
+            { name: "Phind", url: "https://www.phind.com/", category: "AI", description: "Motore di ricerca e assistente AI per sviluppatori", tag: ["AI", "Search", "Code"] },
+            { name: "Photopea", url: "https://www.photopea.com/", category: "utili", description: "Editor di foto professionale online gratuito (simile a Photoshop)", tag: ["Editing", "Foto", "Grafica"] },
+            { name: "GeoGuessr", url: "https://www.geoguessr.com/", category: "giochi", description: "Dov'è questo posto? Trova la tua posizione guardando Google Street View", tag: ["Game", "Mappa", "Viaggio"] },
+            { name: "MyInstants", url: "https://www.myinstants.com/it/", category: "curiosi", description: "Tasti sonori divertenti e meme", tag: ["Suoni", "Meme", "Divertente"] },
+            { name: "Radio Garden", url: "http://radio.garden/visit/pisa/N07mPz5D", category: "curiosi", description: "Ascolta le stazioni radio di tutto il mondo", tag: ["Musica", "Radio", "Mondo"] },
+            { name: "WakaTime", url: "https://wakatime.com/", category: "utili", description: "Monitora il tempo che trascorri a programmare", tag: ["Coding", "Produttività", "Statistiche"] },
+            { name: "VirusTotal", url: "https://www.virustotal.com/gui/home/url", category: "utili", description: "Analizza file e URL sospetti per rilevare malware", tag: ["Sicurezza", "Scanning", "Online"] },
+            { name: "Flippity", url: "https://www.flippity.net/", category: "utili", description: "Trasforma Google Sheets in schede didattiche e quiz online", tag: ["Educazione", "Tool", "Templates"] },
+            { name: "Archive.org", url: "https://archive.org/", category: "curiosi", description: "La 'macchina del tempo' di Internet, guarda come erano i siti in passato", tag: ["Storia", "Internet", "Archivio"] },
+            { name: "Zoom Earth", url: "https://zoom.earth/", category: "curiosi", description: "Visualizza immagini satellitari in tempo reale e traccia uragani", tag: ["Meteo", "Mappa", "Terra"] },
+            { name: "Akinator", url: "https://it.akinator.com/", category: "giochi", description: "L'indovino che legge il pensiero e indovina il tuo personaggio", tag: ["Game", "Curioso", "AI"] },
+            { name: "Remove.bg", url: "https://www.remove.bg/", category: "utili", description: "Rimuovi lo sfondo dalle immagini in un istante", tag: ["Foto", "Editing", "Sfondo"] },
+            { name: "Tinywow", url: "https://tinywow.com/", category: "utili", description: "Raccolta di tool gratuiti per PDF, Video, Immagini e altro", tag: ["Tool", "Utility", "Convertitore"] },
+            { name: "A Soft Murmur", url: "https://asoftmurmur.com/", category: "utili", description: "Generatore di rumori ambientali per studiare o rilassarsi", tag: ["Musica", "Relax", "Suoni"] }
+        ];
+
+        let currentFilter = 'all';
+        let currentSort = 'name';
+        let searchQuery = '';
+        let currentView = 'grid';
+
+        const container = document.getElementById('site-cards-container');
+        const searchInput = document.getElementById('search-input');
+        const statsElement = document.getElementById('stats');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const sortBtns = document.querySelectorAll('.sort-btn');
+        const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+
+        const categoryLabels = {
+            'utili': '🔧 Utili',
+            'curiosi': '🎨 Curiosi',
+            'giochi': '🎮 Giochi',
+            'AI': '⚡ AI'
+        };
+
+        // Aggiorna le statistiche
+        function updateStats() {
+            statsElement.textContent = `Totale siti: ${sitesData.length}`;
+        }
+
+        // Evidenzia il testo trovato nella ricerca
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="background-color: #ffb742; color: #212529; border-radius: 4px; padding: 1px 3px;">$1</span>');
+        }
+
+        // Logica di ordinamento
+        function getSortedSites(sites) {
+            let sorted = [...sites];
+            if (currentSort === 'name') {
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (currentSort === 'category') {
+                sorted.sort((a, b) => a.category.localeCompare(b.category));
+            } else if (currentSort === 'shuffle') {
+                for (let i = sorted.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+                }
+            }
+            return sorted;
+        }
+
+        // Funzione principale di rendering
+        function renderSites() {
+            // 1. Filtraggio
+            const filteredSites = sitesData.filter(site => {
+                const categoryMatch = currentFilter === 'all' || site.category === currentFilter;
+                const searchMatch = !searchQuery || 
+                    site.name.toLowerCase().includes(searchQuery) ||
+                    site.description.toLowerCase().includes(searchQuery) ||
+                    (site.tag && site.tag.some(t => t.toLowerCase().includes(searchQuery)));
+                
+                return categoryMatch && searchMatch;
+            });
+
+            // 2. Applicazione della vista (griglia o lista)
+            container.className = currentView === 'grid' ? 'sites-grid' : 'sites-list';
+
+            if (filteredSites.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                <div class="empty-state-icon">😕</div>
+                <div class="empty-state-text">Nessun sito trovato</div>
+                <div class="empty-state-sub">Prova a modificare i filtri o la ricerca</div>
+                </div>
+            `;
+            return;
+            }
+
+            // 3. Ordinamento
+            const sortedSites = getSortedSites(filteredSites);
+
+            // 4. Rendering
+            container.innerHTML = sortedSites.map(site => {
+            const displayName = site.name || site.title || '';
+            const description = site.description || '';
+            // Non visualizziamo i tag per mantenere la pulizia del design aggiornato
+            // const tags = (site.tag || []).map(t => `<span class="site-tag">#${t}</span>`).join(' ');
+            
+            // Logica di rendering per Griglia e Lista
+            if (currentView === 'grid') {
+                return `
+                <div class="site-card" data-category="${site.category}">
+                    <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                    <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                    <a href="${site.url}" target="_blank" class="site-url">${highlightText(site.url.replace(/^https?:\/\//, ''), searchQuery)}</a>
+                    <p class="site-description">${highlightText(description, searchQuery)}</p>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita il sito →</a>
+                </div>
+                `;
+            } else if (currentView === 'list') {
+                return `
+                <div class="site-card sites-list-item" data-category="${site.category}">
+                    <div class="site-details">
+                        <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                    </div>
+                    <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita</a>
+                </div>
+                `;
+            }
+            }).join('');
+        }
+
+        // Gestione eventi filtri
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (currentSort === 'shuffle') {
+                    // Rimescola per dare un senso al filtro casuale
+                    currentSort = 'name'; 
+                    sortBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelector('.sort-btn[data-sort="name"]').classList.add('active');
+                }
+                renderSites();
+            });
+        });
+
+        // Gestione eventi ordinamento
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSort = btn.dataset.sort;
+                sortBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        // Gestione eventi cambio vista
+        viewToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentView = btn.dataset.view;
+                viewToggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+
+        // Gestione evento ricerca
+        searchInput.addEventListener('input', () => {
+            searchQuery = searchInput.value.toLowerCase().trim();
+            renderSites();
+        });
+        
+        // Inizializzazione
+        updateStats();
+        renderSites();
+    </script>
+</body>
+</html>

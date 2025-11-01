@@ -1,0 +1,114 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #EEF0F5;
+}
+
+.clock {
+    background: linear-gradient(120deg, #E6E9EF, #EEF0F5);
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    box-shadow: -20px -20px 60px rgba(255, 255, 255, 0.5),
+                20px 20px 20px -5px rgba(166, 180, 200, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper {
+    width: 390px;
+    height: 390px;
+    background: linear-gradient(to top, #ECEEF3, #F1F2F7);
+    border-radius: 50%;
+    box-shadow: inset 10px 10px 10px rgba(166, 180, 200, 0.5),
+                inset 20px 20px 40px rgba(166, 180, 200, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.wrapper label {
+    position: absolute;
+    transform: rotate(calc(var(--i) * (360deg / 12)));
+    inset: 16px;
+    text-align: center;
+}
+.wrapper label span {
+    transform: rotate(calc(var(--i) * (-360deg / 12)));
+    display: inline-block;
+    font-size: 32px;
+    font-weight: bold;
+    color: #2D333E;
+}
+
+.point {
+    width: 25px;
+    height: 25px;
+    background: #646E82;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px #646E8260;
+}
+.point::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #FD382D;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 1px 1px 3px #FD382D60;
+    z-index: 4;
+}
+
+.stalk-second,
+.stalk-minute,
+.stalk-hour {
+    position: absolute;
+    bottom: 50%;
+    transform-origin: bottom;
+}
+
+.stalk-second {
+    width: 4px;
+    height: 160px;
+    background: #FD382D;
+    box-shadow: 1px 1px 3px #FD382D60;
+    z-index: 3;
+}
+.stalk-second::before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 50px;
+    background: #FD382D;
+    bottom: -50px;
+    box-shadow: 1px 1px 3px #FD382D60;
+}
+.stalk-minute {
+    width: 5px;
+    height: 130px;
+    background: #646E82;
+    box-shadow: 1px 1px 3px #646E8260;
+    z-index: 2;
+}
+.stalk-hour {
+    width: 6px;
+    height: 100px;
+    background: #2D333E;
+    box-shadow: 1px 1px 3px #2D333E60;
+    z-index: 1;
+}

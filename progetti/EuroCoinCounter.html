@@ -1,0 +1,146 @@
+<html lang="it">
+    <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <title>Euro Coin Counter</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-6 text-center">Euro Coin Counter</h1>
+            <form class="space-y-4" id="coinForm">
+                
+                <div class="flex items-center justify-between">
+                    <img alt="2 Euro" height="75" src="https://upload.wikimedia.org/wikipedia/it/8/8c/2_%E2%82%AC_2007.gif" width="75"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twoEuro', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="twoEuro" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twoEuro', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="1 Euro" height="73" src="https://upload.wikimedia.org/wikipedia/it/0/06/1_%E2%82%AC_2007.jpg" width="73"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('oneEuro', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="oneEuro" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('oneEuro', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="50 cent Euro" height="74" src="https://upload.wikimedia.org/wikipedia/it/4/40/0%2C50_%E2%82%AC_2007.jpg" width="74"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('fiftyCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="fiftyCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('fiftyCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="20 cent Euro" height="72" src="https://upload.wikimedia.org/wikipedia/it/b/be/0%2C20_%E2%82%AC_2007.jpg" width="72"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twentyCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="twentyCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twentyCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="10 cent Euro" height="70" src="https://upload.wikimedia.org/wikipedia/it/thumb/d/d1/0%2C10_%E2%82%AC_2007.jpg/49px-0%2C10_%E2%82%AC_2007.jpg" width="70"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('tenCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="tenCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('tenCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="5 cent Euro" height="70" src="https://upload.wikimedia.org/wikipedia/it/6/6d/0%2C05_%E2%82%AC.png" width="70"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('fiveCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="fiveCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('fiveCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="2 cent Euro" height="60" src="https://upload.wikimedia.org/wikipedia/it/thumb/e/e0/0%2C02_%E2%82%AC.png/47px-0%2C02_%E2%82%AC.png" width="60"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twoCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="twoCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('twoCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <img alt="1 cent Euro" height="60" src="https://upload.wikimedia.org/wikipedia/it/thumb/a/ac/0%2C01_%E2%82%AC.png/41px-0%2C01_%E2%82%AC.png" width="60"/>
+                    <div class="flex items-center space-x-1 ml-auto mr-2">
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-l-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('oneCent', -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input class="w-20 p-2 border-t border-b border-yellow-400 text-center font-semibold rounded-none focus:ring-2 focus:ring-yellow-300 focus:outline-none" id="oneCent" min="0" oninput="calculateTotal()" type="number" value="0"/>
+                        <button type="button" class="px-3 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-r-lg border border-yellow-400 hover:bg-yellow-200 transition" onclick="changeValue('oneCent', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <div class="mt-6 text-center text-xl font-bold" id="result">Totale: € 0.00</div>
+        </div>
+        <script>
+            function calculateTotal(){
+                const twoEuro = parseInt(document.getElementById('twoEuro').value) || 0;
+                const oneEuro = parseInt(document.getElementById('oneEuro').value) || 0;
+                const fiftyCent = parseInt(document.getElementById('fiftyCent').value) || 0;
+                const twentyCent = parseInt(document.getElementById('twentyCent').value) || 0;
+                const tenCent = parseInt(document.getElementById('tenCent').value) || 0;
+                const fiveCent = parseInt(document.getElementById('fiveCent').value) || 0;
+                const twoCent = parseInt(document.getElementById('twoCent').value) || 0;
+                const oneCent = parseInt(document.getElementById('oneCent').value) || 0;
+                const total = (twoEuro * 2) + (oneEuro * 1) + (fiftyCent * 0.5) + (twentyCent * 0.2) + (tenCent * 0.1) + (fiveCent * 0.05) + (twoCent * 0.02) + (oneCent * 0.01);
+                document.getElementById('result').innerText = `Totale: € ${total.toFixed(2)}`;
+            }
+
+            function changeValue(id, delta){
+                const input = document.getElementById(id);
+                let value = parseInt(input.value) || 0;
+                value += delta;
+                if (value < 0) value = 0;
+                input.value = value;
+                calculateTotal();
+            }
+        </script>
+    </body>
+</html>
