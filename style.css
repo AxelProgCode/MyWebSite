@@ -65,7 +65,7 @@ body{
 }
 
 .main{
-    height: auto;
+    height: 100vh;
     min-height: 640px;
     display: flex;
     flex-direction: column;
@@ -199,10 +199,6 @@ body{
     opacity: 0.7;
     pointer-events: none;
     background: #383e45;
-}
-
-.section-items .placeholder-item .icon i {
-    color: #ffb742;
 }
 
 .section-items .item .stat-badge {
@@ -567,10 +563,6 @@ footer .copyright-col{
         padding: 0 20px;
         grid-template-columns: 1fr; 
         gap: 20px;
-    }
-    
-    .section-items .placeholder-item {
-        display: none;
     }
 
     .seprator{

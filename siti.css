@@ -64,10 +64,10 @@ body{
     background: #ff9800;
 }
 
-/* Main Section (Home e Progetti) */
 .main{
     text-align: center;
     padding: 40px 20px;
+    height: 100vh;
     min-height: calc(100vh - 80px - 500px); /* Regolato per il footer */
 }
 
@@ -96,12 +96,10 @@ body{
 }
 
 .main img{
-    width: 200px;
-    height: 200px;
+    width: auto;
+    height: 50%;
     margin-top: 30px;
-    border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 20px rgba(255, 183, 66, 0.5);
 }
 
 /* Section Items (Home e Progetti) */
