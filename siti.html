@@ -21,7 +21,7 @@
         <a href="index.html"><button class="hire-btn">Home</button></a>
     </div>
     <div class="main">
-        <p class="title">🌐 Siti Utili e Curiosi</p>
+        <p class="title">Siti Utili e Curiosi</p>
         <p class="subtitle">Raccolta di siti web utili e curiosi</p>
         <img src="logo/White - nobg.png">
     </div>
@@ -46,8 +46,8 @@
                 <div class="section-title">📊 Ordina</div>
                 <div class="sort-grid">
                     <button class="sort-btn active" data-sort="name">A-Z</button>
+                    <button class="sort-btn" data-sort="reverse">Z-A</button>
                     <button class="sort-btn" data-sort="category">Categoria</button>
-                    <button class="sort-btn" data-sort="shuffle">Casuale</button>
                 </div>
             </div>
 
@@ -59,8 +59,8 @@
             </div>
 
             <div class="view-toggle-section">
-                <div class="section-title">👁️ Vista</div>
                 <div class="view-grid">
+                    <div class="section-title">Vista:</div>
                     <button class="view-toggle-btn active" data-view="grid" title="Vista a Griglia"><i class='bx bx-grid-alt'></i></button>
                     <button class="view-toggle-btn" data-view="list" title="Vista a Lista"><i class='bx bx-list-ul'></i></button>
                 </div>
@@ -105,21 +105,804 @@
 
     <script>
         const sitesData = [
-            { name: "Chatbot", url: "https://www.copilot.microsoft.com/", category: "AI", description: "Chatbot AI basato su GPT-4", tag: ["AI", "Chat", "Microsoft"] },
-            { name: "Phind", url: "https://www.phind.com/", category: "AI", description: "Motore di ricerca e assistente AI per sviluppatori", tag: ["AI", "Search", "Code"] },
-            { name: "Photopea", url: "https://www.photopea.com/", category: "utili", description: "Editor di foto professionale online gratuito (simile a Photoshop)", tag: ["Editing", "Foto", "Grafica"] },
-            { name: "GeoGuessr", url: "https://www.geoguessr.com/", category: "giochi", description: "Dov'è questo posto? Trova la tua posizione guardando Google Street View", tag: ["Game", "Mappa", "Viaggio"] },
-            { name: "MyInstants", url: "https://www.myinstants.com/it/", category: "curiosi", description: "Tasti sonori divertenti e meme", tag: ["Suoni", "Meme", "Divertente"] },
-            { name: "Radio Garden", url: "http://radio.garden/visit/pisa/N07mPz5D", category: "curiosi", description: "Ascolta le stazioni radio di tutto il mondo", tag: ["Musica", "Radio", "Mondo"] },
-            { name: "WakaTime", url: "https://wakatime.com/", category: "utili", description: "Monitora il tempo che trascorri a programmare", tag: ["Coding", "Produttività", "Statistiche"] },
-            { name: "VirusTotal", url: "https://www.virustotal.com/gui/home/url", category: "utili", description: "Analizza file e URL sospetti per rilevare malware", tag: ["Sicurezza", "Scanning", "Online"] },
-            { name: "Flippity", url: "https://www.flippity.net/", category: "utili", description: "Trasforma Google Sheets in schede didattiche e quiz online", tag: ["Educazione", "Tool", "Templates"] },
-            { name: "Archive.org", url: "https://archive.org/", category: "curiosi", description: "La 'macchina del tempo' di Internet, guarda come erano i siti in passato", tag: ["Storia", "Internet", "Archivio"] },
-            { name: "Zoom Earth", url: "https://zoom.earth/", category: "curiosi", description: "Visualizza immagini satellitari in tempo reale e traccia uragani", tag: ["Meteo", "Mappa", "Terra"] },
-            { name: "Akinator", url: "https://it.akinator.com/", category: "giochi", description: "L'indovino che legge il pensiero e indovina il tuo personaggio", tag: ["Game", "Curioso", "AI"] },
-            { name: "Remove.bg", url: "https://www.remove.bg/", category: "utili", description: "Rimuovi lo sfondo dalle immagini in un istante", tag: ["Foto", "Editing", "Sfondo"] },
-            { name: "Tinywow", url: "https://tinywow.com/", category: "utili", description: "Raccolta di tool gratuiti per PDF, Video, Immagini e altro", tag: ["Tool", "Utility", "Convertitore"] },
-            { name: "A Soft Murmur", url: "https://asoftmurmur.com/", category: "utili", description: "Generatore di rumori ambientali per studiare o rilassarsi", tag: ["Musica", "Relax", "Suoni"] }
+            {
+                name: "1000stars",
+                url: "https://stars.chromeexperiments.com/",
+                description: "esplora l'universo",
+                category: "curiosi"
+            },
+            {
+                name: "123apps",
+                url: "https://123apps.com/it/",
+                description: "Suite di strumenti per audio, video e PDF",
+                category: "utili"
+            },
+            {
+                name: "16Personalities",
+                url: "https://www.16personalities.com/it/test-della-personalita-gratis/",
+                description: "Test della personalità gratuito",
+                category: "utili"
+            },
+            {
+                name: "3D Changer",
+                url: "https://3dchanger.com/",
+                description: "Crea livree per auto in 3D",
+                category: "curiosi"
+            },
+            {
+                name: "3DTuning",
+                url: "https://www.3dtuning.com/it-IT/",
+                description: "Configuratore auto 3D",
+                category: "curiosi"
+            },
+            {
+                name: "4k Wallpapers",
+                url: "https://4kwallpapers.com/",
+                description: "Sfondi 4K",
+                category: "curiosi"
+            },
+            {
+                name: "AIXPLORIA",
+                url: "https://www.aixploria.com/",
+                description: "Raccolta di strumenti AI",
+                category: "AI"
+            },
+            {
+                name: "Amalgam Model Car Collection",
+                url: "https://www.amalgamcollection.com/",
+                description: "Modelli auto in scala",
+                category: "curiosi"
+            },
+            {
+                name: "A Soft Murmur",
+                url: "https://asoftmurmur.com/",
+                description: "Suoni ambientali rilassanti",
+                category: "curiosi"
+            },
+            {
+                name: "AutoData",
+                url: "https://www.auto-data.net/it/allbrands",
+                description: "Specifiche tecniche auto",
+                category: "utili"
+            },
+            {
+                name: "AutoDraw",
+                url: "https://www.autodraw.com/",
+                description: "Disegni migliorati con AI",
+                category: "AI"
+            },
+            {
+                name: "AutoScout24 - valutazione",
+                url: "https://www.autoscout24.it/valutazione-auto/",
+                description: "Valutazione auto usate",
+                category: "utili"
+            },
+            {
+                name: "AnyTools - Round Corners",
+                url: "https://anytools.pro/it/img/editor/corners",
+                description: "Arrotonda angoli immagine",
+                category: "utili"
+            },
+            {
+                name: "Beta HackChat",
+                url: "https://beta.hack.chat/",
+                description: "Versione alternativa di hack.chat",
+                category: "utili"
+            },
+            {
+                name: "BlackBox",
+                url: "https://www.blackbox.ai/",
+                description: "Chat AI e strumenti correlati",
+                category: "AI"
+            },
+            {
+                name: "BlackJack - demo casinò",
+                url: "https://www.blackjacksimulator.net/it/simulators/classic-blackjack/",
+                description: "Simulatore di blackjack",
+                category: "giochi"
+            },
+            {
+                name: "BugMeNot",
+                url: "https://bugmenot.com/",
+                description: "Condividi login pubblici",
+                category: "utili"
+            },
+            {
+                name: "CarCareKiosk",
+                url: "https://www.carcarekiosk.com/",
+                description: "Guida manutenzione auto",
+                category: "utili"
+            },
+            {
+                name: "CarSized",
+                url: "https://carsized.com/it/",
+                description: "Confronto dimensioni auto",
+                category: "utili"
+            },
+            {
+                name: "ClipDrop",
+                url: "https://clipdrop.co/",
+                description: "Strumenti AI per immagini",
+                category: "AI"
+            },
+            {
+                name: "Convertio",
+                url: "https://convertio.co/it/",
+                description: "Convertitore di file online",
+                category: "utili"
+            },
+            {
+                name: "Coolors",
+                url: "https://coolors.co/",
+                description: "Generatore di palette colore",
+                category: "utili"
+            },
+            {
+                name: "CyberMap (Kaspersky)",
+                url: "https://cybermap.kaspersky.com/it",
+                description: "Mappa degli attacchi informatici",
+                category: "utili"
+            },
+            {
+                name: "DeepAI",
+                url: "https://deepai.org/",
+                description: "Generatori AI e API",
+                category: "AI"
+            },
+            {
+                name: "DeepSeek",
+                url: "https://deepseek.com/",
+                description: "Chat AI e assistenti",
+                category: "AI"
+            },
+            {
+                name: "Diffusion Studio",
+                url: "https://diffusion.studio/",
+                description: "Editor e generatori AI",
+                category: "AI"
+            },
+            {
+                name: "ElevenLabs",
+                url: "https://elevenlabs.io/",
+                description: "Text-to-speech avanzato",
+                category: "AI"
+            },
+            {
+                name: "EmailNator",
+                url: "https://www.emailnator.com/",
+                description: "Servizio di email temporanee",
+                category: "utili"
+            },
+            {
+                name: "Emoji Kitchen",
+                url: "https://www.google.it/search?q=emoji+kitchen/",
+                description: "Crea emoji fondendo due emoji",
+                category: "curiosi"
+            },
+            {
+                name: "Enhancor",
+                url: "https://www.enhancor.ai/",
+                description: "Migliora immagini generate da AI",
+                category: "AI"
+            },
+            {
+                name: "Euro NCAP",
+                url: "https://www.euroncap.com/en",
+                description: "Valutazioni sicurezza veicoli",
+                category: "utili"
+            },
+            {
+                name: "Explore Livecams",
+                url: "https://explore.org/livecams/",
+                description: "Livecams dal mondo",
+                category: "curiosi"
+            },
+            {
+                name: "Experiments with Google",
+                url: "https://experiments.withgoogle.com/experiments?sort=newest/",
+                description: "Collezione di esperimenti web",
+                category: "curiosi"
+            },
+            {
+                name: "FakeFace",
+                url: "https://fakeface.io/",
+                description: "Face swap e strumenti video",
+                category: "AI"
+            },
+            {
+                name: "FakeUpdate",
+                url: "https://updatefaker.com/",
+                category: "curiosi",
+                description: "Simula aggiornamenti falsi"
+            },
+            {
+                name: "FakeYou (TTS)",
+                url: "https://fakeyou.com/tts/",
+                description: "Clona voci con TTS",
+                category: "AI"
+            },
+            {
+                name: "Flagle",
+                url: "https://flagle-game.com/",
+                description: "Indovina le bandiere",
+                category: "giochi"
+            },
+            {
+                name: "Flightradar24",
+                url: "https://flightradar24.com/",
+                description: "Radar aereo live",
+                category: "utili"
+            },
+            {
+                name: "Framer",
+                url: "https://www.framer.com/",
+                description: "Crea siti senza codifica",
+                category: "utili"
+            },
+            {
+                name: "FutureMe",
+                url: "https://www.futureme.org/",
+                description: "Invia email al te del futuro",
+                category: "curiosi"
+            },
+            {
+                name: "GalaxyAI",
+                url: "https://galaxy.ai/",
+                description: "Strumenti AI",
+                category: "AI"
+            },
+            {
+                name: "GenType",
+                url: "https://labs.google/gentype",
+                description: "Scrivere con immagini AI",
+                category: "AI"
+            },
+            {
+                name: "GeoFS",
+                url: "https://www.geo-fs.com/",
+                description: "Simulatore di volo online",
+                category: "curiosi"
+            },
+            {
+                name: "GeoGreeting",
+                url: "http://geogreeting.com/main.html",
+                description: "Scrivi con le case su mappa",
+                category: "curiosi"
+            },
+            {
+                name: "GeoSpy",
+                url: "https://app.geospy.ai/",
+                description: "Trova luoghi da immagini",
+                category: "AI"
+            },
+            {
+                name: "Google Labs FX",
+                url: "https://labs.google/fx/it",
+                description: "Laboratorio AI Google",
+                category: "AI"
+            },
+            {
+                name: "Grabify",
+                url: "https://grabify.link/",
+                description: "Servizio per collegamenti traccianti (uso attento)",
+                category: "utili"
+            },
+            {
+                name: "Hack.chat",
+                url: "https://hack.chat/",
+                description: "Chat anonima temporanea",
+                category: "utili"
+            },
+            {
+                name: "Have I Been Pwned - Email",
+                url: "https://haveibeenpwned.com/",
+                description: "Controlla se la tua email è compromessa",
+                category: "utili"
+            },
+            {
+                name: "Have I Been Pwned - Passwords",
+                url: "https://haveibeenpwned.com/Passwords/",
+                description: "Controlla se una password è stata compromessa",
+                category: "utili"
+            },
+            {
+                name: "Higher Lower Game",
+                url: "https://www.higherlowergame.com/",
+                description: "Gioco: confronta ricerche Google",
+                category: "giochi"
+            },
+            {
+                name: "Higher or Lower (IT)",
+                url: "https://it.higherorlowergame.com/",
+                description: "Cosa viene cercato di più su Google?",
+                category: "giochi"
+            },
+            {
+                name: "How Secure Is My Password",
+                url: "https://www.security.org/how-secure-is-my-password",
+                description: "Valutazione livello sicurezza password",
+                category: "utili"
+            },
+            {
+                name: "HuggingFace Spaces",
+                url: "https://huggingface.co/spaces",
+                description: "Tool AI creati dalla community",
+                category: "AI"
+            },
+            {
+                name: "HumanBenchmark",
+                url: "https://humanbenchmark.com/",
+                description: "Test delle tue abilità cognitive",
+                category: "utili"
+            },
+            {
+                name: "Human or Not (tools)",
+                url: "https://www.humanornot.co/",
+                description: "Raccolta di tool per distinguere AI",
+                category: "AI"
+            },
+            {
+                name: "HumanOrNot?",
+                url: "https://www.humanornot.ai/",
+                description: "Determina se un testo è umano o AI",
+                category: "AI"
+            },
+            {
+                name: "HumanOrNot? (alt)",
+                url: "https://humanornot.so/",
+                description: "Strumento per distinguere umano/AI",
+                category: "AI"
+            },
+            {
+                name: "Iceberger",
+                url: "https://joshdata.me/iceberger.html",
+                description: "Disegna un iceberg e osserva il comportamento",
+                category: "curiosi"
+            },
+            {
+                name: "iFixit",
+                url: "https://it.ifixit.com/",
+                description: "Manuali per riparazioni fai-da-te",
+                category: "utili"
+            },
+            {
+                name: "ILoveImg",
+                url: "https://www.iloveimg.com/it/",
+                description: "Editor immagini online",
+                category: "utili"
+            },
+            {
+                name: "Img2Go",
+                url: "https://www.img2go.com/it/",
+                description: "Editor e conversione immagini",
+                category: "utili"
+            },
+            {
+                name: "ImgTools - Round Corners",
+                url: "https://it.imgtools.co/round-corners-image",
+                description: "Arrotonda angoli immagine",
+                category: "utili"
+            },
+            {
+                name: "IPLogger (it)",
+                url: "https://iplogger.org/it/",
+                description: "Servizio per tracciare IP (uso attento)",
+                category: "utili"
+            },
+            {
+                name: "Kaspersky Password Checker",
+                url: "https://password.kaspersky.com/it/",
+                description: "Verifica la sicurezza delle password",
+                category: "utili"
+            },
+            {
+                name: "Keepa",
+                url: "https://keepa.com/",
+                description: "Storico prezzi Amazon",
+                category: "utili"
+            },
+            {
+                name: "KoalaToTheMax",
+                url: "https://www.koalastothemax.com/",
+                description: "Immagine composta da puntini",
+                category: "curiosi"
+            },
+            {
+                name: "Krea",
+                url: "https://www.krea.ai/home/",
+                description: "Generatore di immagini AI",
+                category: "AI"
+            },
+            {
+                name: "Lockdown Game",
+                url: "https://lockdown-game.com/",
+                description: "Simulazione interattiva del lockdown",
+                category: "giochi"
+            },
+            {
+                name: "Lovable",
+                url: "https://lovable.dev/",
+                description: "Crea web app con AI",
+                category: "AI"
+            },
+            {
+                name: "Magic Patterns",
+                url: "https://www.magicpatterns.com/",
+                description: "Genera pattern e UI",
+                category: "utili"
+            },
+            {
+                name: "Mappa Cognomi Italiani",
+                url: "https://www.mappadeicognomi.it/",
+                description: "Mappa cognomi italiani",
+                category: "curiosi"
+            },
+            {
+                name: "Memory Toys",
+                url: "https://memory.toys/",
+                description: "Giochi per allenare la memoria",
+                category: "giochi"
+            },
+            {
+                name: "Minecraft Seed Map",
+                url: "https://mcseedmap.net/",
+                description: "Mappa seed per Minecraft",
+                category: "curiosi"
+            },
+            {
+                name: "Mp3 Convert - YouTube to MP3",
+                url: "https://mp3-convert.org/youtube-to-mp3-converterss/",
+                description: "Convertitore YouTube a MP3",
+                category: "utili"
+            },
+            {
+                name: "NEAL.FUN",
+                url: "https://neal.fun/",
+                description: "Collezione di esperimenti e giochi",
+                category: "curiosi"
+            },
+            {
+                name: "Noiys",
+                url: "https://www.noiys.com/",
+                description: "Pubblica messaggi anonimi per 24h",
+                category: "curiosi"
+            },
+            {
+                name: "NotablePeople",
+                url: "https://tjukanovt.github.io/notable-people",
+                description: "Database persone famose",
+                category: "curiosi"
+            },
+            {
+                name: "NordPass Password Strength",
+                url: "https://nordpass.com/it/secure-password",
+                description: "Check robustezza password",
+                category: "utili"
+            },
+            {
+                name: "OpenFront",
+                url: "https://openfront.io/",
+                description: "Esperimenti web curiosi",
+                category: "curiosi"
+            },
+            {
+                name: "Orteil - giochi vari",
+                url: "https://orteil.dashnet.org/",
+                description: "Raccolta di giochi web",
+                category: "giochi"
+            },
+            {
+                name: "OutHorse Your Email",
+                url: "https://www.visiticeland.com/outhorse-your-email/",
+                description: "Servizio divertente per risposte email",
+                category: "curiosi"
+            },
+            {
+                name: "Parcels",
+                url: "https://parcelsapp.com/it/",
+                description: "Tracciamento pacchi",
+                category: "utili"
+            },
+            {
+                name: "Patatap",
+                url: "https://www.patatap.com/",
+                description: "Crea musica con la tastiera",
+                category: "curiosi"
+            },
+            {
+                name: "PDF24Tools",
+                url: "https://tools.pdf24.org/it/tutti-gli-strumenti/",
+                description: "Strumenti PDF online",
+                category: "utili"
+            },
+            {
+                name: "Picarta",
+                url: "https://picarta.ai/",
+                description: "Trova luoghi da immagini",
+                category: "AI"
+            },
+            {
+                name: "PimEyes",
+                url: "https://pimeyes.com/en",
+                description: "Ricerca volti sul web",
+                category: "utili"
+            },
+            {
+                name: "PixelCut",
+                url: "https://www.pixelcut.ai/it",
+                description: "Strumenti AI per immagini",
+                category: "AI"
+            },
+            {
+                name: "Plink",
+                url: "https://plink.in/",
+                description: "Strumento per creare musica",
+                category: "curiosi"
+            },
+            {
+                name: "PrezziBenzina",
+                url: "https://www.prezzibenzina.it/regioni/lombardia/",
+                description: "Prezzi carburante aggiornati",
+                category: "utili"
+            },
+            {
+                name: "QR-Code Monkey",
+                url: "https://www.qrcode-monkey.com/it/",
+                description: "Generatore di QR code",
+                category: "utili"
+            },
+            {
+                name: "QuickDraw",
+                url: "https://quickdraw.withgoogle.com/",
+                description: "L'AI indovina i tuoi disegni",
+                category: "AI"
+            },
+            {
+                name: "Radio Garden",
+                url: "https://radio.garden/",
+                description: "Ascolta radio da tutto il mondo",
+                category: "curiosi"
+            },
+            {
+                name: "Random.org",
+                url: "https://www.random.org/",
+                description: "Servizi per numeri casuali e tool",
+                category: "utili"
+            },
+            {
+                name: "Rave.dj",
+                url: "https://rave.dj/",
+                description: "Crea mashup musicali",
+                category: "curiosi"
+            },
+            {
+                name: "Remove.Photos",
+                url: "https://remove.photos/",
+                description: "Strumenti per rimuovere background",
+                category: "AI"
+            },
+            {
+                name: "remove.bg",
+                url: "https://www.remove.bg/it/",
+                description: "Rimuovi sfondo dalle immagini",
+                category: "utili"
+            },
+            {
+                name: "RemoveBG (alt)",
+                url: "https://removebg.net/it",
+                description: "Rimuovi sfondo dalle immagini",
+                category: "utili"
+            },
+            {
+                name: "RenderStuff 360 Viewer",
+                url: "https://renderstuff.com/tools/360-panorama-web-viewer/",
+                description: "Visualizzatore 360°",
+                category: "utili"
+            },
+            {
+                name: "Rerace (F1 streaming)",
+                url: "https://www.rerace.io/",
+                description: "Streaming eventi sportivi",
+                category: "curiosi"
+            },
+            {
+                name: "Richup.io",
+                url: "https://richup.io/",
+                description: "Monopoly online",
+                category: "giochi"
+            },
+            {
+                name: "Screenshot to Code",
+                url: "https://ssc.webpilot.cc/",
+                description: "Genera HTML da screenshot",
+                category: "utili"
+            },
+            {
+                name: "Shodan",
+                url: "https://shodan.io/",
+                description: "Motore di ricerca per dispositivi connessi",
+                category: "utili"
+            },
+            {
+                name: "Smorfia del lotto",
+                url: "https://lotto-italia.it/lotto/smorfia",
+                description: "Interpretazione numeri per il lotto",
+                category: "curiosi"
+            },
+            {
+                name: "Speechma",
+                url: "https://speechma.com/",
+                description: "Genera audio da testo",
+                category: "AI"
+            },
+            {
+                name: "SportsOnline - streaming",
+                url: "https://sportsonline.gl/prog.txt/",
+                description: "Lista streaming sport (variazione di qualità)",
+                category: "curiosi"
+            },
+            {
+                name: "Start My Car",
+                url: "https://www.startmycar.com/",
+                description: "Community per problemi auto",
+                category: "utili"
+            },
+            {
+                name: "StreamingCommunity (Google search)",
+                url: "https://www.google.com/search?q=streaming+community",
+                description: "Ricerca per streaming film e serie",
+                category: "curiosi"
+            },
+            {
+                name: "TMail",
+                url: "https://temp-maill.org/",
+                description: "Email temporanea alternativa",
+                category: "utili"
+            },
+            {
+                name: "TempMail",
+                url: "https://temp-mail.org/it/",
+                description: "Email temporanea",
+                category: "utili"
+            },
+	    {
+                name: "TempMail 10 minute",
+                url: "https://temp-mail.org/it/10minutemail",
+                description: "Email temporanea per 10 minuti",
+                category: "utili"
+            },
+            {
+                name: "TempNumber (Veepn)",
+                url: "https://veepn.com/online-sms/",
+                description: "Numero di telefono temporaneo",
+                category: "utili"
+            },
+            {
+                name: "Test QI Mensa",
+                url: "https://test.mensa.no/Home/Test/it/",
+                description: "Test del QI (Mensa Norway)",
+                category: "utili"
+            },
+            {
+                name: "Tests (IDRlabs)",
+                url: "https://www.idrlabs.com/tests.php?loc=it",
+                description: "Varie tipologie di test psicologici",
+                category: "utili"
+            },
+            {
+                name: "The Boat",
+                url: "https://www.sbs.com.au/theboat/",
+                description: "Racconto interattivo multimediale",
+                category: "curiosi"
+            },
+            {
+                name: "The Trolley Problem",
+                url: "https://www.stevebromley.com/trolley/trolley.html",
+                description: "Simulazione del problema etico",
+                category: "curiosi"
+            },
+            {
+                name: "The True Size Of ...",
+                url: "https://www.thetruesize.com/",
+                description: "Confronta dimensioni paesi",
+                category: "curiosi"
+            },
+            {
+                name: "The Useless Web",
+                url: "https://theuselessweb.com/",
+                description: "Portale di siti inutili ma divertenti",
+                category: "curiosi"
+            },
+            {
+                name: "The World's Highest Website",
+                url: "https://worlds-highest-website.com/",
+                description: "Sito web più in alto (funny)",
+                category: "curiosi"
+            },
+            {
+                name: "Thisissand",
+                url: "https://thisissand.com/",
+                description: "Crea opere con sabbia colorata",
+                category: "curiosi"
+            },
+            {
+                name: "Tiii",
+                url: "https://tiii.me/",
+                description: "Calcola il tempo per vedere una serie completa",
+                category: "curiosi"
+            },
+            {
+                name: "Trolley Problem Game",
+                url: "https://trolleyproblem.io/",
+                description: "Gioco sul dilemma del carrello",
+                category: "curiosi"
+            },
+            {
+                name: "Turn Your Name Into a Face",
+                url: "https://turnyournameintoaface.com/",
+                description: "Trasforma il tuo nome in un volto",
+                category: "curiosi"
+            },
+            {
+                name: "Vectorizer",
+                url: "https://it.vectorizer.ai/",
+                description: "Vettorizza immagini online",
+                category: "utili"
+            },
+            {
+                name: "VectorMagic",
+                url: "https://it.vectormagic.com/",
+                description: "Strumento per vettorizzazione",
+                category: "utili"
+            },
+            {
+                name: "Virtual Vacation",
+                url: "https://virtualvacation.us/",
+                description: "Viaggia virtualmente da casa",
+                category: "curiosi"
+            },
+            {
+                name: "VirusTotal",
+                url: "https://www.virustotal.com/gui/home/upload/",
+                description: "Scansiona file e URL per malware",
+                category: "utili"
+            },
+            {
+                name: "VisualPing",
+                url: "https://visualping.io",
+                description: "Traccia visivamente modifiche a pagine web",
+                category: "utili"
+            },
+            {
+                name: "WayBack Machine",
+                url: "https://web.archive.org/",
+                description: "Archivio storico dei siti web",
+                category: "utili"
+            },
+            {
+                name: "Which Face is Real",
+                url: "https://www.whichfaceisreal.com/",
+                description: "Confronto tra volti reali e generati",
+                category: "AI"
+            },
+            {
+                name: "WolframAlpha",
+                url: "https://www.wolframalpha.com/",
+                description: "Motore computazionale di conoscenza",
+                category: "utili"
+            },
+            {
+                name: "Worldometers",
+                url: "https://www.worldometers.info/",
+                description: "Statistiche mondiali in tempo reale",
+                category: "utili"
+            },
+            {
+                name: "ZZZ Code AI",
+                url: "https://zzzcode.ai/",
+                description: "Tool AI per coding",
+                category: "AI"
+            }
         ];
 
         let currentFilter = 'all';
@@ -141,9 +924,47 @@
             'AI': '⚡ AI'
         };
 
-        // Aggiorna le statistiche
+        // Statistiche dettagliate
         function updateStats() {
-            statsElement.textContent = `Totale siti: ${sitesData.length}`;
+            // 1. Conteggio totale
+            const totalSites = sitesData.length;
+
+            // 2. Conteggio per categoria
+            const categoryCounts = sitesData.reduce((counts, site) => {
+                const category = site.category;
+                counts[category] = (counts[category] || 0) + 1;
+                return counts;
+            }, {});
+
+            // 3. Creazione del contenuto HTML per le statistiche
+            let statsHtml = `
+                <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 5px;">
+                    Totale siti: ${totalSites}
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    Suddivisi per Categoria:
+                </div>
+                <ul style="list-style: none; padding: 0; margin-top: 5px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+            `;
+
+            // Costruzione della lista delle categorie
+            for (const category in categoryLabels) {
+                const count = categoryCounts[category] || 0;
+                const label = categoryLabels[category];
+                
+                if (count > 0) {
+                    statsHtml += `
+                        <li style="display: inline-flex; align-items: center; background-color: #495057; padding: 4px 10px; border-radius: 6px;">
+                            ${label}: <strong>${count}</strong>
+                        </li>
+                    `;
+                }
+            }
+
+            statsHtml += `</ul>`;
+
+            // Aggiornamento dell'elemento HTML con il nuovo contenuto
+            statsElement.innerHTML = statsHtml;
         }
 
         // Evidenzia il testo trovato nella ricerca
@@ -153,18 +974,24 @@
             return text.replace(regex, '<span style="background-color: #ffb742; color: #212529; border-radius: 4px; padding: 1px 3px;">$1</span>');
         }
 
-        // Logica di ordinamento
+        // Logica di ordinamento (Corretta per A-Z, Z-A, Categoria)
         function getSortedSites(sites) {
             let sorted = [...sites];
+            
             if (currentSort === 'name') {
+                // Ordine A-Z
                 sorted.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (currentSort === 'reverse') {
+                // Ordine Z-A
+                sorted.sort((a, b) => b.name.localeCompare(a.name));
             } else if (currentSort === 'category') {
-                sorted.sort((a, b) => a.category.localeCompare(b.category));
-            } else if (currentSort === 'shuffle') {
-                for (let i = sorted.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
-                }
+                // Ordine per categoria (A-Z)
+                sorted.sort((a, b) => {
+                    if (a.category !== b.category) {
+                        return a.category.localeCompare(b.category);
+                    }
+                    return a.name.localeCompare(b.name);
+                });
             }
             return sorted;
         }
@@ -183,7 +1010,7 @@
             });
 
             // 2. Applicazione della vista (griglia o lista)
-            container.className = currentView === 'grid' ? 'sites-grid' : 'sites-list';
+            container.className = currentView === 'grid' ? 'sites-grid' : 'sites-list'; 
 
             if (filteredSites.length === 0) {
             container.innerHTML = `
@@ -191,8 +1018,7 @@
                 <div class="empty-state-icon">😕</div>
                 <div class="empty-state-text">Nessun sito trovato</div>
                 <div class="empty-state-sub">Prova a modificare i filtri o la ricerca</div>
-                </div>
-            `;
+                </div>`;
             return;
             }
 
@@ -203,8 +1029,6 @@
             container.innerHTML = sortedSites.map(site => {
             const displayName = site.name || site.title || '';
             const description = site.description || '';
-            // Non visualizziamo i tag per mantenere la pulizia del design aggiornato
-            // const tags = (site.tag || []).map(t => `<span class="site-tag">#${t}</span>`).join(' ');
             
             // Logica di rendering per Griglia e Lista
             if (currentView === 'grid') {
@@ -214,7 +1038,7 @@
                     <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
                     <a href="${site.url}" target="_blank" class="site-url">${highlightText(site.url.replace(/^https?:\/\//, ''), searchQuery)}</a>
                     <p class="site-description">${highlightText(description, searchQuery)}</p>
-                    <a href="${site.url}" target="_blank" class="visit-btn">Visita il sito →</a>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita il sito</a>
                 </div>
                 `;
             } else if (currentView === 'list') {
@@ -237,12 +1061,6 @@
                 currentFilter = btn.dataset.filter;
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                if (currentSort === 'shuffle') {
-                    // Rimescola per dare un senso al filtro casuale
-                    currentSort = 'name'; 
-                    sortBtns.forEach(b => b.classList.remove('active'));
-                    document.querySelector('.sort-btn[data-sort="name"]').classList.add('active');
-                }
                 renderSites();
             });
         });
@@ -266,7 +1084,6 @@
                 renderSites();
             });
         });
-
 
         // Gestione evento ricerca
         searchInput.addEventListener('input', () => {
