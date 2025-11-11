@@ -9,7 +9,7 @@
 }
 
 body{
-    min-height: 100vh;
+    height: auto;
     background: #212529;
 }
 
@@ -740,4 +740,5 @@ footer .copyright-col p{
     footer .start h3{
         font-size: 18px;
     }
+
 }
