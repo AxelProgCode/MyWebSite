@@ -9,7 +9,7 @@
 }
 
 body{
-    height: auto;
+    min-height: 100vh;
     background: #212529;
 }
 
@@ -66,7 +66,7 @@ body{
 
 /* --- Main --- */
 .main{
-    height: 100vh;
+    height: auto;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -740,5 +740,4 @@ footer .copyright-col p{
     footer .start h3{
         font-size: 18px;
     }
-
 }
