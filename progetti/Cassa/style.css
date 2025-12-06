@@ -1,0 +1,114 @@
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    background-color: #2c3e50; 
+    margin: 0; 
+    color: #333;
+}
+.interface { 
+    display: flex; 
+    width: 95%; 
+    max-width: 1200px; 
+    height: 85vh; 
+    background-color: white; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
+}
+
+.panel-left { 
+    flex: 2; 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    background-color: #f9f9f9;
+}
+.panel-right { 
+    flex: 1; 
+    background-color: #ecf0f1; 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column;
+}
+
+.items-list { 
+    flex-grow: 1; 
+    overflow-y: auto; 
+    border-bottom: 1px solid #ddd; 
+    margin-bottom: 15px;
+}
+.item-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 10px 0; 
+    border-bottom: 1px solid #eee; 
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.item-row:hover { background-color: #e0e0e0; }
+.item-row.active { background-color: #bdc3c7; }
+
+.item-row > * { padding: 0 5px; }
+.item-name { font-weight: bold; flex-grow: 1; }
+.item-qty { width: 40px; text-align: center; }
+.item-price { width: 70px; text-align: right; font-weight: bold; }
+.item-remove { background-color: #e74c3c; color: white; border: none; padding: 3px 8px; cursor: pointer; border-radius: 3px; }
+
+.total-area { 
+    padding-top: 15px; 
+    font-size: 1.8em; 
+    text-align: right; 
+    border-top: 2px solid #333;
+    margin-bottom: 15px;
+}
+
+.category-buttons { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px; 
+    margin-bottom: 20px; 
+}
+.cat-btn { 
+    padding: 15px; 
+    background-color: #34495e; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+.cat-btn:hover { background-color: #2c3e50; }
+.cat-btn.active-category { background-color: #1abc9c; }
+
+
+.product-buttons { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px; 
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.prod-btn { 
+    padding: 20px; 
+    background-color: #1abc9c; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+.prod-btn:hover { background-color: #16a085; }
+
+.pay-btn { 
+    background-color: #2ecc71; 
+    color: white; 
+    border: none; 
+    font-size: 1.3em;
+}

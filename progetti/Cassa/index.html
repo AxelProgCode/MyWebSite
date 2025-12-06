@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Cassa</title>
+</head>
+<body>
+    <div class="interface">
+
+        <div class="panel-left">
+            <div class="category-buttons" id="categoryButtons">
+                <!-- I bottoni categoria verranno iniettati qui da JS -->
+            </div>
+            <div class="product-buttons" id="productButtons">
+                <!-- I bottoni prodotto verranno iniettati qui da JS -->
+            </div>
+        </div>
+
+        <div class="panel-right">
+            <h2>Ordine</h2>
+            <div class="items-list" id="itemsList">
+                <!-- Le righe degli articoli verranno aggiunte qui -->
+            </div>
+            <div class="total-area" id="totalDisplay">
+                Totale: € 0,00
+            </div>
+            <button class="num-btn span-3 pay-btn" onclick="checkout()">Paga</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Integrato con logica gestionale e categorie
+        let currentOrder = [];
+        let numpadValue = '';
+        let activeRowElement = null;
+        let activeCategory = 'Tutto'; // Categoria iniziale
+
+        const itemsList = document.getElementById('itemsList');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const productButtonsArea = document.getElementById('productButtons');
+        const categoryButtonsArea = document.getElementById('categoryButtons');
+
+        const products = [
+            { id: 1, name: 'Caffè Espresso', price: 1.50, category: 'Bevande' },
+            { id: 2, name: 'Cappuccino', price: 2.20, category: 'Bevande' },
+            { id: 3, name: 'Cornetto Semplice', price: 1.30, category: 'Dolci' },
+            { id: 4, name: 'Succo di Frutta', price: 3.00, category: 'Bevande' },
+            { id: 5, name: 'Panino Prosciutto', price: 5.50, category: 'Cibo' },
+            { id: 6, name: 'Insalata Mista', price: 7.00, category: 'Cibo' },
+            { id: 7, name: 'Torta della casa', price: 4.50, category: 'Dolci' },
+            { id: 8, name: 'Calice Vino', price: 5.00, category: 'Bevande' },
+            { id: 9, name: 'Acqua Minerale', price: 1.00, category: 'Bevande' },
+            { id: 10, name: 'Birra Media', price: 4.00, category: 'Bevande' },
+            { id: 11, name: 'The Caldo', price: 2.50, category: 'Bevande' },
+            { id: 12, name: 'Toast Farcito', price: 4.00, category: 'Cibo' },
+        ];
+
+        // --- Gestione Categorie ---
+
+        function renderCategories() {
+            const categories = ['Tutto', ...new Set(products.map(p => p.category))];
+            categoryButtonsArea.innerHTML = '';
+
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'cat-btn';
+                button.textContent = category;
+                button.onclick = () => filterProductsByCategory(category);
+                if (category === activeCategory) {
+                    button.classList.add('active-category');
+                }
+                categoryButtonsArea.appendChild(button);
+            });
+        }
+
+        function filterProductsByCategory(categoryName) {
+            activeCategory = categoryName;
+            renderCategories(); // Aggiorna lo stato attivo dei bottoni categoria
+            renderProducts(); // Renderizza solo i prodotti filtrati
+        }
+        
+        // --- Gestione Prodotti ---
+
+        // Funzione per popolare i bottoni dei prodotti (ora filtrata)
+        function renderProducts() {
+            productButtonsArea.innerHTML = '';
+            const filteredProducts = activeCategory === 'Tutto' 
+                ? products 
+                : products.filter(p => p.category === activeCategory);
+
+            filteredProducts.forEach(product => {
+                const button = document.createElement('button');
+                button.className = 'prod-btn';
+                button.textContent = `${product.name} (€${product.price.toFixed(2).replace('.', ',')})`;
+                button.onclick = () => addItem(product, numpadValue || 1);
+                productButtonsArea.appendChild(button);
+            });
+        }
+
+        // --- Gestione Ordine e Logica ---
+
+        function addItem(product, quantity = 1) {
+            quantity = parseFloat(quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert("Inserisci una quantità valida.");
+                clearNumpad();
+                return;
+            }
+
+            const existingItemIndex = currentOrder.findIndex(item => item.id === product.id);
+
+            if (existingItemIndex > -1) {
+                currentOrder[existingItemIndex].qty += quantity;
+            } else {
+                currentOrder.push({ ...product, qty: quantity });
+            }
+            renderOrderList();
+        }
+
+        function removeItem(productId) {
+            currentOrder = currentOrder.filter(item => item.id !== productId);
+            renderOrderList();
+        }
+
+        function updateItemQuantity(productId, change) {
+            const item = currentOrder.find(item => item.id === productId);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    removeItem(productId);
+                } else {
+                    renderOrderList();
+                }
+            }
+        }
+        
+        function selectRow(element, productId) {
+            if (activeRowElement) {
+                activeRowElement.classList.remove('active');
+            }
+            activeRowElement = element;
+            element.classList.add('active');
+        }
+
+        function renderOrderList() {
+            itemsList.innerHTML = '';
+            let total = 0;
+
+            currentOrder.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.onclick = () => selectRow(itemRow, item.id); 
+
+                itemRow.innerHTML = `
+                    <span class="item-name">${item.name}</span>
+                    <button onclick="updateItemQuantity(${item.id}, -1)">-</button>
+                    <span class="item-qty">${item.qty}</span>
+                    <button onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                    <span class="item-price">€ ${itemTotal.toFixed(2).replace('.', ',')}</span>
+                    <button class="item-remove" onclick="removeItem(${item.id})">X</button>
+                `;
+                itemsList.appendChild(itemRow);
+            });
+
+            totalDisplay.textContent = 'Totale: € ' + total.toFixed(2).replace('.', ',');
+        }
+
+        function checkout() {
+            if (currentOrder.length > 0) {
+                const total = currentOrder.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                alert(`Conto di € ${total.toFixed(2).replace('.', ',')} pagato! Grazie!`);
+                
+                currentOrder = [];
+                renderOrderList();
+                clearNumpad();
+                if (activeRowElement) activeRowElement.classList.remove('active');
+            } else {
+                alert("L'ordine è vuoto.");
+            }
+        }
+
+        // Inizializza l'interfaccia all'avvio
+        renderCategories();
+        renderProducts();
+        renderOrderList(); 
+    </script>
+</body>
+</html>
