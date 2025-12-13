@@ -8,57 +8,93 @@
 </head>
 <body>
     <div class="interface">
-
+        <!-- Pannello sinistro: Prodotti -->
         <div class="panel-left">
+            <!-- Header mobile -->
+            <div class="mobile-header">
+                <h2>Prodotti</h2>
+                <div class="total-mobile">
+                    <span id="mobileTotal">€ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Categorie -->
             <div class="category-buttons" id="categoryButtons">
                 <!-- I bottoni categoria verranno iniettati qui da JS -->
             </div>
+
+            <!-- Prodotti -->
             <div class="product-buttons" id="productButtons">
                 <!-- I bottoni prodotto verranno iniettati qui da JS -->
             </div>
         </div>
 
-        <div class="panel-right">
+        <!-- Pannello destro: Ordine -->
+        <div class="panel-right order-section" id="orderSection">
             <h2>Ordine</h2>
+            
+            <!-- Lista articoli -->
             <div class="items-list" id="itemsList">
                 <!-- Le righe degli articoli verranno aggiunte qui -->
             </div>
+
+            <!-- Totale -->
             <div class="total-area" id="totalDisplay">
                 Totale: € 0,00
             </div>
-            <button class="num-btn span-3 pay-btn" onclick="checkout()">Paga</button>
+
+            <!-- Bottoni azione -->
+            <div class="action-buttons">
+                <button class="clear-btn" onclick="clearOrder()">Cancella</button>
+                <button class="pay-btn" onclick="checkout()">Paga Ordine</button>
+            </div>
         </div>
     </div>
 
     <script>
         // JavaScript Integrato con logica gestionale e categorie
         let currentOrder = [];
-        let numpadValue = '';
         let activeRowElement = null;
-        let activeCategory = 'Tutto'; // Categoria iniziale
+        let activeCategory = 'Tutto';
 
+        // Elementi DOM
         const itemsList = document.getElementById('itemsList');
         const totalDisplay = document.getElementById('totalDisplay');
         const productButtonsArea = document.getElementById('productButtons');
         const categoryButtonsArea = document.getElementById('categoryButtons');
+        const orderSection = document.getElementById('orderSection');
+        const mobileTotal = document.getElementById('mobileTotal');
+        const mobileTotalFooter = document.getElementById('mobileTotalFooter');
 
+        // Database prodotti
         const products = [
-            { id: 1, name: 'Caffè Espresso', price: 1.50, category: 'Bevande' },
-            { id: 2, name: 'Cappuccino', price: 2.20, category: 'Bevande' },
-            { id: 3, name: 'Cornetto Semplice', price: 1.30, category: 'Dolci' },
-            { id: 4, name: 'Succo di Frutta', price: 3.00, category: 'Bevande' },
-            { id: 5, name: 'Panino Prosciutto', price: 5.50, category: 'Cibo' },
-            { id: 6, name: 'Insalata Mista', price: 7.00, category: 'Cibo' },
-            { id: 7, name: 'Torta della casa', price: 4.50, category: 'Dolci' },
-            { id: 8, name: 'Calice Vino', price: 5.00, category: 'Bevande' },
-            { id: 9, name: 'Acqua Minerale', price: 1.00, category: 'Bevande' },
-            { id: 10, name: 'Birra Media', price: 4.00, category: 'Bevande' },
-            { id: 11, name: 'The Caldo', price: 2.50, category: 'Bevande' },
-            { id: 12, name: 'Toast Farcito', price: 4.00, category: 'Cibo' },
+            // Prodotti Bar
+            { id: 1, name: 'Caffè', price: 1.20, category: 'Bar', icon: '☕' },
+            { id: 2, name: 'Cappuccino', price: 2.00, category: 'Bar', icon: '🥛' },
+            { id: 3, name: 'Brioches', price: 1.50, category: 'Bar', icon: '🥐' },
+            { id: 8, name: 'Caffè Decaffeinato', price: 1.30, category: 'Bar', icon: '☕' },
+            { id: 9, name: 'Latte Macchiato', price: 2.20, category: 'Bar', icon: '🥛' },
+            { id: 10, name: 'Spremuta d\'Arancia', price: 3.50, category: 'Bar', icon: '🍊' },
+
+            // Prodotti Cibo (Colazione/Pranzo/Dolci)
+            { id: 4, name: 'French Toast', price: 5.50, category: 'Cibo', icon: '🍞' },
+            { id: 5, name: 'Torta della casa', price: 4.50, category: 'Cibo', icon: '🍰' },
+            { id: 11, name: 'Panino Prosciutto e Formaggio', price: 6.00, category: 'Cibo', icon: '🥪' },
+            { id: 12, name: 'Insalata Caesar', price: 8.50, category: 'Cibo', icon: '🥗' },
+            { id: 13, name: 'Piatto Vegano del Giorno', price: 9.50, category: 'Cibo', icon: '🥦' },
+            { id: 14, name: 'Muffin al Cioccolato', price: 2.50, category: 'Cibo', icon: '🧁' },
+            { id: 15, name: 'Patatine Fritte', price: 3.00, category: 'Cibo', icon: '🍟' },
+
+            // Prodotti Bevande
+            { id: 6, name: 'Acqua Naturale 0.5L', price: 1.00, category: 'Bevande', icon: '💧' },
+            { id: 7, name: 'Birra Media chiara', price: 4.00, category: 'Bevande', icon: '🍺' },
+            { id: 16, name: 'Acqua Frizzante 0.5L', price: 1.00, category: 'Bevande', icon: '💧' },
+            { id: 17, name: 'Coca Cola 33cl', price: 2.50, category: 'Bevande', icon: '🥤' },
+            { id: 18, name: 'Calice di Vino Rosso', price: 4.50, category: 'Bevande', icon: '🍷' },
+            { id: 19, name: 'Succo di Frutta (Pera)', price: 2.80, category: 'Bevande', icon: '🧃' }
         ];
 
         // --- Gestione Categorie ---
-
         function renderCategories() {
             const categories = ['Tutto', ...new Set(products.map(p => p.category))];
             categoryButtonsArea.innerHTML = '';
@@ -77,13 +113,11 @@
 
         function filterProductsByCategory(categoryName) {
             activeCategory = categoryName;
-            renderCategories(); // Aggiorna lo stato attivo dei bottoni categoria
-            renderProducts(); // Renderizza solo i prodotti filtrati
+            renderCategories();
+            renderProducts();
         }
-        
-        // --- Gestione Prodotti ---
 
-        // Funzione per popolare i bottoni dei prodotti (ora filtrata)
+        // --- Gestione Prodotti ---
         function renderProducts() {
             productButtonsArea.innerHTML = '';
             const filteredProducts = activeCategory === 'Tutto' 
@@ -93,22 +127,18 @@
             filteredProducts.forEach(product => {
                 const button = document.createElement('button');
                 button.className = 'prod-btn';
-                button.textContent = `${product.name} (€${product.price.toFixed(2).replace('.', ',')})`;
-                button.onclick = () => addItem(product, numpadValue || 1);
+                button.innerHTML = `
+                    <div class="product-icon">${product.icon || '🍴'}</div>
+                    <strong>${product.name}</strong>
+                    <small>€${product.price.toFixed(2).replace('.', ',')}</small>
+                `;
+                button.onclick = () => addItem(product);
                 productButtonsArea.appendChild(button);
             });
         }
 
-        // --- Gestione Ordine e Logica ---
-
+        // --- Gestione Ordine ---
         function addItem(product, quantity = 1) {
-            quantity = parseFloat(quantity);
-            if (isNaN(quantity) || quantity <= 0) {
-                alert("Inserisci una quantità valida.");
-                clearNumpad();
-                return;
-            }
-
             const existingItemIndex = currentOrder.findIndex(item => item.id === product.id);
 
             if (existingItemIndex > -1) {
@@ -116,6 +146,7 @@
             } else {
                 currentOrder.push({ ...product, qty: quantity });
             }
+            
             renderOrderList();
         }
 
@@ -135,7 +166,7 @@
                 }
             }
         }
-        
+
         function selectRow(element, productId) {
             if (activeRowElement) {
                 activeRowElement.classList.remove('active');
@@ -154,40 +185,64 @@
                 
                 const itemRow = document.createElement('div');
                 itemRow.className = 'item-row';
-                itemRow.onclick = () => selectRow(itemRow, item.id); 
+                itemRow.onclick = () => selectRow(itemRow, item.id);
 
                 itemRow.innerHTML = `
                     <span class="item-name">${item.name}</span>
-                    <button onclick="updateItemQuantity(${item.id}, -1)">-</button>
+                    <button onclick="event.stopPropagation(); updateItemQuantity(${item.id}, -1)">-</button>
                     <span class="item-qty">${item.qty}</span>
-                    <button onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                    <button onclick="event.stopPropagation(); updateItemQuantity(${item.id}, 1)">+</button>
                     <span class="item-price">€ ${itemTotal.toFixed(2).replace('.', ',')}</span>
-                    <button class="item-remove" onclick="removeItem(${item.id})">X</button>
+                    <button class="item-remove" onclick="event.stopPropagation(); removeItem(${item.id})">X</button>
                 `;
                 itemsList.appendChild(itemRow);
             });
 
-            totalDisplay.textContent = 'Totale: € ' + total.toFixed(2).replace('.', ',');
+            // Aggiorna tutti i totali
+            const formattedTotal = total.toFixed(2).replace('.', ',');
+            totalDisplay.textContent = 'Totale: € ' + formattedTotal;
+            mobileTotal.textContent = '€ ' + formattedTotal;
+            mobileTotalFooter.textContent = formattedTotal;
+        }
+
+        function clearOrder() {
+            if (currentOrder.length > 0) {
+                if (confirm('Vuoi cancellare l\'intero ordine?')) {
+                    currentOrder = [];
+                    renderOrderList();
+                    if (activeRowElement) {
+                        activeRowElement.classList.remove('active');
+                        activeRowElement = null;
+                    }
+                }
+            }
         }
 
         function checkout() {
             if (currentOrder.length > 0) {
                 const total = currentOrder.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                alert(`Conto di € ${total.toFixed(2).replace('.', ',')} pagato! Grazie!`);
+                alert(`Ordine pagato!\nTotale: € ${total.toFixed(2).replace('.', ',')}\nGrazie per l'acquisto!`);
                 
                 currentOrder = [];
                 renderOrderList();
-                clearNumpad();
-                if (activeRowElement) activeRowElement.classList.remove('active');
+                if (activeRowElement) {
+                    activeRowElement.classList.remove('active');
+                    activeRowElement = null;
+                }
             } else {
-                alert("L'ordine è vuoto.");
+                alert("L'ordine è vuoto. Aggiungi dei prodotti prima di pagare.");
             }
         }
 
-        // Inizializza l'interfaccia all'avvio
-        renderCategories();
-        renderProducts();
-        renderOrderList(); 
+        // Inizializzazione
+        function init() {
+            renderCategories();
+            renderProducts();
+            renderOrderList();
+        }
+
+        // Avvia l'applicazione
+        init();
     </script>
 </body>
 </html>

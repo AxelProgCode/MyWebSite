@@ -1,114 +1,419 @@
-body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    height: 100vh; 
-    background-color: #2c3e50; 
-    margin: 0; 
-    color: #333;
-}
-.interface { 
-    display: flex; 
-    width: 95%; 
-    max-width: 1200px; 
-    height: 85vh; 
-    background-color: white; 
-    border-radius: 10px; 
-    overflow: hidden; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
+/* Reset e stili base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.panel-left { 
-    flex: 2; 
-    padding: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    background-color: #f9f9f9;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2c3e50;
+    color: #333;
+    min-height: 100vh;
+    padding: 10px;
 }
-.panel-right { 
-    flex: 1; 
-    background-color: #ecf0f1; 
-    padding: 20px; 
-    display: flex; 
+
+/* Contenitore principale */
+.interface {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    min-height: 95vh;
+}
+
+/* Layout per schermi grandi */
+@media (min-width: 768px) {
+    .interface {
+        flex-direction: row;
+        height: 85vh;
+    }
+}
+
+/* Schermi piccoli: layout a colonna singola */
+@media (max-width: 767px) {
+    .interface {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .panel-left, .panel-right {
+        flex: none;
+        width: 100%;
+        height: auto;
+    }
+    
+    .order-section {
+        display: block !important; /* Forza la visualizzazione */
+    }
+}
+
+/* Pannelli */
+.panel-left {
+    flex: 3;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    overflow: hidden;
+}
+
+.panel-right {
+    flex: 2;
+    background-color: #ecf0f1;
+    padding: 15px;
+    display: flex;
     flex-direction: column;
 }
 
-.items-list { 
-    flex-grow: 1; 
-    overflow-y: auto; 
-    border-bottom: 1px solid #ddd; 
+@media (min-width: 768px) {
+    .panel-right {
+        border-left: 2px solid #ddd;
+    }
+}
+
+/* Header mobile - Sempre visibile */
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+@media (min-width: 768px) {
+    .mobile-header {
+        display: none;
+    }
+}
+
+/* Sezione ordine - Sempre visibile su schermi piccoli */
+.order-section h2 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 1.5em;
+}
+
+/* Lista articoli */
+.items-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 300px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    padding: 5px;
+}
+
+@media (min-width: 768px) {
+    .items-list {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 767px) {
+    .items-list {
+        max-height: 250px;
+    }
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.9em;
+}
+
+.item-row:hover {
+    background-color: #e0e0e0;
+}
+
+.item-row.active {
+    background-color: #bdc3c7;
+}
+
+.item-row > * {
+    padding: 0 3px;
+}
+
+.item-name {
+    font-weight: bold;
+    flex-grow: 1;
+    font-size: 0.95em;
+    word-break: break-word;
+}
+
+.item-qty {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.item-price {
+    min-width: 70px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+.item-remove {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 0.85em;
+    min-width: 30px;
+}
+
+/* Area totale */
+.total-area {
+    padding: 15px 0;
+    font-size: 1.5em;
+    text-align: right;
+    border-top: 2px solid #333;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+@media (max-width: 767px) {
+    .total-area {
+        font-size: 1.3em;
+    }
+}
+
+/* Categorie */
+.category-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
     margin-bottom: 15px;
 }
-.item-row { 
-    display: flex; 
-    justify-content: space-between; 
+
+.cat-btn {
+    padding: 12px 8px;
+    background-color: #34495e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cat-btn:hover {
+    background-color: #2c3e50;
+}
+
+.cat-btn.active-category {
+    background-color: #1abc9c;
+}
+
+/* Prodotti */
+.product-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 5px;
+    min-height: 300px;
+}
+
+@media (min-width: 1024px) {
+    .product-buttons {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .product-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        min-height: 250px;
+        max-height: 400px;
+    }
+}
+
+.prod-btn {
+    padding: 15px 10px;
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    text-align: center;
+    transition: background-color 0.2s;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 10px 0; 
-    border-bottom: 1px solid #eee; 
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.prod-btn:hover {
+    background-color: #16a085;
+}
+
+/* Stile per le icone dei prodotti */
+.product-icon {
+    font-size: 2em;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+/* Aggiorna il layout dei bottoni prodotto per contenere le icone */
+.prod-btn {
+    padding: 15px 10px;
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    text-align: center;
+    transition: all 0.2s;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.prod-btn:hover {
+    background-color: #16a085;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Aggiungi spazio per le icone */
+.prod-btn strong {
+    margin: 5px 0;
+    font-size: 0.95em;
+}
+
+.prod-btn small {
+    opacity: 0.9;
+    font-size: 0.9em;
+}
+
+/* Adatta per schermi piccoli */
+@media (max-width: 767px) {
+    .product-icon {
+        font-size: 1.8em;
+        margin-bottom: 6px;
+    }
+    
+    .prod-btn {
+        min-height: 90px;
+        padding: 12px 8px;
+    }
+}
+
+/* Per schermi molto piccoli */
+@media (max-width: 480px) {
+    .product-icon {
+        font-size: 1.6em;
+    }
+    
+    .prod-btn {
+        min-height: 85px;
+    }
+}
+
+/* Bottoni azione */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.pay-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-grow: 1;
+    transition: background-color 0.2s;
+}
+
+.pay-btn:hover {
+    background-color: #27ae60;
+}
+
+.clear-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.item-row:hover { background-color: #e0e0e0; }
-.item-row.active { background-color: #bdc3c7; }
 
-.item-row > * { padding: 0 5px; }
-.item-name { font-weight: bold; flex-grow: 1; }
-.item-qty { width: 40px; text-align: center; }
-.item-price { width: 70px; text-align: right; font-weight: bold; }
-.item-remove { background-color: #e74c3c; color: white; border: none; padding: 3px 8px; cursor: pointer; border-radius: 3px; }
-
-.total-area { 
-    padding-top: 15px; 
-    font-size: 1.8em; 
-    text-align: right; 
-    border-top: 2px solid #333;
-    margin-bottom: 15px;
+.clear-btn:hover {
+    background-color: #c0392b;
 }
 
-.category-buttons { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px; 
-    margin-bottom: 20px; 
+@media (max-width: 767px) {
+    .mobile-footer {
+        display: flex;
+        gap: 10px;
+    }
 }
-.cat-btn { 
-    padding: 15px; 
-    background-color: #34495e; 
-    color: white; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-size: 1em;
-    transition: background-color 0.2s;
-}
-.cat-btn:hover { background-color: #2c3e50; }
-.cat-btn.active-category { background-color: #1abc9c; }
 
-
-.product-buttons { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px; 
-    flex-grow: 1;
-    overflow-y: auto;
+/* Scrollbar personalizzata */
+::-webkit-scrollbar {
+    width: 8px;
 }
-.prod-btn { 
-    padding: 20px; 
-    background-color: #1abc9c; 
-    color: white; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-size: 1.1em;
-    text-align: center;
-    transition: background-color 0.2s;
-}
-.prod-btn:hover { background-color: #16a085; }
 
-.pay-btn { 
-    background-color: #2ecc71; 
-    color: white; 
-    border: none; 
-    font-size: 1.3em;
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Adatta l'altezza dei pannelli su schermi piccoli */
+@media (max-width: 767px) {
+    .panel-left {
+        height: 55vh;
+    }
+    
+    .panel-right {
+        height: 45vh;
+        border-top: 2px solid #ddd;
+    }
 }
