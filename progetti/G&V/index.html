@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="it" data-page="home">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LuxeScratch – Simulatore Gratta & Vinci</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════  TOP NAV  ═══════════════════════ -->
+<header class="topnav">
+  <a class="logo" href="#">LuxeScratch</a>
+
+  <nav class="nav-links">
+    <a href="#" class="nav-link active" data-nav="home">Home</a>
+    <a href="#" class="nav-link" data-nav="tickets">Tickets</a>
+    <a href="#" class="nav-link" data-nav="history">History</a>
+    <a href="#" class="nav-link" data-nav="statistics">Statistics</a>
+  </nav>
+
+  <div class="nav-right">
+    <div class="balance-pill">
+      <span class="balance-label">WALLET BALANCE</span>
+      <span class="balance-amount" id="nav-balance">€100.00</span>
+    </div>
+    <button class="btn-recharge" id="btn-recharge">Recharge</button>
+    <span class="icon-btn">🔔</span>
+    <span class="icon-btn">👤</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════  SIDEBAR  ═══════════════════════ -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="user-card">
+      <div class="user-avatar">⭐</div>
+      <div>
+        <div class="user-name">VIP Player</div>
+        <div class="user-level">Pro Level</div>
+      </div>
+    </div>
+
+    <nav class="side-nav">
+      <a href="#" class="side-link active" data-nav="home">
+        <span class="side-icon">⊞</span> Home
+      </a>
+      <a href="#" class="side-link" data-nav="tickets">
+        <span class="side-icon">🎫</span> Tickets
+      </a>
+      <a href="#" class="side-link" data-nav="history">
+        <span class="side-icon">📋</span> History
+      </a>
+      <a href="#" class="side-link" data-nav="statistics">
+        <span class="side-icon">📊</span> Statistics
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#" class="side-link-sm">⚙️ Settings</a>
+      <a href="#" class="side-link-sm">❓ Support</a>
+      <button class="btn-withdraw" id="btn-withdraw">Withdraw</button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════  PAGES  ═══════════════════════ -->
+  <main class="main-content">
+
+    <!-- ──────────── HOME PAGE ──────────── -->
+    <section class="page active" id="page-home">
+      <!-- Hero -->
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1 class="hero-title">Tenta la fortuna ora.</h1>
+          <p class="hero-sub">Scegli tra oltre 50 tipologie di Gratta &amp; Vinci virtuali. Il brivido del gioco, con la sicurezza di una piattaforma premium.</p>
+          <div class="hero-btns">
+            <button class="btn-play" data-nav="tickets">▶ Gioca Ora</button>
+            <button class="btn-store" data-nav="tickets">Esplora lo Store</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-inner">
+            <div class="hero-card-icon">⬛</div>
+            <div class="hero-card-name">MILIONARIO</div>
+            <div class="hero-card-sub">WIN UP TO €5M</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">💳</div>
+          <div class="stat-label">Spesa Totale</div>
+          <div class="stat-value" id="home-spent">€0.00</div>
+          <div class="stat-sub" id="home-spent-sub">+0% questo mese</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-label">Vincite Totali</div>
+          <div class="stat-value green" id="home-won">€0.00</div>
+          <div class="stat-sub" id="home-won-sub">✦ 0 biglietti vincenti</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-label">Bilancio Netto</div>
+          <div class="stat-value" id="home-net">€0.00</div>
+          <div class="stat-bar-wrap">
+            <div class="stat-bar" id="home-net-bar" style="width:0%"></div>
+          </div>
+          <div class="stat-sub" id="home-rtp">RITORNO AL GIOCATORE: 0%</div>
+        </div>
+      </div>
+
+      <!-- Recommended Tickets -->
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Biglietti Consigliati</h2>
+          <p class="section-sub">I più giocati della settimana</p>
+        </div>
+        <a href="#" class="see-all" data-nav="tickets">Vedi tutti →</a>
+      </div>
+      <div class="tickets-grid" id="home-tickets-grid"></div>
+    </section>
+
+    <!-- ──────────── TICKETS PAGE ──────────── -->
+    <section class="page" id="page-tickets">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Available Tickets</h1>
+          <p class="page-desc">Experience the thrill of high-stakes entertainment. Every ticket is a new opportunity.</p>
+        </div>
+        <div class="tab-group">
+          <button class="tab active" id="tab-store" onclick="switchTab('store')">Store</button>
+          <button class="tab" id="tab-inventory" onclick="switchTab('inventory')">My Inventory</button>
+        </div>
+      </div>
+
+      <!-- Store view -->
+      <div id="store-view">
+        <div class="filter-bar">
+          <span class="filter-label">⚙ FILTER BY:</span>
+          <button class="filter-btn active" data-price="all">All Prices</button>
+          <button class="filter-btn" data-price="5">€5</button>
+          <button class="filter-btn" data-price="10">€10</button>
+          <button class="filter-btn" data-price="20">€20</button>
+          <button class="filter-btn" data-price="50">€50</button>
+        </div>
+        <div class="tickets-store-grid" id="store-tickets-grid"></div>
+
+        <!-- Promo Banner -->
+        <div class="promo-banner">
+          <div class="promo-content">
+            <h3 class="promo-title">First Win Guarantee</h3>
+            <p class="promo-desc">Purchase a bundle of 5 'Diamond Deluxe' tickets and get 100% cashback on your first non-winning ticket.</p>
+            <button class="btn-claim">Claim Promotion</button>
+          </div>
+          <div class="promo-star">⭐</div>
+        </div>
+      </div>
+
+      <!-- Inventory view -->
+      <div id="inventory-view" style="display:none">
+        <p class="empty-msg" id="inventory-empty">No tickets in your inventory. Buy some from the store!</p>
+        <div class="tickets-store-grid" id="inventory-grid"></div>
+      </div>
+    </section>
+
+    <!-- ──────────── GAME PAGE ──────────── -->
+    <section class="page" id="page-game">
+      <div class="game-layout">
+        <!-- Left panel -->
+        <div class="game-left">
+          <div class="glass-card">
+            <h3 class="label-caps">WINNING SYMBOLS</h3>
+            <div class="winning-symbols" id="game-winning-symbols"></div>
+          </div>
+          <div class="glass-card">
+            <h3 class="label-caps">RECENT ACTIVITY</h3>
+            <div class="activity-list" id="game-activity"></div>
+          </div>
+        </div>
+
+        <!-- Center: scratch card -->
+        <div class="game-center">
+          <div class="game-title-row">
+            <div>
+              <h1 class="game-title" id="game-title">The Royal Scratch</h1>
+              <p class="game-desc" id="game-desc">Scopri 3 simboli uguali per vincere</p>
+            </div>
+            <div class="game-meta">
+              <div class="meta-box">
+                <div class="meta-label">LAST WIN</div>
+                <div class="meta-val green" id="game-last-win">€0.00</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scratch-card-wrap">
+            <div class="scratch-card" id="scratch-card">
+              <div class="scratch-header">
+                <div class="scratch-series" id="sc-series">ROYAL SERIES</div>
+                <div class="scratch-name" id="sc-name">MEGA SCRATCH</div>
+              </div>
+              <div class="scratch-grid" id="scratch-grid"></div>
+            </div>
+          </div>
+
+          <!-- Result overlay -->
+          <div class="result-overlay" id="result-overlay" style="display:none">
+            <div class="result-box" id="result-box">
+              <div class="result-icon" id="result-icon">🎉</div>
+              <div class="result-title" id="result-title">HAI VINTO!</div>
+              <div class="result-amount" id="result-amount">€50.00</div>
+              <button class="btn-next-game" id="btn-next-game">Gioca ancora</button>
+            </div>
+          </div>
+
+          <div class="game-footer" id="game-footer" style="display:none">
+            <div class="win-indicator">
+              <div class="win-dot"></div>
+              <span class="win-label">WINNING STATE!</span>
+            </div>
+            <div class="win-total-right">
+              <div class="label-caps">TOTAL WIN</div>
+              <div class="win-amount" id="game-win-total">€0.00</div>
+            </div>
+          </div>
+
+          <div class="game-controls">
+            <button class="btn-new-game" id="btn-new-game">↺ NEW GAME (<span id="game-price">€5</span>)</button>
+            <button class="btn-reveal-all" id="btn-reveal-all">⚡ REVEAL ALL</button>
+          </div>
+          <div class="game-controls mt8">
+            <button class="btn-play10" id="btn-play10">▶▶ GIOCA 10 VOLTE</button>
+            <button class="btn-reset" id="btn-reset">🔄 RESET SIMULATION</button>
+          </div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="game-right">
+          <div class="glass-card">
+            <h3 class="label-caps">SESSION STATS</h3>
+            <div class="session-profit-row">
+              <span class="sm-label">Profit/Loss</span>
+              <span class="session-profit" id="session-profit">+€0.00</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="session-bar" style="width:50%"></div>
+            </div>
+            <div class="session-grid">
+              <div class="session-box">
+                <div class="label-caps">CARDS</div>
+                <div class="session-num" id="session-cards">0</div>
+              </div>
+              <div class="session-box">
+                <div class="label-caps">WINS</div>
+                <div class="session-num" id="session-wins">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="promo-small">
+            <div class="promo-small-text">
+              <strong>Double your next deposit</strong>
+              <button class="btn-claim-sm">CLAIM NOW</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────── HISTORY PAGE ──────────── -->
+    <section class="page" id="page-history">
+      <h1 class="page-title">History</h1>
+      <p class="page-desc">Visualizza il riepilogo dettagliato di tutte le tue giocate, vincite e transazioni recenti.</p>
+
+      <div class="stats-row four">
+        <div class="stat-card">
+          <div class="stat-label">TOTALE GIOCATE</div>
+          <div class="stat-value" id="hist-total">0</div>
+          <div class="stat-sub" id="hist-week">+0 questa settimana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">INVESTITO TOTALE</div>
+          <div class="stat-value" id="hist-invested">€0.00</div>
+          <div class="stat-bar-wrap"><div class="stat-bar" id="hist-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-card accent-gold">
+          <div class="stat-label">VINCITE TOTALI</div>
+          <div class="stat-value gold" id="hist-won">€0.00</div>
+          <div class="stat-sub" id="hist-profit">Profitto netto: €0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">TICKET WIN RATE</div>
+          <div class="stat-value" id="hist-wr">0.0%</div>
+          <div class="stat-sub">Media globale: 12.5%</div>
+        </div>
+      </div>
+
+      <div class="history-controls">
+        <input type="text" class="search-input" id="hist-search" placeholder="🔍 Cerca ID Ticket..." />
+        <select class="select-input" id="hist-filter">
+          <option value="">Tutti i Ticket</option>
+        </select>
+        <select class="select-input" id="hist-period">
+          <option value="30">Ultimi 30 Giorni</option>
+          <option value="7">Ultimi 7 Giorni</option>
+          <option value="all">Tutti</option>
+        </select>
+        <button class="btn-export" id="btn-export">⬇ Esporta CSV</button>
+        <button class="btn-filter-adv">⚙ Filtri Avanzati</button>
+      </div>
+
+      <div class="history-table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>DATA E ORA</th>
+              <th>TIPO TICKET</th>
+              <th>ID OPERAZIONE</th>
+              <th>COSTO</th>
+              <th>ESITO / VINCITA</th>
+              <th>AZIONI</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+    <!-- ──────────── STATISTICS PAGE ──────────── -->
+    <section class="page" id="page-statistics">
+      <div class="stats-page-header">
+        <div>
+          <h1 class="page-title">Performance Insights</h1>
+          <p class="page-desc">A comprehensive analysis of your scratching activity, financial flow, and probabilistic outcomes.</p>
+        </div>
+        <button class="btn-period-toggle">📅 LAST 30 DAYS</button>
+      </div>
+
+      <div class="stats-row four">
+        <div class="stat-card">
+          <div class="stat-label">THEORETICAL RTP</div>
+          <div class="stat-value gold" id="stats-rtp">0.0%</div>
+          <div class="stat-sub" id="stats-rtp-vs">–0.0% vs Global Avg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">NET PROFIT/LOSS</div>
+          <div class="stat-value" id="stats-net">€0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">TICKETS SCRATCHED</div>
+          <div class="stat-value" id="stats-scratched">0</div>
+          <div class="stat-sub" id="stats-scratched-vs">+0% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">LUCK FACTOR</div>
+          <div class="stat-value primary" id="stats-luck">Balanced</div>
+          <div class="progress-bar mt4"><div class="progress-fill purple" id="luck-bar" style="width:50%"></div></div>
+          <div class="stat-sub" id="luck-score">50/100</div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card wide">
+          <h3 class="chart-title">Cashflow Dynamics <span class="chart-legend"><span class="dot green"></span> Wins <span class="dot purple"></span> Spent</span></h3>
+          <canvas id="cashflow-chart" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">Outcome Distribution</h3>
+          <div class="outcome-list" id="outcome-list"></div>
+          <div class="outcome-note" id="outcome-note"></div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3 class="chart-title">⊞ Probability Matrix</h3>
+          <table class="prob-table" id="prob-table">
+            <thead><tr><th>Prize Amount</th><th>Your Hits</th><th>Odds (1 in…)</th><th>Status</th></tr></thead>
+            <tbody id="prob-tbody"></tbody>
+          </table>
+        </div>
+        <div class="chart-card forecast-card">
+          <div class="forecast-icon">📈</div>
+          <h3 class="forecast-title">AI Session Forecast</h3>
+          <p class="forecast-desc" id="forecast-desc">Based on current variances, your next session is statistically likely to hover around an RTP of <strong id="forecast-rtp">92%</strong> as the curve corrects.</p>
+          <button class="btn-pdf" id="btn-pdf">Generate Detailed PDF Report</button>
+          <p class="forecast-updated" id="forecast-updated">Data updated at 00:00 UTC today.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════  MOBILE BOTTOM NAV  ═══════════ -->
+<nav class="bottom-nav">
+  <a href="#" class="bottom-link active" data-nav="home">
+    <span>⊞</span><small>Home</small>
+  </a>
+  <a href="#" class="bottom-link" data-nav="tickets">
+    <span>🎫</span><small>Tickets</small>
+  </a>
+  <a href="#" class="bottom-link" data-nav="history">
+    <span>📋</span><small>History</small>
+  </a>
+  <a href="#" class="bottom-link" data-nav="statistics">
+    <span>📊</span><small>Stats</small>
+  </a>
+</nav>
+
+<!-- FAB -->
+<button class="fab" data-nav="tickets">+</button>
+
+<!-- RECHARGE MODAL -->
+<div class="modal-overlay" id="recharge-modal" style="display:none">
+  <div class="modal">
+    <h2 class="modal-title">Ricarica Saldo</h2>
+    <p class="modal-desc">Seleziona un importo da aggiungere al tuo portafoglio.</p>
+    <div class="recharge-amounts">
+      <button class="recharge-btn" data-amount="50">+€50</button>
+      <button class="recharge-btn" data-amount="100">+€100</button>
+      <button class="recharge-btn" data-amount="250">+€250</button>
+      <button class="recharge-btn" data-amount="500">+€500</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" id="recharge-cancel">Annulla</button>
+    </div>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="withdraw-modal" style="display:none">
+  <div class="modal">
+    <h2 class="modal-title">Prelievo</h2>
+    <p class="modal-desc">Saldo disponibile: <strong id="withdraw-balance">€0.00</strong></p>
+    <input type="number" class="modal-input" id="withdraw-amount" placeholder="Importo da prelevare..." />
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" id="withdraw-cancel">Annulla</button>
+      <button class="btn-modal-confirm" id="withdraw-confirm">Preleva</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
