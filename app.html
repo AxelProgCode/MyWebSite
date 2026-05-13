@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="siti.css">
+    <link rel="icon" href="logo/Black.png">
+    <title>App</title>
+</head>
+<body>
+    <div class="navbar">
+        <h2>SP_WebSite</h2>
+        <ul>
+            <li><a href="siti.html">Siti</a></li>
+            <li><a href="app.html">App</a></li>
+            <li><a href="progetti.html">Progetti</a></li>
+            <li><a href="form.html">Form</a></li>
+            <li><a href="sondaggi.html">Sondaggi</a></li>
+            <li><a href="statistiche.html">Statistiche</a></li>
+        </ul>
+        <a href="index.html"><button class="hire-btn">Home</button></a>
+    </div>
+    <div class="main">
+        <p class="title">App Utili e Curiosi</p>
+        <p class="subtitle">Raccolta di app utili e curiosi</p>
+        <img src="logo/White - nobg.png">
+    </div>
+
+    <div class="sites-container">
+        <div class="stats" id="stats"></div>
+
+        <div class="controls-container">
+
+            <div class="filter-section">
+                <div class="section-title">🏷️ Categoria</div>
+                <div class="filter-grid">
+                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn" data-filter="utili">🔧 Utili</button>
+                    <button class="filter-btn" data-filter="curiosi">🎨 Curiosi</button>
+                    <button class="filter-btn" data-filter="giochi">🎮 Giochi</button>
+                    <button class="filter-btn" data-filter="AI">⚡ AI</button>
+                </div>
+            </div>
+
+            <div class="sort-section">
+                <div class="section-title">📊 Ordina</div>
+                <div class="sort-grid">
+                    <button class="sort-btn active" data-sort="name">A-Z</button>
+                    <button class="sort-btn" data-sort="reverse">Z-A</button>
+                    <button class="sort-btn" data-sort="category">Categoria</button>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <div class="section-title">🔎 Cerca</div>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Cerca per nome, descrizione o tag...">
+                </div>
+            </div>
+
+            <div class="view-toggle-section">
+                <div class="view-grid">
+                    <div class="section-title">Vista:</div>
+                    <button class="view-toggle-btn active" data-view="grid" title="Vista a Griglia"><i class='bx bx-grid-alt'></i></button>
+                    <button class="view-toggle-btn" data-view="list" title="Vista a Lista"><i class='bx bx-list-ul'></i></button>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="site-cards-container" id="site-cards-container">
+            <!-- Le app saranno renderizzate qui dallo script -->
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="cols">
+            <div class="about-col">
+                <h3>SP_WebSite.</h3>
+                <p>Creative Web Developer</p>
+            </div>
+            <div class="links-col">
+                <h4>Link Utili</h4>
+                <a href="index.html">Home</a>
+                <a href="siti.html">Siti</a>
+                <a href="app.html">App</a>
+                <a href="progetti.html">Progetti</a>
+                <a href="form.html">Form</a>
+                <a href="sondaggi.html">Sondaggi</a>
+                <a href="statistiche.html">Statistiche</a>
+            </div>
+            <div class="news-col">
+                <h4>NewsLetter</h4>
+                <p>Inserisci la tua email e ricevi aggiornamenti sulle novità.</p>
+                <form action="https://docs.google.com/forms/d/e/1FAIpQLSdftgL9248dAGeSujT9foBLlxPQjv37RJt-aKVGrdJex15FbQ/viewform" target="_blank">
+                    <input type="email" placeholder="Il tuo indirizzo email">
+                    <button type="submit"><i class='bx bxl-telegram'></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="copyright-col">
+            <p>Copyright &copy; 2025 SP. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sitesData = [
+            {
+                name: "GitHub Store",
+                url: "https://github-store.org/",
+                description: "Store di app open source",
+                category: "curiosi"
+            },
+            {
+                name: "Cashew",
+                url: "https://play.google.com/store/apps/details?id=com.budget.tracker_app",
+                description: "Gestione finanze",
+                category: "utili"
+            },
+            {
+                name: "Typi AI",
+                url: "https://play.google.com/store/apps/details?id=com.shapun.typi",
+                description: "Supporto dell’AI durante la scrittura",
+                category: "AI"
+            },
+            {
+                name: "Smart Action Notch",
+                url: "https://play.google.com/store/apps/details?id=com.quarkstudio.smartactionnotch&hl=it",
+                description: "Rendi il notch del tuo telefono più funzionale",
+                category: "utili"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentSort = 'name';
+        let searchQuery = '';
+        let currentView = 'grid';
+
+        const container = document.getElementById('site-cards-container');
+        const searchInput = document.getElementById('search-input');
+        const statsElement = document.getElementById('stats');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const sortBtns = document.querySelectorAll('.sort-btn');
+        const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+
+        const categoryLabels = {
+            'utili': '🔧 Utili',
+            'curiosi': '🎨 Curiosi',
+            'giochi': '🎮 Giochi',
+            'AI': '⚡ AI'
+        };
+
+        // Statistiche dettagliate
+        function updateStats() {
+            // 1. Conteggio totale
+            const totalSites = sitesData.length;
+
+            // 2. Conteggio per categoria
+            const categoryCounts = sitesData.reduce((counts, site) => {
+                const category = site.category;
+                counts[category] = (counts[category] || 0) + 1;
+                return counts;
+            }, {});
+
+            // 3. Creazione del contenuto HTML per le statistiche
+            let statsHtml = `
+                <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 5px;">
+                    Totale app: ${totalSites}
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    Suddivise per Categoria:
+                </div>
+                <ul style="list-style: none; padding: 0; margin-top: 5px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+            `;
+
+            // Costruzione della lista delle categorie
+            for (const category in categoryLabels) {
+                const count = categoryCounts[category] || 0;
+                const label = categoryLabels[category];
+                
+                if (count > 0) {
+                    statsHtml += `
+                        <li style="display: inline-flex; align-items: center; background-color: #495057; padding: 4px 10px; border-radius: 6px;">
+                            ${label}: <strong>${count}</strong>
+                        </li>
+                    `;
+                }
+            }
+
+            statsHtml += `</ul>`;
+
+            // Aggiornamento dell'elemento HTML con il nuovo contenuto
+            statsElement.innerHTML = statsHtml;
+        }
+
+        // Evidenzia il testo trovato nella ricerca
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="background-color: #ffb742; color: #212529; border-radius: 4px; padding: 1px 3px;">$1</span>');
+        }
+
+        // Logica di ordinamento (Corretta per A-Z, Z-A, Categoria)
+        function getSortedSites(sites) {
+            let sorted = [...sites];
+            
+            if (currentSort === 'name') {
+                // Ordine A-Z
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (currentSort === 'reverse') {
+                // Ordine Z-A
+                sorted.sort((a, b) => b.name.localeCompare(a.name));
+            } else if (currentSort === 'category') {
+                // Ordine per categoria (A-Z)
+                sorted.sort((a, b) => {
+                    if (a.category !== b.category) {
+                        return a.category.localeCompare(b.category);
+                    }
+                    return a.name.localeCompare(b.name);
+                });
+            }
+            return sorted;
+        }
+
+        // Funzione principale di rendering
+        function renderSites() {
+            // 1. Filtraggio
+            const filteredSites = sitesData.filter(site => {
+                const categoryMatch = currentFilter === 'all' || site.category === currentFilter;
+                const searchMatch = !searchQuery || 
+                    site.name.toLowerCase().includes(searchQuery) ||
+                    site.description.toLowerCase().includes(searchQuery) ||
+                    (site.tag && site.tag.some(t => t.toLowerCase().includes(searchQuery)));
+                
+                return categoryMatch && searchMatch;
+            });
+
+            // 2. Applicazione della vista (griglia o lista)
+            container.className = currentView === 'grid' ? 'sites-grid' : 'sites-list'; 
+
+            if (filteredSites.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                <div class="empty-state-icon">😕</div>
+                <div class="empty-state-text">Nessuna app trovata</div>
+                <div class="empty-state-sub">Prova a modificare i filtri o la ricerca</div>
+                </div>`;
+            return;
+            }
+
+            // 3. Ordinamento
+            const sortedSites = getSortedSites(filteredSites);
+
+            // 4. Rendering
+            container.innerHTML = sortedSites.map(site => {
+            const displayName = site.name || site.title || '';
+            const description = site.description || '';
+            
+            // Logica di rendering per Griglia e Lista
+            if (currentView === 'grid') {
+                return `
+                <div class="site-card" data-category="${site.category}">
+                    <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                    <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                    <a href="${site.url}" target="_blank" class="site-url">${highlightText(site.url.replace(/^https?:\/\//, ''), searchQuery)}</a>
+                    <p class="site-description">${highlightText(description, searchQuery)}</p>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita l'app</a>
+                </div>
+                `;
+            } else if (currentView === 'list') {
+                return `
+                <div class="site-card sites-list-item" data-category="${site.category}">
+                    <div class="site-details">
+                        <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                    </div>
+                    <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita</a>
+                </div>
+                `;
+            }
+            }).join('');
+        }
+
+        // Gestione eventi filtri
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        // Gestione eventi ordinamento
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSort = btn.dataset.sort;
+                sortBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        // Gestione eventi cambio vista
+        viewToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentView = btn.dataset.view;
+                viewToggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        // Gestione evento ricerca
+        searchInput.addEventListener('input', () => {
+            searchQuery = searchInput.value.toLowerCase().trim();
+            renderSites();
+        });
+        
+        // Inizializzazione
+        updateStats();
+        renderSites();
+    </script>
+</body>
+
+</html>
