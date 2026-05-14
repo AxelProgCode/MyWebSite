@@ -17,11 +17,11 @@
             <li><a href="progetti.html">Progetti</a></li>
             <li><a href="statistiche.html">Statistiche</a></li>
         </ul>
-        <a href="index.html"><button class="hire-btn">Home</button></a>
+        <a href="login.html"><button class="hire-btn">Accedi</button></a>
     </div>
     <div class="main">
-        <p class="title">App Utili e Curiosi</p>
-        <p class="subtitle">Raccolta di app utili e curiosi</p>
+        <p class="title">App</p>
+        <p class="subtitle">Raccolta di app</p>
         <img src="logo/White - nobg.png">
     </div>
 
@@ -33,9 +33,9 @@
             <div class="filter-section">
                 <div class="section-title">🏷️ Categoria</div>
                 <div class="filter-grid">
-                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn active" data-filter="all">Tutte</button>
                     <button class="filter-btn" data-filter="utili">🔧 Utili</button>
-                    <button class="filter-btn" data-filter="curiosi">🎨 Curiosi</button>
+                    <button class="filter-btn" data-filter="curiose">🎨 Curiose</button>
                     <button class="filter-btn" data-filter="giochi">🎮 Giochi</button>
                     <button class="filter-btn" data-filter="AI">⚡ AI</button>
                 </div>
@@ -73,6 +73,29 @@
 
     </div>
 
+    <div class="mobile-bottom-nav">
+        <a href="siti.html" class="mobile-nav-item">
+            <i class='bx bx-link'></i>
+            <span>Siti</span>
+        </a>
+        <a href="app.html" class="mobile-nav-item active">
+            <i class='bx bxl-android'></i>
+            <span>App</span>
+        </a>
+        <a href="index.html" class="mobile-nav-item">
+            <i class='bx bx-home'></i>
+            <span>Home</span>
+        </a>
+        <a href="progetti.html" class="mobile-nav-item">
+            <i class='bx bx-briefcase'></i>
+            <span>Progetti</span>
+        </a>
+        <a href="statistiche.html" class="mobile-nav-item">
+            <i class='bx bx-bar-chart-alt-2'></i>
+            <span>Stats</span>
+        </a>
+    </div>
+
     <footer>
         <div class="cols">
             <div class="about-col">
@@ -107,11 +130,17 @@
                 name: "GitHub Store",
                 url: "https://github-store.org/",
                 description: "Store di app open source",
-                category: "curiosi"
+                category: "curiose"
             },
             {
                 name: "Cashew",
                 url: "https://play.google.com/store/apps/details?id=com.budget.tracker_app",
+                description: "Gestione finanze",
+                category: "utili"
+            },
+            {
+                name: "Spendee",
+                url: "https://play.google.com/store/apps/details?id=com.cleevio.spendee&hl=it",
                 description: "Gestione finanze",
                 category: "utili"
             },
@@ -125,6 +154,84 @@
                 name: "Smart Action Notch",
                 url: "https://play.google.com/store/apps/details?id=com.quarkstudio.smartactionnotch&hl=it",
                 description: "Rendi il notch del tuo telefono più funzionale",
+                category: "utili"
+            },
+            {
+                name: "Auto Clicker",
+                url: "https://play.google.com/store/apps/details?id=autoclicker.clicker.autoclickerapp.autoclickerforgames&hl=it",
+                description: "Automatizza i click sul tuo dispositivo",
+                category: "utili"
+            },
+            {
+                name: "sand:box",
+                url: "https://play.google.com/store/apps/details?id=smellymoo.sand&hl=it",
+                description: "Gioco di elementi virtuali con fisica realistica",
+                category: "giochi"
+            },
+            {
+                name: "Tracket Motion",
+                url: "https://play.google.com/store/apps/details?id=com.tracket.app&hl=it",
+                description: "Stabilizzazione video",
+                category: "utili"
+            },
+            {
+                name: "Dark Camera",
+                url: "https://play.google.com/store/apps/details?id=com.darkogolner.darkcamera2&hl=it",
+                description: "Scatta foto con schermo spento",
+                category: "curiose"
+            },
+            {
+                name: "112 Where Are U",
+                url: "https://play.google.com/store/apps/details?id=it.Beta80Group.whereareu&hl=it",
+                description: "App ufficiale per chiamare i servizi di emergenza",
+                category: "utili"
+            },
+            {
+                name: "Briar",
+                url: "https://play.google.com/store/apps/details?id=org.briarproject.briar.android&hl=it",
+                description: "App di messaggistica sicura e decentralizzata",
+                category: "utili"
+            },
+            {
+                name: "Proton Pass",
+                url: "https://play.google.com/store/apps/details?id=proton.android.pass&hl=it",
+                description: "Gestore password con crittografia end-to-end",
+                category: "utili"
+            },
+            {
+                name: "Voicemod",
+                url: "https://play.google.com/store/apps/details?id=net.voicemod.squid&hl=it",
+                description: "Cambia voce",
+                category: "curiose"
+            },
+            {
+                name: "WTMP",
+                url: "https://play.google.com/store/apps/details?id=com.wtmp.svdsoftware&hl=it",
+                description: "Controlla chi ha toccatto il tuo telefono",
+                category: "utili"
+            },
+            {
+                name: "Sky Map",
+                url: "https://play.google.com/store/apps/details?id=com.google.android.stardroid&hl=it",
+                description: "Mappa stellare interattiva",
+                category: "curiose"
+            },
+            {
+                name: "MacroDroid",
+                url: "https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid&hl=it",
+                description: "Automatizza azioni e attività sul tuo dispositivo android",
+                category: "utili"
+            },
+            {
+                name: "CPU X",
+                url: "https://play.google.com/store/apps/details?id=com.abs.cpu_z_advance&hl=it",
+                description: "Informazioni dettagliate sull'hardware del tuo dispositivo",
+                category: "utili"
+            },
+            {
+                name: "BlockAds",
+                url: "https://github.com/pass-with-high-score/blockads-android",
+                description: "Blocca pubblicità, tracker e malware",
                 category: "utili"
             }
         ];
@@ -143,7 +250,7 @@
 
         const categoryLabels = {
             'utili': '🔧 Utili',
-            'curiosi': '🎨 Curiosi',
+            'curiose': '🎨 Curiose',
             'giochi': '🎮 Giochi',
             'AI': '⚡ AI'
         };

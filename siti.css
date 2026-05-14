@@ -64,6 +64,63 @@ body{
     background: #fb8c00;
 }
 
+/* --- Mobile Bottom Navigation Bar --- */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1c1c1c;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 183, 66, 0.2);
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 20px;
+    z-index: 1000;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #7b7b7b;
+    transition: all 0.3s ease;
+    gap: 4px;
+    position: relative;
+}
+
+.mobile-nav-item i {
+    font-size: 24px;
+}
+
+.mobile-nav-item span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.mobile-nav-item.active {
+    color: #ffb742;
+}
+
+.mobile-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    width: 30px;
+    height: 3px;
+    background: #ffb742;
+    border-radius: 3px;
+}
+
+.mobile-nav-item:hover {
+    color: #ffb742;
+    transform: translateY(-2px);
+}
+
 /* --- Main --- */
 .main{
     height: auto;
@@ -386,6 +443,7 @@ footer .copyright-col p{
 
 .cat-utili { background: #17a2b8; }
 .cat-curiosi { background: #ffc107; }
+.cat-curiose { background: #ffc107; }
 .cat-giochi { background: #28a745; }
 .cat-AI { background: #6f42c1; }
 
@@ -551,6 +609,10 @@ footer .copyright-col p{
 
 /* Tablet in Verticale (fino a 768px) */
 @media screen and (max-width: 768px) {
+    body {
+        padding-bottom: 70px;
+    }
+
     .navbar{
         height: 60px;
         padding: 0 20px;
@@ -567,6 +629,10 @@ footer .copyright-col p{
     .navbar .hire-btn{
         padding: 6px 20px;
         font-size: 14px;
+    }
+
+    .mobile-bottom-nav {
+        display: flex;
     }
 
     .main{
@@ -599,6 +665,7 @@ footer .copyright-col p{
     footer{
         padding: 50px 20px 30px;
         margin-top: 80px;
+        margin-bottom: 0;
     }
 
     footer .start{
@@ -639,12 +706,28 @@ footer .copyright-col p{
 
 /* Smartphone (fino a 480px) */
 @media screen and (max-width: 480px) {
+    body {
+        padding-bottom: 60px;
+    }
+
     .navbar h2{
         font-size: 20px;
     }
     
     .navbar .hire-btn{
         padding: 5px 15px;
+    }
+
+    .mobile-bottom-nav {
+        padding: 10px 15px;
+    }
+    
+    .mobile-nav-item i {
+        font-size: 20px;
+    }
+    
+    .mobile-nav-item span {
+        font-size: 10px;
     }
 
     .main h4{
