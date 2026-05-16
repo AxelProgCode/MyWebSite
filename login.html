@@ -264,7 +264,6 @@
     <header>
         <nav class="navbar">
             <h2>SP_WebSite</h2>
-            <h2>IN SVILUPPO...</h2>
             <button class="hire-btn" onclick="window.location.href='index.html'">HOME</button>
         </nav>
     </header>
@@ -362,11 +361,11 @@
     </main>
 
     <footer class="footer-simple">
-        <p>© 2026 Sp_WebSite. Tutti i diritti riservati. | <a href="https://spwebsite.netlify.app/privacy" style="color: #ffb742; text-decoration: none;">Privacy</a></p>
+        <p>© 2026 SP_WebSite. Tutti i diritti riservati.</p>
     </footer>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8iNDq8WNg2RyBAdzwXb8rytlanCeKG4uMKj0v6Sr8KSAtaGuFvACJAmdxQQb309jI/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjtAZuSBeEE7Ril-otq73_t9HHQRfrmdAFGr1mzRdX_pLuiSBNbxxaeZql7t26lM9A/exec';
 
         // Variabili di stato
         let currentEmail = '';
@@ -694,7 +693,7 @@
                     showMessage('loginMessage', '✅ Benvenuto ' + nome + '! Reindirizzamento...', 'success');
                     
                     setTimeout(() => {
-                        window.location.href = '/area-riservata.html';
+                        window.location.href = '/index.html';
                     }, 1500);
                     
                 } else if (responseText === 'EMAIL_NON_REGISTRATA') {
