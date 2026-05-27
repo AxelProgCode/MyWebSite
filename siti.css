@@ -350,13 +350,13 @@ footer .copyright-col p{
     color: #ffb742;
 }
 
-.filter-grid, .sort-grid, .view-grid {
+.filter-grid, .sort-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.filter-btn, .sort-btn, .view-toggle-btn {
+.filter-btn, .sort-btn {
     background: #343a40;
     color: #fff;
     border: 1px solid #495057;
@@ -369,7 +369,7 @@ footer .copyright-col p{
     align-items: center;
 }
 
-.filter-btn:hover:not(.active), .sort-btn:hover:not(.active), .view-toggle-btn:hover:not(.active) {
+.filter-btn:hover:not(.active), .sort-btn:hover:not(.active) {
     background: #495057;
     color: #ffb742;
 }
@@ -379,10 +379,6 @@ footer .copyright-col p{
     border-color: #ffb742;
     color: #212529;
     font-weight: 600;
-}
-
-.view-toggle-btn i {
-    font-size: 1.2em;
 }
 
 /* --- Ricerca --- */
@@ -405,7 +401,7 @@ footer .copyright-col p{
     color: #aaa;
 }
 
-/* Griglia/Lista Siti */
+/* Griglia Siti */
 .sites-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -486,47 +482,52 @@ footer .copyright-col p{
     background: #ff9800;
 }
 
-/* Vista a Lista */
-.sites-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* --- STILI CARD GRUPPO --- */
+.site-card--group {
+    border-left: 3px solid #ffb742;
 }
 
-.sites-list .site-card {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
+.group-badge {
+    display: inline-flex;
     align-items: center;
-    padding: 18px 25px;
+    gap: 4px;
+    background: rgba(255, 183, 66, 0.15);
+    color: #ffb742;
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    width: fit-content;
 }
 
-.sites-list .site-category {
-    position: static;
-    justify-self: end;
-    margin-left: 15px;
-    order: 1;
+.group-badge i {
+    font-size: 0.95em;
 }
 
-.sites-list .site-details {
+/* Bottoni link del gruppo (vista griglia) */
+.group-links {
     display: flex;
-    flex-direction: column;
-    order: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 5px;
 }
 
-.sites-list .site-description, .sites-list .site-url {
-    display: none;
+.group-link-btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 70px;
+    padding: 8px 10px;
+    font-size: 0.85em;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.sites-list .visit-btn {
-    margin-left: 20px;
-    width: 100px;
-    padding: 8px 15px;
-    order: 2;
-}
-
-.sites-list .site-title {
-    margin: 0;
-    font-size: 1.5em;
+/* Quando ci sono 2 link affiancati al 50%, con 3+ si adattano */
+.group-links .group-link-btn:only-child {
+    flex: 1 1 100%;
 }
 
 /* Risultato Vuoto */
@@ -567,7 +568,237 @@ footer .copyright-col p{
     border-right: 4px solid #ffb742;
 }
 
-/* --- Media Queries --- */
+/* --- Colonna Rank --- */
+.col-rank {
+    text-align: center;
+    width: 52px;
+    min-width: 52px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.col-rank .rank-num {
+    display: block;
+    font-size: 0.75em;
+    font-weight: 500;
+    color: #aaa;
+    line-height: 1;
+}
+
+.rank-1 { font-size: 1.3em; }
+.rank-2 { font-size: 1.2em; }
+.rank-3 { font-size: 1.15em; }
+.rank-other { font-size: 0.95em; color: #aaa; }
+.rank-other .rank-num { color: #666; }
+
+/* Righe podio */
+.row-top-1 { background: rgba(255, 215, 0, 0.07) !important; }
+.row-top-2 { background: rgba(192, 192, 192, 0.07) !important; }
+.row-top-3 { background: rgba(205, 127, 50, 0.07) !important; }
+
+.row-top-1:hover { background: rgba(255, 215, 0, 0.14) !important; }
+.row-top-2:hover { background: rgba(192, 192, 192, 0.14) !important; }
+.row-top-3:hover { background: rgba(205, 127, 50, 0.14) !important; }
+
+/* --- Bottone Confronta --- */
+.compare-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: #ffb742;
+    border: 1px solid #ffb742;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.88em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.compare-btn:hover {
+    background: #ffb742;
+    color: #212529;
+}
+
+.compare-btn i {
+    font-size: 1.1em;
+}
+
+/* --- Modale Confronto --- */
+.compare-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.compare-modal-overlay.active {
+    display: flex;
+}
+
+.compare-modal {
+    background: #2b3035;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 960px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid #495057;
+    position: relative;
+}
+
+.compare-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.compare-modal-header h2 {
+    color: #ffb742;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compare-modal-close {
+    background: #343a40;
+    border: none;
+    color: #fff;
+    font-size: 1.4em;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.compare-modal-close:hover {
+    background: #ff4444;
+}
+
+.compare-modal-subtitle {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+.compare-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #495057;
+}
+
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    min-width: 700px;
+}
+
+.compare-table thead th {
+    background: #212529;
+    color: #ffb742;
+    padding: 10px 8px;
+    text-align: center;
+    font-weight: 600;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.compare-table thead th.col-site {
+    text-align: left;
+    padding-left: 16px;
+    min-width: 120px;
+}
+
+.compare-table thead th span {
+    display: block;
+    font-size: 0.75em;
+    font-weight: 500;
+    color: #ccc;
+}
+
+.compare-table tbody tr {
+    border-bottom: 1px solid #343a40;
+    transition: background 0.15s;
+}
+
+.compare-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.compare-table tbody tr:hover {
+    background: #343a40;
+}
+
+.compare-table tbody td {
+    padding: 10px 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.compare-table tbody td.col-site {
+    text-align: left;
+    padding-left: 16px;
+    font-weight: 600;
+}
+
+.compare-table tbody td.col-site a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.compare-table tbody td.col-site a:hover {
+    color: #ffb742;
+}
+
+.cell-yes { background: rgba(40, 167, 69, 0.1); }
+.cell-no  { background: rgba(255,255,255, 0.02); }
+
+.legend-yes { color: #28a745; font-weight: 700; }
+.legend-no  { color: #495057; }
+
+.compare-modal-legend {
+    margin-top: 14px;
+    color: #aaa;
+    font-size: 0.85em;
+    text-align: right;
+}
+
+@media screen and (max-width: 768px) {
+    .compare-modal {
+        padding: 20px 15px;
+    }
+
+    .compare-modal-header h2 {
+        font-size: 1.1em;
+    }
+
+    .compare-table {
+        font-size: 0.8em;
+    }
+}
+
 /* Tablet e Desktop Piccoli (fino a 1200px) */
 @media screen and (max-width: 1200px) {
     .navbar{
@@ -582,11 +813,6 @@ footer .copyright-col p{
         padding: 0 30px;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
-    }
-
-    .sites-list .site-title {
-        margin: 0;
-        font-size: 1.2em;
     }
     
     footer{
