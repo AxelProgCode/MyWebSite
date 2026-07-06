@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fisco, Risparmi & Budgeting Pluriennale</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        input[type="range"] {
+            accent-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-indigo-700 rounded-xl text-white shadow-inner">
+                    <i data-lucide="wallet" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight">Fisco, Risparmi & Budgeting</h1>
+                    <p class="text-xs text-indigo-200 font-mono">Pianificatore Finanziario Integrato</p>
+                </div>
+            </div>
+            
+            <!-- Tab di Navigazione Principale -->
+            <div class="flex bg-indigo-700/50 p-1 rounded-xl w-full md:w-auto border border-indigo-500/30">
+                <button
+                    id="tab-calculator-btn"
+                    onclick="switchTab('calculator')"
+                    class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm"
+                >
+                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                    1. Stipendio Ideale
+                </button>
+                <button
+                    id="tab-analysis-btn"
+                    onclick="switchTab('analysis')"
+                    class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 text-white hover:bg-indigo-700/50"
+                >
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    2. Verifica Sostenibilità
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- COLONNA SINISTRA: Spese & Patrimonio (Sempre Visibile e Condiviso) -->
+        <section class="lg:col-span-5 space-y-6">
+            
+            <!-- Box Patrimonio & Sicurezza -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                    <div class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-900 text-sm">Patrimonio Liquido Attuale</h2>
+                        <p class="text-[11px] text-slate-400">La tua riserva monetaria o fondo d'emergenza.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">€</span>
+                        <input
+                            type="number"
+                            id="input-initial-savings"
+                            value="20000"
+                            oninput="updateInitialSavings(this.value)"
+                            placeholder="Es. 10000"
+                            class="w-full text-base font-bold bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                            min="0"
+                        />
+                    </div>
+                </div>
+
+                <!-- Copertura Fondo d'Emergenza (Runway) -->
+                <div id="emergency-runway-container" class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-3.5 flex items-center justify-between text-xs">
+                    <div class="space-y-0.5">
+                        <span class="text-slate-500 font-medium">Autonomia Spese Essenziali:</span>
+                        <span id="runway-months-text" class="block font-extrabold text-indigo-950 text-sm">0.0 mesi</span>
+                    </div>
+                    <div id="runway-badge-container">
+                        <!-- Badge generato via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pannello di Controllo Spese (Aggiunta Categoria) -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-500"></i>
+                            Gestione Spese & Obiettivi
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Definisci i tuoi costi correnti e futuri d'acquisto.</p>
+                    </div>
+		    <button onclick="exportDataForAI()" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold px-2.5 py-1 rounded-md transition-colors flex items-center gap-1">
+        		<i data-lucide="copy" class="w-3 h-3"></i>
+       			Esporta per IA
+    		    </button>
+                    <button onclick="resetToDefaults()" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold underline">
+                        Ripristina
+                    </button>
+                </div>
+
+                <!-- Form Aggiunta Spesa -->
+                <form id="expense-form" onsubmit="handleAddExpense(event)" class="p-5 border-b border-slate-100 bg-white space-y-4">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Spesa / Categoria</label>
+                            <input
+                                type="text"
+                                id="expense-name"
+                                list="preset-categories"
+                                placeholder="Es. Assicurazione auto, Cambio Telefono, Viaggi..."
+                                onchange="handleCategorySelect(this.value)"
+                                class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                                required
+                            />
+                            <datalist id="preset-categories">
+                                <!-- Popolato via JS -->
+                            </datalist>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Importo o Costo (€)</label>
+                                <input
+                                    type="number"
+                                    id="expense-amount"
+                                    placeholder="Importo in €"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                                    min="1"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Priorità Spesa</label>
+                                <select
+                                    id="expense-type"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors font-medium text-slate-700"
+                                >
+                                    <option value="needs">Essenziale (Need)</option>
+                                    <option value="wants">Desiderio/Svago (Want)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Frequenza Spesa</label>
+                                <select
+                                    id="expense-freq"
+                                    onchange="toggleYearsInput(this.value)"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors font-medium text-slate-700"
+                                >
+                                    <option value="monthly">Mensile</option>
+                                    <option value="yearly">Annuale</option>
+                                    <option value="multiyear">Ammortamento (Anni)</option>
+                                </select>
+                            </div>
+
+                            <div id="expense-years-container" class="hidden">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Frequenza (Anni)</label>
+                                <input
+                                    type="number"
+                                    id="expense-years"
+                                    value="5"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors font-bold text-center"
+                                    min="1"
+                                    max="25"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-1">
+                        <button
+                            type="submit"
+                            class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all duration-150 shadow-sm"
+                        >
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Aggiungi Voce
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Elenco dinamico delle spese con rateizzazione/ammortamento -->
+                <div id="expenses-list" class="max-h-[350px] overflow-y-auto divide-y divide-slate-100 custom-scrollbar">
+                    <!-- Elementi spesa inseriti da JS -->
+                </div>
+
+                <!-- Totale Spese Mensili Cumulato -->
+                <div class="p-5 bg-indigo-50/40 border-t border-slate-100 flex items-center justify-between text-sm">
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-slate-700">Budget Mensile Ammortizzato:</span>
+                        <div class="group relative inline-block">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-slate-400 cursor-help"></i>
+                            <div class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-slate-900 text-white text-[10px] p-2.5 rounded-lg shadow-lg z-50 font-normal leading-relaxed">
+                                Somma di tutte le spese mensili correnti e dei ratei mensili simulati per le spese annuali e pluriennali (ammortamenti futuri).
+                            </div>
+                        </div>
+                    </div>
+                    <span id="overall-monthly-budget" class="text-base font-black text-indigo-700">€ 0.00 / mese</span>
+                </div>
+            </div>
+            
+            <!-- Box informativo accantonamenti -->
+            <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-slate-100 p-5 rounded-2xl shadow-sm space-y-3">
+                <h3 class="font-bold text-sm flex items-center gap-2 text-indigo-200">
+                    <i data-lucide="piggy-bank" class="w-4 h-4 text-indigo-400"></i>
+                    Ammortamento & Accantonamenti
+                </h3>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Un'auto acquistata ogni 10 anni o un viaggio annuale non incidono solo nel mese dell'acquisto. Convertirli in 
+                    <strong>ratei mensili virtuali</strong> ti consente di capire quanto devi mettere da parte mensilmente per evitare brutte sorprese.
+                </p>
+            </div>
+        </section>
+
+        <!-- COLONNA DESTRA: Sezioni Attive (Tabs) -->
+        <section class="lg:col-span-7 space-y-6">
+
+            <!-- TAB 1: CALCOLO DELLO STIPENDIO IDEALE -->
+            <div id="tab-calculator-content" class="space-y-6">
+                
+                <!-- Selezione Tasso di Risparmio Desiderato -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-950 flex items-center gap-2">
+                            <i data-lucide="percent" class="w-5 h-5 text-indigo-600"></i>
+                            Tasso di Risparmio Puro Desiderato
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            La percentuale di stipendio netto che desideri risparmiare al netto dei costi di ammortamento e di spesa inseriti a sinistra.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-sm font-bold text-slate-700">
+                            <span>Percentuale allocata al Risparmio:</span>
+                            <span id="target-savings-percent-text" class="text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs font-black">20% dello stipendio</span>
+                        </div>
+                        
+                        <input
+                            type="range"
+                            id="target-savings-range"
+                            min="5"
+                            max="60"
+                            step="5"
+                            value="20"
+                            oninput="updateSavingsPercent(this.value)"
+                            class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                        />
+                        
+                        <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                            <span>5% (Essenziale)</span>
+                            <span>20% (Consigliato)</span>
+                            <span>50%+ ( FIRE / Frugale)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risultati Stipendio Ideale -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full -mr-10 -mt-10 opacity-60 pointer-events-none"></div>
+                    
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Risultato del Calcolo</span>
+                        <h2 class="text-xl font-extrabold text-slate-900 mt-2">Stipendio Mensile & Annuale Richiesto</h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Lo stipendio necessario per sostenere tutte le spese programmate, gli ammortamenti e la quota di risparmio puro impostata.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Mensile Netto -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[11px] font-semibold text-slate-500 block">Stipendio Netto Mensile Necessario</span>
+                                <span id="ideal-net-salary-text" class="text-2xl font-black text-slate-900 block mt-1">€ 0.00</span>
+                            </div>
+                            <span id="ideal-savings-portion-text" class="text-[10px] text-indigo-600 font-semibold block mt-2">
+                                Di cui € 0 destinati al risparmio puro.
+                            </span>
+                        </div>
+
+                        <!-- RAL Lorda Stimata -->
+                        <div class="bg-indigo-50/40 p-4 rounded-xl border border-indigo-100 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[11px] font-semibold text-indigo-700 block">RAL Stimata Necessaria (Italia)</span>
+                                <span id="ideal-gross-salary-text" class="text-2xl font-black text-indigo-950 block mt-1">~ € 0</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 block mt-2 leading-tight">
+                                Stima su 13 mensilità incluse imposte IRPEF 2026.
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Composizione grafica del budget ideale -->
+                    <div class="space-y-3 pt-4 border-t border-slate-100">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Suddivisione del Budget Ideale</h4>
+                        
+                        <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden flex">
+                            <div id="composition-needs-bar" class="bg-amber-500 h-full transition-all duration-300" title="Bisogni"></div>
+                            <div id="composition-wants-bar" class="bg-emerald-500 h-full transition-all duration-300" title="Desideri"></div>
+                            <div id="composition-savings-bar" class="bg-indigo-600 h-full transition-all duration-300" title="Risparmio"></div>
+                        </div>
+
+                        <!-- Legenda composizione -->
+                        <div class="grid grid-cols-3 gap-2 text-[11px] font-bold pt-1">
+                            <div class="flex items-center gap-1.5 text-slate-600">
+                                <span class="w-2.5 h-2.5 bg-amber-500 rounded-full shrink-0"></span>
+                                <span id="legend-needs-text" class="truncate">Essenziali: --</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-slate-600">
+                                <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full shrink-0"></span>
+                                <span id="legend-wants-text" class="truncate">Desideri: --</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-indigo-600">
+                                <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full shrink-0"></span>
+                                <span id="legend-savings-text" class="truncate">Risparmio: --</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggerimento / CTA -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-250 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="space-y-0.5 text-center sm:text-left">
+                            <p class="text-xs font-bold text-slate-850">Vuoi verificare se il tuo stipendio copre questo stile di vita?</p>
+                            <p class="text-[11px] text-slate-500">Confronta le spese reali con le tue entrate correnti.</p>
+                        </div>
+                        <button
+                            onclick="switchTab('analysis')"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1 transition-all shrink-0 shadow-sm"
+                        >
+                            Analizza Sostenibilità
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grafico a Torta della Ripartizione del Budget Ideale -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i data-lucide="chart-pie" class="w-4 h-4 text-indigo-500"></i>
+                        Grafico di Allocazione del Budget Ideale
+                    </h3>
+                    <div class="relative flex justify-center items-center h-64">
+                        <canvas id="budgetPieChart"></canvas>
+                        <div id="noChartData" class="absolute inset-0 flex items-center justify-center bg-white/90 text-slate-400 text-sm hidden">
+                            Nessun dato da mostrare. Inserisci delle spese a sinistra!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ANALISI E SOSTENIBILITÀ DELLO STIPENDIO ATTUALE -->
+            <div id="tab-analysis-content" class="hidden space-y-6">
+                
+                <!-- Input Stipendio Mensile Corrente -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-950 flex items-center gap-2">
+                            <i data-lucide="coins" class="w-5 h-5 text-indigo-600"></i>
+                            Qual è lo stipendio attuale netto?
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Inserisci lo stipendio netto mensile effettivo per verificare se riesci ad ammortizzare le spese programmate.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-3 max-w-sm">
+                        <div class="relative flex-1">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">€</span>
+                            <input
+                                type="number"
+                                id="input-current-salary"
+                                value="1500"
+                                oninput="updateCurrentSalary(this.value)"
+                                placeholder="Es. 1500"
+                                class="w-full text-base font-bold bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                min="0"
+                            />
+                        </div>
+                        <span class="text-xs font-bold text-slate-500 shrink-0">Netti al mese</span>
+                    </div>
+                </div>
+
+                <!-- Risultati della Diagnostica -->
+                <div id="analysis-results-container" class="space-y-6">
+                    
+                    <!-- Card Diagnostica Principale -->
+                    <div id="diagnostic-card" class="bg-white rounded-2xl border p-6 shadow-sm space-y-4 transition-all duration-300">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Diagnostica Finanziaria</span>
+                                <h3 id="diagnostic-label" class="text-xl font-black">
+                                    <!-- Caricato via JS -->
+                                </h3>
+                            </div>
+
+                            <div id="diagnostic-icon-wrapper" class="p-2.5 rounded-xl shrink-0">
+                                <!-- Icona dinamica via JS -->
+                            </div>
+                        </div>
+
+                        <p id="diagnostic-desc" class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <!-- Descrizione caricata via JS -->
+                        </p>
+
+                        <!-- Statistiche Chiave -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                            <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                                <span class="text-xs font-semibold text-slate-500 block">Incidenza Spese su Stipendio Corrente</span>
+                                <span id="diagnostic-expense-ratio" class="text-xl font-black block mt-1">0%</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">Include spese fisse ed ammortamenti</span>
+                            </div>
+
+                            <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                                <span class="text-xs font-semibold text-slate-500 block">Risparmio Netto Mensile Rimasto</span>
+                                <span id="diagnostic-actual-savings" class="text-xl font-black block mt-1">€ 0 (0%)</span>
+                                <span class="text-[10px] text-slate-400 block mt-0.5">Consigliato: minimo 20%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulazione Patrimoniale / Proiezione nel Tempo -->
+                    <div id="wealth-projection-card" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2">
+                            <div id="projection-trend-icon-wrapper" class="p-1.5 rounded-lg">
+                                <!-- Icona dinamica via JS -->
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">Simulazione Patrimonio nel Tempo</h3>
+                                <p class="text-xs text-slate-500">Stima di crescita o contrazione del patrimonio basata sullo stile di vita.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 pt-1">
+                            <!-- 1 Anno -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-150 text-center">
+                                <span class="text-[10px] font-bold text-slate-400 block uppercase">1 Anno</span>
+                                <span id="projection-1y-val" class="text-sm font-black block mt-1">€ 0</span>
+                                <span id="projection-1y-diff" class="text-[9px] font-bold block mt-0.5"></span>
+                            </div>
+
+                            <!-- 3 Anni -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-150 text-center">
+                                <span class="text-[10px] font-bold text-slate-400 block uppercase">3 Anni</span>
+                                <span id="projection-3y-val" class="text-sm font-black block mt-1">€ 0</span>
+                                <span id="projection-3y-diff" class="text-[9px] font-bold block mt-0.5"></span>
+                            </div>
+
+                            <!-- 5 Anni -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-150 text-center">
+                                <span class="text-[10px] font-bold text-slate-400 block uppercase">5 Anni</span>
+                                <span id="projection-5y-val" class="text-sm font-black block mt-1">€ 0</span>
+                                <span id="projection-5y-diff" class="text-[9px] font-bold block mt-0.5"></span>
+                            </div>
+                        </div>
+
+                        <!-- Allerta Prosciugamento Patrimonio -->
+                        <div id="wealth-depletion-warning" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl flex items-start gap-2.5">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 text-rose-600 mt-0.5"></i>
+                            <div>
+                                <span class="font-bold block">Attenzione all'erosione:</span>
+                                <p id="depletion-warning-text" class="mt-0.5 text-rose-700 leading-normal">
+                                    Con questo livello di spesa e risparmio, esaurirai interamente il tuo patrimonio attuale...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confronto Visivo con Regola Sostenibile 50/30/20 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-800">Confronto con la Regola Finanziaria 50/30/20</h3>
+                            <p class="text-xs text-slate-500 mt-1">Valuta quanto le spese correnti si discostano dai parametri di finanza personale ideali.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Bisogni Essenziali -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="text-amber-700">Bisogni Essenziali + Ammortamenti (Target: Max 50%)</span>
+                                    <span id="comparison-needs-label" class="text-slate-800">0% (€ 0)</span>
+                                </div>
+                                <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div id="comparison-needs-bar" class="h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Desideri / Lifestyle -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="text-emerald-700">Desideri / Lifestyle / Viaggi (Target: Max 30%)</span>
+                                    <span id="comparison-wants-label" class="text-slate-800">0% (€ 0)</span>
+                                </div>
+                                <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div id="comparison-wants-bar" class="h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Risparmio Rimanente -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="text-indigo-700">Risparmio Netto Effettivo (Target: Min 20%)</span>
+                                    <span id="comparison-savings-label" class="text-slate-800">0% (€ 0)</span>
+                                </div>
+                                <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div id="comparison-savings-bar" class="h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raccomandazioni Personalizzate -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                        <h4 class="font-bold text-sm text-slate-800 flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+                            Raccomandazioni Strategiche di Budget
+                        </h4>
+                        <ul id="recommendations-list" class="space-y-3 text-xs text-slate-600">
+                            <!-- Inserito dinamicamente via JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Messaggio nel caso lo stipendio corrente sia nullo -->
+                <div id="no-salary-message" class="hidden bg-white border border-slate-200 rounded-2xl p-10 text-center text-slate-400">
+                    <i data-lucide="info" class="w-8 h-8 mx-auto mb-2 opacity-55 text-slate-500"></i>
+                    <p class="text-sm font-semibold">Inserisci un valore positivo di stipendio per avviare il tool di diagnosi di sostenibilità.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-xs text-slate-500 font-semibold">
+                Fisco, Risparmi & Budgeting Pluriennale • Sviluppato con metodologie certificate di finanza personale.
+            </p>
+            <p class="text-[10px] text-slate-400">
+                Nota: I calcoli relativi alla fiscalità italiana e alle imposte IRPEF 2026 sono stime matematiche basate su modelli standard e hanno uno scopo puramente indicativo.
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // --- DATI DI CATEGORIZZAZIONE PREDEFINITI ---
+        const PRESET_CATEGORIES = [
+            { id: 'housing', name: 'Affitto / Mutuo / Condominio', type: 'needs', defaultFreq: 'monthly' },
+            { id: 'bills', name: 'Bollette (Luce, Gas, Internet)', type: 'needs', defaultFreq: 'monthly' },
+            { id: 'groceries', name: 'Spesa Alimentare', type: 'needs', defaultFreq: 'monthly' },
+            { id: 'transport', name: 'Carburante e Trasporti', type: 'needs', defaultFreq: 'monthly' },
+            { id: 'insurance', name: 'Assicurazione Auto / Moto', type: 'needs', defaultFreq: 'yearly' },
+            { id: 'car_tax', name: 'Bollo Auto & Manutenzione', type: 'needs', defaultFreq: 'yearly' },
+            { id: 'car_purchase', name: 'Fondo Acquisto Auto / Moto', type: 'needs', defaultFreq: 'multiyear', defaultYears: 10 },
+            { id: 'house_furnish', name: 'Anticipo Casa / Arredamento', type: 'needs', defaultFreq: 'multiyear', defaultYears: 15 },
+            { id: 'phone', name: 'Cambio Smartphone / Tech', type: 'wants', defaultFreq: 'multiyear', defaultYears: 4 },
+            { id: 'travel', name: 'Fondo Vacanze e Viaggi', type: 'wants', defaultFreq: 'yearly' },
+            { id: 'leisure', name: 'Svago / Ristoranti / Palestra', type: 'wants', defaultFreq: 'monthly' },
+            { id: 'bici', name: 'Fondo Bicicletta / Sport', type: 'wants', defaultFreq: 'multiyear', defaultYears: 5 },
+            { id: 'sfizi', name: 'Sfizi & Gadget', type: 'wants', defaultFreq: 'multiyear', defaultYears: 2 }
+        ];
+
+        // --- STATO INIZIALE ---
+        const DEFAULT_EXPENSES = [
+            { id: '1', category: 'Affitto / Mutuo / Condominio', amount: 650, type: 'needs', frequency: 'monthly', years: 1 },
+            { id: '2', category: 'Spesa Alimentare', amount: 250, type: 'needs', frequency: 'monthly', years: 1 },
+            { id: '3', category: 'Bollette (Luce, Gas, Internet)', amount: 120, type: 'needs', frequency: 'monthly', years: 1 },
+            { id: '4', category: 'Assicurazione Auto / Moto', amount: 480, type: 'needs', frequency: 'yearly', years: 1 },
+            { id: '5', category: 'Fondo Acquisto Auto / Moto', amount: 15000, type: 'needs', frequency: 'multiyear', years: 10 },
+            { id: '6', category: 'Fondo Vacanze e Viaggi', amount: 2400, type: 'wants', frequency: 'yearly', years: 1 },
+            { id: '7', category: 'Cambio Smartphone / Tech', amount: 800, type: 'wants', frequency: 'multiyear', years: 4 },
+            { id: '8', category: 'Svago / Ristoranti / Palestra', amount: 150, type: 'wants', frequency: 'monthly', years: 1 }
+        ];
+
+        let state = {
+            activeTab: 'calculator',
+            expenses: [],
+            targetSavingsPercent: 20,
+            currentSalary: 1500,
+            initialSavings: 20000
+        };
+
+        let budgetChart = null;
+
+        // --- INIZIALIZZAZIONE ---
+        window.onload = function() {
+            loadFromStorage();
+            populatePresetDatalist();
+            calculateAndRender();
+        };
+
+        // --- PERSISTENZA DEI DATI ---
+        function saveToStorage() {
+            localStorage.setItem('financial_planner_state', JSON.stringify(state));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('financial_planner_state');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    // Riconduce a Tab di default
+                    state.activeTab = 'calculator';
+                } catch (e) {
+                    resetStateToDefaults();
+                }
+            } else {
+                resetStateToDefaults();
+            }
+        }
+
+        function resetStateToDefaults() {
+            state.expenses = JSON.parse(JSON.stringify(DEFAULT_EXPENSES));
+            state.targetSavingsPercent = 20;
+            state.currentSalary = 1500;
+            state.initialSavings = 20000;
+        }
+
+        function resetToDefaults() {
+            resetStateToDefaults();
+            saveToStorage();
+            document.getElementById('input-initial-savings').value = state.initialSavings;
+            document.getElementById('input-current-salary').value = state.currentSalary;
+            document.getElementById('target-savings-range').value = state.targetSavingsPercent;
+            document.getElementById('target-savings-percent-text').innerText = state.targetSavingsPercent + "% dello stipendio";
+            calculateAndRender();
+        }
+
+        // --- GESTIONE DELLE SCHEDE (TAB) ---
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            saveToStorage();
+
+            const calcBtn = document.getElementById('tab-calculator-btn');
+            const analysisBtn = document.getElementById('tab-analysis-btn');
+            const calcContent = document.getElementById('tab-calculator-content');
+            const analysisContent = document.getElementById('tab-analysis-content');
+
+            if (tabId === 'calculator') {
+                calcBtn.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm";
+                analysisBtn.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 text-white hover:bg-indigo-700/50";
+                calcContent.classList.remove('hidden');
+                analysisContent.classList.add('hidden');
+            } else {
+                calcBtn.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 text-white hover:bg-indigo-700/50";
+                analysisBtn.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm";
+                calcContent.classList.add('hidden');
+                analysisContent.classList.remove('hidden');
+            }
+
+            // Forza il ridisegno del grafico quando si torna sulla prima tab
+            if (tabId === 'calculator') {
+                setTimeout(renderBudgetChart, 100);
+            }
+
+            lucide.createIcons();
+        }
+
+        // --- POPOLAMENTO E AUTO-FILL DEL FORM ---
+        function populatePresetDatalist() {
+            const datalist = document.getElementById('preset-categories');
+            datalist.innerHTML = PRESET_CATEGORIES.map(cat => `<option value="${cat.name}"></option>`).join('');
+        }
+
+        function handleCategorySelect(val) {
+            const preset = PRESET_CATEGORIES.find(cat => cat.name === val);
+            if (preset) {
+                document.getElementById('expense-type').value = preset.type;
+                document.getElementById('expense-freq').value = preset.defaultFreq;
+                toggleYearsInput(preset.defaultFreq);
+                if (preset.defaultYears) {
+                    document.getElementById('expense-years').value = preset.defaultYears;
+                }
+            }
+        }
+
+        function toggleYearsInput(frequency) {
+            const yearsContainer = document.getElementById('expense-years-container');
+            if (frequency === 'multiyear') {
+                yearsContainer.classList.remove('hidden');
+            } else {
+                yearsContainer.classList.add('hidden');
+            }
+        }
+
+        // --- FUNZIONALITÀ CRUD DELLE SPESE ---
+        function handleAddExpense(e) {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('expense-name');
+            const amountInput = document.getElementById('expense-amount');
+            const typeInput = document.getElementById('expense-type');
+            const freqInput = document.getElementById('expense-freq');
+            const yearsInput = document.getElementById('expense-years');
+
+            const name = nameInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            const type = typeInput.value;
+            const freq = freqInput.value;
+            const years = freq === 'multiyear' ? (parseInt(yearsInput.value) || 1) : 1;
+
+            if (!name || isNaN(amount) || amount <= 0) {
+                return;
+            }
+
+            const newExpense = {
+                id: Date.now().toString(),
+                category: name,
+                amount: amount,
+                type: type,
+                frequency: freq,
+                years: years
+            };
+
+            state.expenses.push(newExpense);
+            saveToStorage();
+
+            // Resetta i campi del form
+            nameInput.value = '';
+            amountInput.value = '';
+            typeInput.value = 'needs';
+            freqInput.value = 'monthly';
+            yearsInput.value = '5';
+            toggleYearsInput('monthly');
+
+            calculateAndRender();
+        }
+
+        function handleDeleteExpense(id) {
+            state.expenses = state.expenses.filter(exp => exp.id !== id);
+            saveToStorage();
+            calculateAndRender();
+        }
+
+        // --- UTILS DI CALCOLO IN ENTRATE E SPESE ---
+        function getMonthlyEquivalent(expense) {
+            const amt = parseFloat(expense.amount) || 0;
+            if (expense.frequency === 'monthly') {
+                return amt;
+            } else if (expense.frequency === 'yearly') {
+                return amt / 12;
+            } else if (expense.frequency === 'multiyear') {
+                const years = parseInt(expense.years) || 1;
+                return amt / (years * 12);
+            }
+            return amt;
+        }
+
+        function updateInitialSavings(val) {
+            state.initialSavings = Math.max(0, parseFloat(val) || 0);
+            saveToStorage();
+            calculateAndRender();
+        }
+
+        function updateSavingsPercent(val) {
+            state.targetSavingsPercent = parseInt(val) || 5;
+            document.getElementById('target-savings-percent-text').innerText = state.targetSavingsPercent + "% dello stipendio";
+            saveToStorage();
+            calculateAndRender();
+        }
+
+        function updateCurrentSalary(val) {
+            state.currentSalary = Math.max(0, parseFloat(val) || 0);
+            saveToStorage();
+            calculateAndRender();
+        }
+
+        // Algoritmo di calcolo inverso della tassazione IRPEF 2026 (Italia)
+        function estimateGrossSalary(netMonthly) {
+            const netAnnual = netMonthly * 13; // Calcolata su 13 mensilità
+            let estimatedGross = netAnnual;
+            
+            if (netAnnual <= 15000) {
+                estimatedGross = netAnnual / 0.77; 
+            } else if (netAnnual <= 28000) {
+                estimatedGross = netAnnual / 0.70; 
+            } else if (netAnnual <= 50000) {
+                estimatedGross = netAnnual / 0.61; 
+            } else {
+                estimatedGross = netAnnual / 0.54; 
+            }
+            return Math.round(estimatedGross);
+        }
+
+        // --- RENDERING & RICALCOLO GLOBALE ---
+        function calculateAndRender() {
+            // Sincronizzazione degli input con lo stato salvato
+            document.getElementById('input-initial-savings').value = state.initialSavings;
+            document.getElementById('input-current-salary').value = state.currentSalary;
+            document.getElementById('target-savings-range').value = state.targetSavingsPercent;
+            document.getElementById('target-savings-percent-text').innerText = state.targetSavingsPercent + "% dello stipendio";
+
+            // 1. Somma dei costi suddivisi per tipologia (Needs / Wants)
+            const needsTotal = state.expenses
+                .filter(e => e.type === 'needs')
+                .reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+
+            const wantsTotal = state.expenses
+                .filter(e => e.type === 'wants')
+                .reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+
+            const overallTotal = needsTotal + wantsTotal;
+
+            // Aggiorna il bilancio mensile ammortizzato cumulativo
+            document.getElementById('overall-monthly-budget').innerText = `€ ${overallTotal.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / mese`;
+
+            // 2. Rendering elenco spese a sinistra
+            renderExpensesList();
+
+            // 3. Calcolo della copertura del fondo d'emergenza (Runway)
+            const emergencyReference = needsTotal > 0 ? needsTotal : overallTotal;
+            const runwayMonths = emergencyReference > 0 ? (state.initialSavings / emergencyReference) : 0;
+            
+            const runwayContainer = document.getElementById('emergency-runway-container');
+            const runwayText = document.getElementById('runway-months-text');
+            const runwayBadge = document.getElementById('runway-badge-container');
+
+            if (state.initialSavings > 0) {
+                runwayContainer.classList.remove('hidden');
+                runwayText.innerText = `${runwayMonths.toFixed(1)} mesi`;
+                
+                if (runwayMonths < 3) {
+                    runwayBadge.innerHTML = `
+                        <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 px-2.5 py-1 rounded-lg font-bold border border-rose-200 text-[11px]">
+                            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Bassa (<3m)
+                        </span>`;
+                } else if (runwayMonths <= 6) {
+                    runwayBadge.innerHTML = `
+                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg font-bold border border-amber-200 text-[11px]">
+                            <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Adeguata (3-6m)
+                        </span>`;
+                } else {
+                    runwayBadge.innerHTML = `
+                        <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg font-bold border border-emerald-200 text-[11px]">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Ottima (>6m)
+                        </span>`;
+                }
+            } else {
+                runwayContainer.classList.add('hidden');
+            }
+
+            // 4. RENDERING TAB 1: STIPENDIO IDEALE
+            let idealNetSalary = overallTotal;
+            if (state.targetSavingsPercent < 100) {
+                const divisor = (100 - state.targetSavingsPercent) / 100;
+                idealNetSalary = overallTotal / divisor;
+            }
+            const idealGrossSalary = estimateGrossSalary(idealNetSalary);
+            const idealSavingsPortion = (idealNetSalary * state.targetSavingsPercent) / 100;
+
+            document.getElementById('ideal-net-salary-text').innerText = `€ ${idealNetSalary.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('ideal-savings-portion-text').innerText = `Di cui € ${idealSavingsPortion.toLocaleString('it-IT', { maximumFractionDigits: 0 })} destinati al risparmio puro.`;
+            document.getElementById('ideal-gross-salary-text').innerText = `~ € ${idealGrossSalary.toLocaleString('it-IT')}`;
+
+            // Suddivisione grafica barre
+            const pctNeeds = idealNetSalary > 0 ? (needsTotal / idealNetSalary) * 100 : 0;
+            const pctWants = idealNetSalary > 0 ? (wantsTotal / idealNetSalary) * 100 : 0;
+            const pctSavings = state.targetSavingsPercent;
+
+            document.getElementById('composition-needs-bar').style.width = `${pctNeeds}%`;
+            document.getElementById('composition-wants-bar').style.width = `${pctWants}%`;
+            document.getElementById('composition-savings-bar').style.width = `${pctSavings}%`;
+
+            document.getElementById('legend-needs-text').innerText = `Essenziali: ${Math.round(pctNeeds)}%`;
+            document.getElementById('legend-wants-text').innerText = `Desideri: ${Math.round(pctWants)}%`;
+            document.getElementById('legend-savings-text').innerText = `Risparmio: ${Math.round(pctSavings)}%`;
+
+            // Riconfigura il Grafico a Torta del budget ideale
+            renderBudgetChart();
+
+            // 5. RENDERING TAB 2: SOSTENIBILITÀ ATTUALE
+            const hasSalary = state.currentSalary > 0;
+            const noSalaryMsg = document.getElementById('no-salary-message');
+            const resultsContainer = document.getElementById('analysis-results-container');
+
+            if (!hasSalary) {
+                noSalaryMsg.classList.remove('hidden');
+                resultsContainer.classList.add('hidden');
+            } else {
+                noSalaryMsg.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+
+                const expenseRatio = Math.round((overallTotal / state.currentSalary) * 100);
+                const actualSavings = state.currentSalary - overallTotal;
+                const savingsRatio = Math.round((actualSavings / state.currentSalary) * 100);
+
+                // Configurazione Diagnostica Principale
+                let status = 'good';
+                let label = 'Ottimo / Sostenibile';
+                let statusColorClass = 'border-emerald-100 shadow-emerald-50/50';
+                let textColorsClass = 'text-emerald-600';
+                let bgIconClass = 'bg-emerald-50 text-emerald-600';
+                let iconMarkup = '<i data-lucide="check-circle" class="w-7 h-7"></i>';
+                let description = 'Il tuo stipendio corrente è in grado di sostenere agevolmente sia le spese quotidiane sia tutti gli accantonamenti futuri pianificati, consentendoti di accumulare un buon risparmio puro mensile.';
+
+                if (expenseRatio > 100) {
+                    status = 'critical';
+                    label = 'Deficit / Bilancio in Perdita';
+                    statusColorClass = 'border-rose-100 shadow-rose-50/50';
+                    textColorsClass = 'text-rose-600';
+                    bgIconClass = 'bg-rose-50 text-rose-600';
+                    iconMarkup = '<i data-lucide="alert-octagon" class="w-7 h-7"></i>';
+                    description = 'Le spese complessive e le riserve di ammortamento superano le tue entrate correnti nette. Stai erodendo le tue riserve monetarie mensilmente per mantenere questo stile di vita.';
+                } else if (expenseRatio > 85) {
+                    status = 'warning';
+                    label = 'Soglia di Rischio Elevata';
+                    statusColorClass = 'border-amber-100 shadow-amber-50/50';
+                    textColorsClass = 'text-amber-600';
+                    bgIconClass = 'bg-amber-50 text-amber-600';
+                    iconMarkup = '<i data-lucide="alert-triangle" class="w-7 h-7"></i>';
+                    description = 'Sei in grado di coprire i costi pianificati, ma il margine di risparmio puro residuo è ridotto ai minimi termini. Un imprevisto potrebbe costringerti a intaccare il patrimonio di sicurezza.';
+                } else if (expenseRatio > 70) {
+                    status = 'moderate';
+                    label = 'Sostenibile ma Limitato';
+                    statusColorClass = 'border-blue-100 shadow-blue-50/50';
+                    textColorsClass = 'text-blue-600';
+                    bgIconClass = 'bg-blue-50 text-blue-600';
+                    iconMarkup = '<i data-lucide="info" class="w-7 h-7"></i>';
+                    description = 'La situazione è gestibile, ma il risparmio puro generato mensilmente è inferiore alla quota ideale del 20% raccomandata dai pianificatori finanziari.';
+                }
+
+                const diagCard = document.getElementById('diagnostic-card');
+                diagCard.className = `bg-white rounded-2xl border p-6 shadow-sm space-y-4 ${statusColorClass}`;
+                
+                const diagLabel = document.getElementById('diagnostic-label');
+                diagLabel.innerText = label;
+                diagLabel.className = `text-xl font-black ${textColorsClass}`;
+
+                const iconWrapper = document.getElementById('diagnostic-icon-wrapper');
+                iconWrapper.className = `p-2.5 rounded-xl shrink-0 ${bgIconClass}`;
+                iconWrapper.innerHTML = iconMarkup;
+
+                document.getElementById('diagnostic-desc').innerText = description;
+
+                // Testi delle metriche di diagnostica
+                const expRatioText = document.getElementById('diagnostic-expense-ratio');
+                expRatioText.innerText = `${expenseRatio}%`;
+                expRatioText.className = `text-xl font-black block mt-1 ${expenseRatio > 100 ? 'text-rose-600' : (expenseRatio > 85 ? 'text-amber-600' : 'text-slate-800')}`;
+
+                const actSavingsText = document.getElementById('diagnostic-actual-savings');
+                actSavingsText.innerText = `€ ${actualSavings.toLocaleString('it-IT', { maximumFractionDigits: 0 })} (${savingsRatio}%)`;
+                actSavingsText.className = `text-xl font-black block mt-1 ${actualSavings < 0 ? 'text-rose-600' : 'text-emerald-600'}`;
+
+                // Proiezioni Patrimoniali
+                const yr1 = state.initialSavings + (actualSavings * 12);
+                const yr3 = state.initialSavings + (actualSavings * 12 * 3);
+                const yr5 = state.initialSavings + (actualSavings * 12 * 5);
+
+                document.getElementById('projection-1y-val').innerText = `€ ${Math.round(yr1).toLocaleString('it-IT')}`;
+                document.getElementById('projection-1y-val').className = `text-sm font-black block mt-1 ${yr1 >= 0 ? 'text-slate-800' : 'text-rose-600'}`;
+                document.getElementById('projection-1y-diff').innerHTML = `${actualSavings >= 0 ? '+' : ''}€ ${Math.round(actualSavings * 12).toLocaleString('it-IT')}`;
+                document.getElementById('projection-1y-diff').className = `text-[9px] font-bold block mt-0.5 ${actualSavings >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+
+                document.getElementById('projection-3y-val').innerText = `€ ${Math.round(yr3).toLocaleString('it-IT')}`;
+                document.getElementById('projection-3y-val').className = `text-sm font-black block mt-1 ${yr3 >= 0 ? 'text-slate-800' : 'text-rose-600'}`;
+                document.getElementById('projection-3y-diff').innerHTML = `${actualSavings >= 0 ? '+' : ''}€ ${Math.round(actualSavings * 12 * 3).toLocaleString('it-IT')}`;
+                document.getElementById('projection-3y-diff').className = `text-[9px] font-bold block mt-0.5 ${actualSavings >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+
+                document.getElementById('projection-5y-val').innerText = `€ ${Math.round(yr5).toLocaleString('it-IT')}`;
+                document.getElementById('projection-5y-val').className = `text-sm font-black block mt-1 ${yr5 >= 0 ? 'text-slate-800' : 'text-rose-600'}`;
+                document.getElementById('projection-5y-diff').innerHTML = `${actualSavings >= 0 ? '+' : ''}€ ${Math.round(actualSavings * 12 * 5).toLocaleString('it-IT')}`;
+                document.getElementById('projection-5y-diff').className = `text-[9px] font-bold block mt-0.5 ${actualSavings >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+
+                // Icona del Trend di Proiezione
+                const trendWrapper = document.getElementById('projection-trend-icon-wrapper');
+                if (actualSavings >= 0) {
+                    trendWrapper.className = 'p-1.5 rounded-lg bg-emerald-50 text-emerald-600';
+                    trendWrapper.innerHTML = '<i data-lucide="trending-up" class="w-5 h-5"></i>';
+                } else {
+                    trendWrapper.className = 'p-1.5 rounded-lg bg-rose-50 text-rose-600';
+                    trendWrapper.innerHTML = '<i data-lucide="trending-down" class="w-5 h-5"></i>';
+                }
+
+                // Gestione Allerta prosciugamento patrimonio
+                const warningBox = document.getElementById('wealth-depletion-warning');
+                if (actualSavings < 0 && state.initialSavings > 0) {
+                    warningBox.classList.remove('hidden');
+                    const monthsRemaining = Math.abs(state.initialSavings / (actualSavings || -1)).toFixed(0);
+                    document.getElementById('depletion-warning-text').innerHTML = `
+                        Continuando con questo livello di uscite, esaurirai l'intero patrimonio corrente di € ${state.initialSavings.toLocaleString('it-IT')} in circa 
+                        <strong class="font-black text-rose-900">${monthsRemaining} mesi</strong>.
+                    `;
+                } else {
+                    warningBox.classList.add('hidden');
+                }
+
+                // Confronto grafico reale con la regola 50/30/20
+                const needsPctReal = (needsTotal / state.currentSalary) * 100;
+                const wantsPctReal = (wantsTotal / state.currentSalary) * 100;
+                const savingsPctReal = savingsRatio;
+
+                document.getElementById('comparison-needs-label').innerText = `${Math.round(needsPctReal)}% (€ ${Math.round(needsTotal)})`;
+                const needsBar = document.getElementById('comparison-needs-bar');
+                needsBar.style.width = `${Math.min(needsPctReal, 100)}%`;
+                needsBar.className = `h-full rounded-full ${needsPctReal > 50 ? 'bg-rose-500' : 'bg-amber-500'}`;
+
+                document.getElementById('comparison-wants-label').innerText = `${Math.round(wantsPctReal)}% (€ ${Math.round(wantsTotal)})`;
+                const wantsBar = document.getElementById('comparison-wants-bar');
+                wantsBar.style.width = `${Math.min(wantsPctReal, 100)}%`;
+                wantsBar.className = `h-full rounded-full ${wantsPctReal > 30 ? 'bg-amber-500' : 'bg-emerald-500'}`;
+
+                document.getElementById('comparison-savings-label').innerText = `${Math.max(0, savingsPctReal)}% (€ ${Math.max(0, Math.round(actualSavings))})`;
+                const savingsBar = document.getElementById('comparison-savings-bar');
+                savingsBar.style.width = `${Math.max(0, Math.min(savingsPctReal, 100))}%`;
+                savingsBar.className = `h-full rounded-full ${savingsPctReal >= 20 ? 'bg-indigo-600' : 'bg-rose-400'}`;
+
+                // Raccomandazioni personalizzate
+                renderRecommendations(status, idealNetSalary);
+            }
+
+            // Inizializza o aggiorna le icone Lucide
+            lucide.createIcons();
+        }
+
+        // --- INTERFACCIA: ELENCO SPESE ---
+        function renderExpensesList() {
+            const listContainer = document.getElementById('expenses-list');
+            if (state.expenses.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="p-8 text-center text-slate-400">
+                        <i data-lucide="layers-3" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                        <p class="text-xs font-semibold">Nessun costo o ammortamento programmato.</p>
+                    </div>`;
+                return;
+            }
+
+            listContainer.innerHTML = state.expenses.map(expense => {
+                const equiv = getMonthlyEquivalent(expense);
+                let badgeHTML = '';
+
+                if (expense.type === 'needs') {
+                    badgeHTML += `<span class="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Essenziale</span>`;
+                } else {
+                    badgeHTML += `<span class="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Svago</span>`;
+                }
+
+                if (expense.frequency === 'monthly') {
+                    badgeHTML += `
+                        <span class="bg-slate-100 text-slate-600 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-slate-200 flex items-center gap-0.5">
+                            <i data-lucide="calendar" class="w-2.5 h-2.5"></i> Mensile
+                        </span>`;
+                } else if (expense.frequency === 'yearly') {
+                    badgeHTML += `
+                        <span class="bg-indigo-50 text-indigo-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-indigo-200 flex items-center gap-0.5">
+                            <i data-lucide="calendar-days" class="w-2.5 h-2.5"></i> €${expense.amount}/anno
+                        </span>`;
+                } else if (expense.frequency === 'multiyear') {
+                    badgeHTML += `
+                        <span class="bg-purple-50 text-purple-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-purple-200 flex items-center gap-0.5">
+                            <i data-lucide="hourglass" class="w-2.5 h-2.5"></i> €${expense.amount} / ${expense.years} anni
+                        </span>`;
+                }
+
+                return `
+                    <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                        <div class="min-w-0 pr-2">
+                            <p class="text-sm font-semibold text-slate-800 truncate">${expense.category}</p>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-1">
+                                ${badgeHTML}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-[9px] text-slate-400 block font-semibold uppercase">Quota Mese</span>
+                                <span class="text-xs font-black text-slate-900">€ ${equiv.toFixed(2)}</span>
+                            </div>
+                            <button
+                                onclick="handleDeleteExpense('${expense.id}')"
+                                class="text-slate-300 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition-all"
+                                title="Rimuovi"
+                            >
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // --- RACCOMANDAZIONI PERSONALIZZATE ---
+        function renderRecommendations(status, idealNetSalary) {
+            const recList = document.getElementById('recommendations-list');
+            let recHTML = '';
+
+            if (status === 'critical') {
+                recHTML += `
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-rose-50 rounded text-rose-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">!</span>
+                        <span><strong>Sforamento critico:</strong> Le tue entrate sono inferiori alle uscite reali. Ti consigliamo di prolungare la frequenza degli acquisti pluriennali (es. tenere lo smartphone per 5 anni invece di 3) o ridurre il budget viaggi fino a riequilibrare il budget mensile.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-rose-50 rounded text-rose-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">!</span>
+                        <span><strong>Ricalibra le priorità:</strong> Valuta l'ottimizzazione strategica delle spese essenziali fisse (es. rinegoziazione contratti luce/gas, mutuo o cambio di abbonamenti superflui).</span>
+                    </li>`;
+            } else if (status === 'warning') {
+                recHTML += `
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-amber-50 rounded text-amber-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">!</span>
+                        <span><strong>Liquidità vulnerabile:</strong> Hai poco margine di accumulo pulito. Eventuali emergenze consumeranno le tue riserve più velocemente di quanto riesci a rimpinguarle. Cerca di mantenere il tuo fondo d'emergenza in un conto deposito separato e vincolato a breve termine.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-amber-50 rounded text-amber-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">!</span>
+                        <span><strong>Obiettivo di Reddito:</strong> Per coprire in sicurezza i tuoi piani di acquisto e mantenere un tasso di risparmio desiderabile del ${state.targetSavingsPercent}%, dovresti puntare ad aumentare le entrate nette di almeno <strong>€ ${Math.round(idealNetSalary - state.currentSalary)}</strong> al mese.</span>
+                    </li>`;
+            } else if (status === 'moderate') {
+                recHTML += `
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-blue-50 rounded text-blue-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">✓</span>
+                        <span><strong>Fondi Virtuali Separati:</strong> La gestione è sostenibile. Un'ottima mossa consiste nello spostare i ratei mensili calcolati (es. per assicurazioni e viaggi) in salvadanai digitali dedicati o conti secondari all'inizio di ogni mese, lasciando sul conto principale solo la liquidità di spesa effettiva.</span>
+                    </li>`;
+            } else {
+                recHTML += `
+                    <li class="flex items-start gap-2.5">
+                        <span class="p-0.5 bg-emerald-50 rounded text-emerald-600 shrink-0 font-extrabold text-[10px] w-5 h-5 flex items-center justify-center">✓</span>
+                        <span><strong>Eccellente Bilanciamento:</strong> Il tuo piano finanziario è in uno stato ottimale. Possiedi riserve di sicurezza stabili e una solida capacità di risparmio puro a lungo termine. Potresti valutare di investire una parte dell'eccedenza finanziaria per accelerare la crescita del tuo patrimonio.</span>
+                    </li>`;
+            }
+
+            recList.innerHTML = recHTML;
+        }
+
+        // --- GRAFICO ALLOCAZIONE BUDGET (CHART.JS) ---
+        function renderBudgetChart() {
+            if (state.activeTab !== 'calculator') return;
+
+            const ctx = document.getElementById('budgetPieChart').getContext('2d');
+            const placeholderEl = document.getElementById('noChartData');
+
+            // Preparazione dei dati dal set di spese correnti
+            const labels = [];
+            const data = [];
+            
+            state.expenses.forEach(exp => {
+                labels.push(exp.category);
+                data.push(getMonthlyEquivalent(exp));
+            });
+
+            // Calcolo quota di risparmio puro derivante dal calcolo dello stipendio ideale
+            const needsTotal = state.expenses
+                .filter(e => e.type === 'needs')
+                .reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+
+            const wantsTotal = state.expenses
+                .filter(e => e.type === 'wants')
+                .reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+
+            const overallTotal = needsTotal + wantsTotal;
+            let idealNetSalary = overallTotal;
+            if (state.targetSavingsPercent < 100) {
+                const divisor = (100 - state.targetSavingsPercent) / 100;
+                idealNetSalary = overallTotal / divisor;
+            }
+            const savingsPortion = idealNetSalary - overallTotal;
+
+            if (savingsPortion > 0) {
+                labels.push("Risparmio Puro Programmato");
+                data.push(savingsPortion);
+            }
+
+            if (data.length === 0 || idealNetSalary === 0) {
+                placeholderEl.classList.remove('hidden');
+                if (budgetChart) {
+                    budgetChart.destroy();
+                    budgetChart = null;
+                }
+                return;
+            } else {
+                placeholderEl.classList.add('hidden');
+            }
+
+            // Selezione della palette di colori moderni
+            const palette = [
+                '#818cf8', '#34d399', '#fbbf24', '#f87171', '#60a5fa', 
+                '#a78bfa', '#f472b6', '#2dd4bf', '#fb923c', '#c084fc', '#4f46e5'
+            ];
+            
+            // Colore fisso per l'accumulo di risparmio
+            const backgroundColors = labels.map((lbl, idx) => {
+                if (lbl === "Risparmio Puro Programmato") return '#312e81'; // Blu scuro
+                return palette[idx % palette.length];
+            });
+
+            if (budgetChart) {
+                budgetChart.destroy();
+            }
+
+            budgetChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 8,
+                                font: {
+                                    size: 10,
+                                    weight: 'bold'
+                                },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.raw || 0;
+                                    const pct = ((val / idealNetSalary) * 100).toFixed(1);
+                                    return ` ${context.label}: €${val.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '72%'
+                }
+            });
+        }
+
+	function exportDataForAI() {
+    if (state.expenses.length === 0) {
+        alert("Non ci sono spese da esportare!");
+        return;
+    }
+
+    // Calcolo delle metriche attuali per il report
+    const needsTotal = state.expenses.filter(e => e.type === 'needs').reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+    const wantsTotal = state.expenses.filter(e => e.type === 'wants').reduce((sum, e) => sum + getMonthlyEquivalent(e), 0);
+    const overallTotal = needsTotal + wantsTotal;
+    const actualSavings = state.currentSalary - overallTotal;
+
+    // Generazione del testo formattato per l'IA
+    let textReport = `=== DATI PIANIFICATORE FINANZIARIO ===\n\n`;
+    textReport += `STIPENDIO ATTUALE NETTO: € ${state.currentSalary} / mese\n`;
+    textReport += `PATRIMONIO LIQUIDO ATTUALE: € ${state.initialSavings}\n`;
+    textReport += `TASSO DI RISPARMIO DESIDERATO (TAB 1): ${state.targetSavingsPercent}%\n\n`;
+    textReport += `--- ELENCO SPESE E AMMORTAMENTI PLANNER ---\n`;
+    
+    state.expenses.forEach((exp, index) => {
+        const equiv = getMonthlyEquivalent(exp);
+        textReport += `${index + 1}. [${exp.type.toUpperCase()}] ${exp.category}: € ${exp.amount} (${exp.frequency}${exp.frequency === 'multiyear' ? ' ' + exp.years + ' anni' : ''}) -> Quota mensile: € ${equiv.toFixed(2)}\n`;
+    });
+
+    textReport += `\n--- SINTESI FINANZIARIA ---\n`;
+    textReport += `- Budget Mensile Ammortizzato Totale: € ${overallTotal.toFixed(2)}\n`;
+    textReport += `- Risparmio Netto Rimasto: € ${actualSavings.toFixed(2)} (${Math.round((actualSavings / state.currentSalary) * 100)}%)\n\n`;
+    textReport += `PROMPT PER L'IA: "Analizza questo profilo finanziario, evidenzia eventuali criticità sul budgeting a lungo termine o sull'erosione del patrimonio, e forniscimi raccomandazioni strategiche."`;
+
+    // Copia automatica negli appunti
+    navigator.clipboard.writeText(textReport).then(() => {
+        alert("Dati formattati e copiati negli appunti! Incollali direttamente nella chat dell'AI.");
+    }).catch(err => {
+        console.error('Errore nella copia negli appunti: ', err);
+        // Fallback in caso di blocco permessi del browser
+        const textarea = document.createElement("textarea");
+        textarea.value = textReport;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        alert("Dati copiati negli appunti (modalità sussidiaria).");
+    });
+}
+    </script>
+</body>
+</html>

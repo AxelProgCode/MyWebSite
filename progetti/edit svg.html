@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor SVG</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Sfondo a scacchiera per trasparenza */
+    .checkerboard {
+      background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+                        linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+                        linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+    .dark .checkerboard {
+      background-image: linear-gradient(45deg, #374151 25%, transparent 25%),
+                        linear-gradient(-45deg, #374151 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #374151 75%),
+                        linear-gradient(-45deg, transparent 75%, #374151 75%);
+    }
+    /* Evidenziazione elemento selezionato */
+    .selected-element-outline {
+      outline: 2px dashed #3b82f6 !important;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 h-screen flex flex-col overflow-hidden dark:bg-gray-900 dark:text-gray-100">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between z-10 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-blue-500 text-white rounded-lg">
+        <i data-lucide="vector"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight">SVG Customizer</h1>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Modifica l'SVG e usa Ctrl+Z per annullare gli errori</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <!-- Sezione Undo / Redo -->
+      <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+        <button id="btn-undo" class="p-2 text-gray-500 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded-md transition disabled:opacity-40 disabled:hover:bg-transparent" title="Annulla (Ctrl+Z)" disabled>
+          <i data-lucide="undo-2" class="w-4 h-4"></i>
+        </button>
+        <button id="btn-redo" class="p-2 text-gray-500 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded-md transition disabled:opacity-40 disabled:hover:bg-transparent" title="Ripristina (Ctrl+Y)" disabled>
+          <i data-lucide="redo-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+
+      <!-- Carica File -->
+      <label class="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg cursor-pointer transition shadow-sm">
+        <i data-lucide="upload" class="w-4 h-4"></i>
+        <span>Carica SVG</span>
+        <input type="file" id="import-svg" accept=".svg" class="hidden">
+      </label>
+
+      <!-- Esporta File -->
+      <button id="export-svg" class="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition shadow-sm">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Scarica SVG</span>
+      </button>
+
+      <!-- Reset di esempio -->
+      <button id="load-example" class="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition" title="Carica SVG di esempio">
+        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Area Principale -->
+  <main class="flex-1 flex overflow-hidden">
+    
+    <!-- Sidebar Sinistra: Gestione Livelli ed Elementi -->
+    <aside class="w-80 bg-white border-r border-gray-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="font-semibold text-sm flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-blue-500"></i>
+          Elementi SVG ({<span id="elements-count">0</span>})
+        </h2>
+        <p class="text-xs text-gray-500 mt-1">Seleziona un elemento per modificarlo</p>
+      </div>
+      <!-- Lista Elementi -->
+      <div id="elements-list" class="flex-1 overflow-y-auto p-2 space-y-1">
+        <div class="text-center py-8 text-gray-400 text-sm">Carica un SVG per iniziare</div>
+      </div>
+    </aside>
+
+    <!-- Canvas Centrale con Drag & Drop -->
+    <section id="drop-zone" class="flex-1 bg-gray-100 dark:bg-gray-950 flex flex-col relative overflow-hidden">
+      
+      <!-- Overlay grafico per il Drag over -->
+      <div id="drag-overlay" class="absolute inset-0 bg-blue-500/10 border-4 border-dashed border-blue-500 rounded-lg m-4 z-30 flex flex-col items-center justify-center pointer-events-none opacity-0 transition-opacity duration-200">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl flex flex-col items-center space-y-3">
+          <i data-lucide="file-plus-2" class="w-12 h-12 text-blue-500 animate-bounce"></i>
+          <p class="text-base font-bold text-gray-800 dark:text-gray-100">Rilascia il file per importare</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Supporta file con estensione .svg</p>
+        </div>
+      </div>
+
+      <!-- Toolbar Canvas -->
+      <div class="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-white/90 backdrop-blur p-1.5 rounded-lg border border-gray-200 shadow-sm dark:bg-gray-850 dark:border-gray-700">
+        <!-- Controlli Sfondo Canvas -->
+        <button id="bg-transparent" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-750 text-gray-600 dark:text-gray-300" title="Sfondo Trasparente">
+          <i data-lucide="grid-3x3" class="w-4 h-4"></i>
+        </button>
+        <button id="bg-white" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-750 text-gray-600 dark:text-gray-300" title="Sfondo Bianco">
+          <span class="block w-4 h-4 bg-white border border-gray-300 rounded-sm"></span>
+        </button>
+        <button id="bg-dark" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-750 text-gray-600 dark:text-gray-300" title="Sfondo Scuro">
+          <span class="block w-4 h-4 bg-gray-800 border border-gray-600 rounded-sm"></span>
+        </button>
+        <div class="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+        <!-- Indicatore Drag and Drop -->
+        <div class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded dark:bg-blue-950/40 dark:text-blue-400 font-medium animate-pulse">
+          Drag & Drop Attivo
+        </div>
+      </div>
+
+      <!-- Area di Visualizzazione SVG -->
+      <div id="canvas-container" class="flex-1 flex items-center justify-center p-8 checkerboard overflow-auto">
+        <div id="svg-viewport" class="max-w-full max-h-full transition-shadow duration-250 flex items-center justify-center">
+          <!-- L'SVG caricato verrà iniettato qui -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Destra: Editor Proprietà -->
+    <aside class="w-80 bg-white border-l border-gray-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+      <!-- Scheda Proprietà Elemento -->
+      <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="font-semibold text-sm flex items-center gap-2">
+          <i data-lucide="sliders" class="w-4 h-4 text-blue-500"></i>
+          Proprietà Selezionate
+        </h2>
+      </div>
+
+      <div id="properties-panel" class="flex-1 overflow-y-auto p-4 space-y-6">
+        <!-- Stato Non Selezionato -->
+        <div id="no-selection-message" class="text-center py-12 text-gray-400 text-sm">
+          <i data-lucide="mouse-pointer" class="w-8 h-8 mx-auto mb-2 opacity-55"></i>
+          Clicca su una forma nell'SVG o nella lista a sinistra per modificarla.
+        </div>
+
+        <!-- Form Editore Proprietà -->
+        <div id="editor-form" class="hidden space-y-4">
+          <div>
+            <span id="elem-badge" class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded dark:bg-blue-900/30 dark:text-blue-300 uppercase">PATH</span>
+            <span id="elem-id" class="text-xs text-gray-500 font-mono ml-2">#id-elemento</span>
+          </div>
+
+          <!-- Colore Riempimento (Fill) -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Riempimento (Fill)</label>
+            <div class="flex items-center space-x-2">
+              <input type="color" id="prop-fill" class="w-10 h-10 p-0.5 border border-gray-200 rounded cursor-pointer dark:bg-gray-700 dark:border-gray-600">
+              <input type="text" id="prop-fill-text" class="flex-1 text-sm bg-gray-50 border border-gray-200 rounded px-2.5 py-1.5 font-mono dark:bg-gray-900 dark:border-gray-700" placeholder="none o #ffffff">
+              <button id="btn-fill-none" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-650 text-xs rounded transition">Nessuno</button>
+            </div>
+          </div>
+
+          <!-- Opacità Riempimento -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+              <span>Opacità Riempimento</span>
+              <span id="prop-fill-opacity-val">100%</span>
+            </div>
+            <input type="range" id="prop-fill-opacity" min="0" max="100" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+          </div>
+
+          <hr class="border-gray-100 dark:border-gray-700 my-4">
+
+          <!-- Colore Tratto (Stroke) -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Tratto (Stroke)</label>
+            <div class="flex items-center space-x-2">
+              <input type="color" id="prop-stroke" class="w-10 h-10 p-0.5 border border-gray-200 rounded cursor-pointer dark:bg-gray-700 dark:border-gray-600">
+              <input type="text" id="prop-stroke-text" class="flex-1 text-sm bg-gray-50 border border-gray-200 rounded px-2.5 py-1.5 font-mono dark:bg-gray-900 dark:border-gray-700" placeholder="none o #ffffff">
+              <button id="btn-stroke-none" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-650 text-xs rounded transition">Nessuno</button>
+            </div>
+          </div>
+
+          <!-- Spessore Tratto (Stroke Width) -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+              <span>Spessore Tratto</span>
+              <span id="prop-stroke-width-val">1px</span>
+            </div>
+            <input type="range" id="prop-stroke-width" min="0" max="50" step="0.5" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+          </div>
+
+          <hr class="border-gray-100 dark:border-gray-700 my-4">
+
+          <!-- Altre Azioni Elemento -->
+          <div class="space-y-2">
+            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Azioni Elemento</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="elem-move-up" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded text-xs font-medium transition dark:bg-gray-750 dark:hover:bg-gray-700 dark:border-gray-650">
+                <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i> Porta Sopra
+              </button>
+              <button id="elem-move-down" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded text-xs font-medium transition dark:bg-gray-750 dark:hover:bg-gray-700 dark:border-gray-650">
+                <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i> Porta Sotto
+              </button>
+              <button id="elem-delete" class="col-span-2 flex items-center justify-center gap-1.5 py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded text-xs font-medium transition dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:border-rose-900/50 dark:text-rose-400">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Elimina Elemento
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Dimensioni -->
+      <div id="svg-dimensions" class="p-4 border-t border-gray-200 bg-gray-50 text-xs text-gray-500 dark:bg-gray-850 dark:border-gray-700 space-y-1">
+        <div class="flex justify-between">
+          <span>Risoluzione Canvas:</span>
+          <span id="canvas-res" class="font-mono font-medium">0 x 0</span>
+        </div>
+        <div class="flex justify-between">
+          <span>ViewBox:</span>
+          <span id="canvas-viewbox" class="font-mono font-medium">-</span>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Notifiche Toast Customizzate -->
+  <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+
+  <!-- Script Editor -->
+  <script>
+    // Asset SVG di esempio iniziale
+    const SAMPLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect id="sfondo-card" x="10" y="10" width="380" height="380" rx="30" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+  <circle id="sole" cx="200" cy="140" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+  <path id="montagna-retro" d="M30 380 L180 180 L290 380 Z" fill="#475569" opacity="0.9"/>
+  <path id="montagna-fronte" d="M120 380 L280 120 L370 380 Z" fill="#334155"/>
+  <circle id="accento-luce" cx="200" cy="140" r="12" fill="#ffffff" opacity="0.6"/>
+  <text id="titolo-grafica" x="200" y="340" fill="#f8fafc" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle">AVVENTURA OUTDOOR</text>
+</svg>`;
+
+    // Riferimenti DOM principali
+    const importInput = document.getElementById('import-svg');
+    const exportBtn = document.getElementById('export-svg');
+    const loadExampleBtn = document.getElementById('load-example');
+    const svgViewport = document.getElementById('svg-viewport');
+    const elementsList = document.getElementById('elements-list');
+    const elementsCount = document.getElementById('elements-count');
+    const canvasContainer = document.getElementById('canvas-container');
+    const dropZone = document.getElementById('drop-zone');
+    const dragOverlay = document.getElementById('drag-overlay');
+    
+    // Riferimenti Undo / Redo
+    const btnUndo = document.getElementById('btn-undo');
+    const btnRedo = document.getElementById('btn-redo');
+
+    // Controlli Sfondo
+    const bgTransparent = document.getElementById('bg-transparent');
+    const bgWhite = document.getElementById('bg-white');
+    const bgDark = document.getElementById('bg-dark');
+    
+    // Pannello Proprietà
+    const noSelectionMessage = document.getElementById('no-selection-message');
+    const editorForm = document.getElementById('editor-form');
+    const elemBadge = document.getElementById('elem-badge');
+    const elemId = document.getElementById('elem-id');
+    
+    const propFill = document.getElementById('prop-fill');
+    const propFillText = document.getElementById('prop-fill-text');
+    const btnFillNone = document.getElementById('btn-fill-none');
+    
+    const propFillOpacity = document.getElementById('prop-fill-opacity');
+    const propFillOpacityVal = document.getElementById('prop-fill-opacity-val');
+    
+    const propStroke = document.getElementById('prop-stroke');
+    const propStrokeText = document.getElementById('prop-stroke-text');
+    const btnStrokeNone = document.getElementById('btn-stroke-none');
+    
+    const propStrokeWidth = document.getElementById('prop-stroke-width');
+    const propStrokeWidthVal = document.getElementById('prop-stroke-width-val');
+    
+    const btnMoveUp = document.getElementById('elem-move-up');
+    const btnMoveDown = document.getElementById('elem-move-down');
+    const btnDelete = document.getElementById('elem-delete');
+    
+    const canvasRes = document.getElementById('canvas-res');
+    const canvasViewbox = document.getElementById('canvas-viewbox');
+
+    // Stato dell'applicazione e stack della cronologia
+    let activeSvgElement = null; 
+    let selectedElement = null;  
+    
+    let undoStack = [];
+    let redoStack = [];
+    const MAX_HISTORY = 40; // Limite massimo di stati salvati per ottimizzare la memoria
+
+    const svgTagIcons = {
+      'path': 'pentagon',
+      'rect': 'square',
+      'circle': 'circle',
+      'ellipse': 'circle-dot',
+      'line': 'minus',
+      'polyline': 'spline',
+      'polygon': 'triangle',
+      'text': 'type',
+      'g': 'folder'
+    };
+
+    window.onload = function() {
+      lucide.createIcons();
+      loadSVGFromString(SAMPLE_SVG, true); // Reset della cronologia all'avvio
+      initEvents();
+    };
+
+    // Mostra un feedback all'utente
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `flex items-center p-3 rounded-lg shadow-md border text-sm transform transition duration-300 ${
+        type === 'success' 
+          ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-900/50 dark:text-emerald-400' 
+          : 'bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-900/50 dark:text-rose-400'
+      }`;
+      
+      const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
+      toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 mr-2 shrink-0"></i> <span>${message}</span>`;
+      
+      const container = document.getElementById('toast-container');
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    // Salvataggio dello stato corrente dell'SVG nella cronologia prima di una modifica
+    function saveHistoryState() {
+      if (!activeSvgElement) return;
+
+      // Salviamo l'ID dell'elemento selezionato per ripristinarlo all'undo
+      const currentSelectedId = selectedElement ? selectedElement.getAttribute('id') : null;
+
+      // Rimuove provvisoriamente il tracciato di selezione per salvare l'SVG pulito
+      if (selectedElement) {
+        selectedElement.classList.remove('selected-element-outline');
+      }
+
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(activeSvgElement);
+
+      // Ripristina l'outline se necessario
+      if (selectedElement) {
+        selectedElement.classList.add('selected-element-outline');
+      }
+
+      const lastState = undoStack[undoStack.length - 1];
+      
+      // Evita di salvare duplicati identici consecutivi
+      if (!lastState || lastState.xml !== svgString) {
+        undoStack.push({
+          xml: svgString,
+          selectedId: currentSelectedId
+        });
+        
+        if (undoStack.length > MAX_HISTORY) {
+          undoStack.shift();
+        }
+        
+        // Pulisce il redo quando viene compiuta una nuova azione
+        redoStack = [];
+        updateUndoRedoButtons();
+      }
+    }
+
+    // Aggiorna visivamente lo stato abilitato/disabilitato dei pulsanti di undo/redo
+    function updateUndoRedoButtons() {
+      // Dobbiamo avere almeno uno stato precedente per poter fare "Annulla" (lunghezza > 1)
+      btnUndo.disabled = undoStack.length <= 1;
+      btnRedo.disabled = redoStack.length === 0;
+    }
+
+    // Esegue l'azione di "Tornare Indietro" (Undo)
+    function performUndo() {
+      if (undoStack.length <= 1) return;
+
+      // Estrae lo stato attuale e lo sposta nello stack di Redo
+      const currentState = undoStack.pop();
+      redoStack.push(currentState);
+
+      // Applica lo stato precedente
+      const previousState = undoStack[undoStack.length - 1];
+      applyHistoryState(previousState);
+      updateUndoRedoButtons();
+      showToast('Modifica annullata');
+    }
+
+    // Esegue l'azione di "Ripristina" (Redo)
+    function performRedo() {
+      if (redoStack.length === 0) return;
+
+      // Sposta l'elemento dalla cima di Redo a quella di Undo
+      const nextState = redoStack.pop();
+      undoStack.push(nextState);
+
+      applyHistoryState(nextState);
+      updateUndoRedoButtons();
+      showToast('Modifica ripristinata');
+    }
+
+    // Applica fisicamente una stringa SVG recuperata dalla cronologia
+    function applyHistoryState(state) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(state.xml, 'image/svg+xml');
+      const svgNode = doc.querySelector('svg');
+
+      if (!svgNode) return;
+
+      svgViewport.innerHTML = '';
+      svgViewport.appendChild(svgNode);
+      activeSvgElement = svgNode;
+
+      activeSvgElement.setAttribute('width', '100%');
+      activeSvgElement.setAttribute('height', '100%');
+      activeSvgElement.classList.add('select-none', 'max-h-[70vh]');
+
+      updateMetadata();
+      attachInteractiveSVGClickEvents();
+
+      // Ripristina la selezione dell'elemento se esisteva ancora
+      if (state.selectedId) {
+        const el = activeSvgElement.querySelector(`[id="${state.selectedId}"]`);
+        if (el) {
+          selectElement(el, false); // Seleziona senza creare un nuovo stato di cronologia
+        } else {
+          deselectElement();
+        }
+      } else {
+        deselectElement();
+      }
+    }
+
+    // Carica SVG da stringa di testo
+    function loadSVGFromString(svgString, resetHistory = false) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgString, 'image/svg+xml');
+      const parserError = doc.querySelector('parsererror');
+      
+      if (parserError) {
+        showToast('Errore durante la lettura del file SVG.', 'error');
+        return;
+      }
+
+      const svgNode = doc.querySelector('svg');
+      if (!svgNode) {
+        showToast('Nessun tag <svg> valido trovato.', 'error');
+        return;
+      }
+
+      svgViewport.innerHTML = '';
+      svgViewport.appendChild(svgNode);
+      activeSvgElement = svgNode;
+
+      activeSvgElement.setAttribute('width', '100%');
+      activeSvgElement.setAttribute('height', '100%');
+      activeSvgElement.classList.add('select-none', 'max-h-[70vh]');
+
+      deselectElement();
+      updateMetadata();
+      rebuildElementsList();
+      attachInteractiveSVGClickEvents();
+
+      if (resetHistory) {
+        undoStack = [];
+        redoStack = [];
+        // Salva lo stato pulito iniziale
+        saveHistoryState();
+      } else {
+        // Se caricato manualmente dall'utente, salviamo lo stato prima di procedere
+        saveHistoryState();
+      }
+
+      showToast('File caricato correttamente!');
+    }
+
+    function updateMetadata() {
+      if (!activeSvgElement) return;
+      const w = activeSvgElement.getAttribute('width') || 'Auto';
+      const h = activeSvgElement.getAttribute('height') || 'Auto';
+      const viewBox = activeSvgElement.getAttribute('viewBox') || 'Nessuna';
+      canvasRes.textContent = `${w} x ${h}`;
+      canvasViewbox.textContent = viewBox;
+    }
+
+    function rebuildElementsList() {
+      elementsList.innerHTML = '';
+      if (!activeSvgElement) return;
+
+      const targetSelectors = 'path, rect, circle, ellipse, line, polyline, polygon, text, g';
+      const elements = Array.from(activeSvgElement.querySelectorAll(targetSelectors));
+      
+      elementsCount.textContent = elements.length;
+
+      if (elements.length === 0) {
+        elementsList.innerHTML = `<div class="text-center py-8 text-gray-400 text-sm">Nessun elemento editabile</div>`;
+        return;
+      }
+
+      elements.forEach((el, index) => {
+        const tagName = el.tagName.toLowerCase();
+        const id = el.getAttribute('id') || `${tagName}-${index}`;
+        if (!el.getAttribute('id')) el.setAttribute('id', id);
+
+        const isSelected = selectedElement === el;
+        
+        const item = document.createElement('div');
+        item.className = `flex items-center justify-between p-2.5 rounded-lg text-xs cursor-pointer transition ${
+          isSelected 
+            ? 'bg-blue-50 text-blue-700 font-medium border border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900/60' 
+            : 'hover:bg-gray-50 text-gray-700 dark:text-gray-300 dark:hover:bg-gray-750/50'
+        }`;
+        
+        const iconName = svgTagIcons[tagName] || 'help-circle';
+        
+        item.innerHTML = `
+          <div class="flex items-center space-x-2 truncate">
+            <i data-lucide="${iconName}" class="w-3.5 h-3.5 opacity-70"></i>
+            <span class="font-mono truncate">${id}</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <span class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase">${tagName}</span>
+          </div>
+        `;
+
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectElement(el);
+        });
+
+        elementsList.appendChild(item);
+      });
+
+      lucide.createIcons();
+    }
+
+    function attachInteractiveSVGClickEvents() {
+      if (!activeSvgElement) return;
+      const targetSelectors = 'path, rect, circle, ellipse, line, polyline, polygon, text, g';
+      const elements = activeSvgElement.querySelectorAll(targetSelectors);
+      
+      elements.forEach(el => {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          selectElement(el);
+        });
+      });
+    }
+
+    // Seleziona un elemento della canvas
+    function selectElement(element, triggerRebuild = true) {
+      if (selectedElement) {
+        selectedElement.classList.remove('selected-element-outline');
+      }
+
+      selectedElement = element;
+      selectedElement.classList.add('selected-element-outline');
+
+      if (triggerRebuild) {
+        rebuildElementsList();
+      }
+
+      noSelectionMessage.classList.add('hidden');
+      editorForm.classList.remove('hidden');
+
+      const tagName = element.tagName.toLowerCase();
+      elemBadge.textContent = tagName;
+      elemId.textContent = `#${element.getAttribute('id')}`;
+
+      // Caricamento del colore di Riempimento (Fill)
+      let fillVal = element.getAttribute('fill') || window.getComputedStyle(element).fill || '#000000';
+      if (fillVal === 'none') {
+        propFillText.value = 'none';
+        propFill.value = '#000000';
+      } else {
+        const hexColor = rgbToHex(fillVal) || fillVal;
+        propFill.value = hexColor.startsWith('#') ? hexColor : '#000000';
+        propFillText.value = fillVal;
+      }
+
+      // Opacità Riempimento
+      let fillOpacityVal = element.getAttribute('fill-opacity') || element.getAttribute('opacity') || '1';
+      let opacityPercentage = Math.round(parseFloat(fillOpacityVal) * 100);
+      if (isNaN(opacityPercentage)) opacityPercentage = 100;
+      propFillOpacity.value = opacityPercentage;
+      propFillOpacityVal.textContent = `${opacityPercentage}%`;
+
+      // Tratto (Stroke)
+      let strokeVal = element.getAttribute('stroke') || window.getComputedStyle(element).stroke || 'none';
+      if (strokeVal === 'none' || strokeVal === 'rgba(0, 0, 0, 0)') {
+        propStrokeText.value = 'none';
+        propStroke.value = '#000000';
+      } else {
+        const hexColor = rgbToHex(strokeVal) || strokeVal;
+        propStroke.value = hexColor.startsWith('#') ? hexColor : '#000000';
+        propStrokeText.value = strokeVal;
+      }
+
+      // Spessore Tratto
+      let strokeWidthVal = element.getAttribute('stroke-width') || window.getComputedStyle(element).strokeWidth || '0';
+      let widthNum = parseFloat(strokeWidthVal);
+      if (isNaN(widthNum)) widthNum = 0;
+      propStrokeWidth.value = widthNum;
+      propStrokeWidthVal.textContent = `${widthNum}px`;
+    }
+
+    function deselectElement() {
+      if (selectedElement) {
+        selectedElement.classList.remove('selected-element-outline');
+      }
+      selectedElement = null;
+      noSelectionMessage.classList.remove('hidden');
+      editorForm.classList.add('hidden');
+      rebuildElementsList();
+    }
+
+    function rgbToHex(rgb) {
+      if (rgb.startsWith('#')) return rgb;
+      const rgbRegex = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/;
+      const match = rgb.match(rgbRegex);
+      if (!match) return null;
+      return "#" + ("0" + parseInt(match[1], 10).toString(16)).slice(-2) +
+                   ("0" + parseInt(match[2], 10).toString(16)).slice(-2) +
+                   ("0" + parseInt(match[3], 10).toString(16)).slice(-2);
+    }
+
+    function initEvents() {
+      
+      // Collegamento dei pulsanti Undo / Redo dell'Header
+      btnUndo.addEventListener('click', performUndo);
+      btnRedo.addEventListener('click', performRedo);
+
+      // Caricamento via input classico
+      importInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        handleFileImport(file);
+      });
+
+      // ---- SEZIONE DRAG AND DROP ----
+      window.addEventListener('dragover', (e) => e.preventDefault(), false);
+      window.addEventListener('drop', (e) => e.preventDefault(), false);
+
+      dropZone.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        dragOverlay.classList.remove('opacity-0');
+        dragOverlay.classList.add('opacity-100');
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        if (e.relatedTarget === null || !dropZone.contains(e.relatedTarget)) {
+          dragOverlay.classList.remove('opacity-100');
+          dragOverlay.classList.add('opacity-0');
+        }
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragOverlay.classList.remove('opacity-100');
+        dragOverlay.classList.add('opacity-0');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          const file = files[0];
+          if (file.name.endsWith('.svg') || file.type === 'image/svg+xml') {
+            handleFileImport(file);
+          } else {
+            showToast('Estensione non supportata. Rilascia solo file vettoriali .svg', 'error');
+          }
+        }
+      });
+
+      function handleFileImport(file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          loadSVGFromString(evt.target.result, true); // Resetta la storia su un file del tutto nuovo
+        };
+        reader.readAsText(file);
+      }
+
+      loadExampleBtn.addEventListener('click', () => {
+        loadSVGFromString(SAMPLE_SVG, true);
+      });
+
+      // Esporta e scarica
+      exportBtn.addEventListener('click', () => {
+        if (!activeSvgElement) {
+          showToast('Nessun SVG da esportare.', 'error');
+          return;
+        }
+
+        if (selectedElement) {
+          selectedElement.classList.remove('selected-element-outline');
+        }
+
+        const serializer = new XMLSerializer();
+        let svgString = serializer.serializeToString(activeSvgElement);
+        
+        if (selectedElement) {
+          selectedElement.classList.add('selected-element-outline');
+        }
+
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = (selectedElement?.getAttribute('id') || 'vettore_elaborato') + '.svg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        showToast('SVG scaricato con successo!');
+      });
+
+      canvasContainer.addEventListener('click', (e) => {
+        if (e.target === canvasContainer || e.target === svgViewport) {
+          deselectElement();
+        }
+      });
+
+      // Controlli Sfondo
+      bgTransparent.addEventListener('click', () => {
+        canvasContainer.className = 'flex-1 flex items-center justify-center p-8 checkerboard overflow-auto';
+      });
+      bgWhite.addEventListener('click', () => {
+        canvasContainer.className = 'flex-1 flex items-center justify-center p-8 bg-white overflow-auto';
+      });
+      bgDark.addEventListener('click', () => {
+        canvasContainer.className = 'flex-1 flex items-center justify-center p-8 bg-gray-950 overflow-auto';
+      });
+
+      // ---- EVENTI DI MODIFICA (con salvataggio stato prima della modifica) ----
+
+      // Riempimento (Fill) - Input di colore (inizia il trascinamento)
+      propFill.addEventListener('focus', saveHistoryState);
+      propFill.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const color = e.target.value;
+        selectedElement.setAttribute('fill', color);
+        propFillText.value = color;
+      });
+      propFill.addEventListener('change', () => {
+        // Conferma lo stato finale alla fine del trascinamento del selettore
+        saveHistoryState();
+      });
+
+      // Riempimento testuale
+      propFillText.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveHistoryState();
+      });
+      propFillText.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const color = e.target.value;
+        selectedElement.setAttribute('fill', color);
+        if (color.startsWith('#') && color.length === 7) {
+          propFill.value = color;
+        }
+      });
+      propFillText.addEventListener('blur', saveHistoryState);
+
+      btnFillNone.addEventListener('click', () => {
+        if (!selectedElement) return;
+        saveHistoryState();
+        selectedElement.setAttribute('fill', 'none');
+        propFillText.value = 'none';
+        saveHistoryState();
+      });
+
+      // Opacità
+      propFillOpacity.addEventListener('focus', saveHistoryState);
+      propFillOpacity.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const val = e.target.value;
+        const opacityDecimal = (val / 100).toFixed(2);
+        selectedElement.setAttribute('fill-opacity', opacityDecimal);
+        propFillOpacityVal.textContent = `${val}%`;
+      });
+      propFillOpacity.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      // Tratto (Stroke) - Selettore colore
+      propStroke.addEventListener('focus', saveHistoryState);
+      propStroke.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const color = e.target.value;
+        selectedElement.setAttribute('stroke', color);
+        propStrokeText.value = color;
+      });
+      propStroke.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      // Tratto testuale
+      propStrokeText.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveHistoryState();
+      });
+      propStrokeText.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const color = e.target.value;
+        selectedElement.setAttribute('stroke', color);
+        if (color.startsWith('#') && color.length === 7) {
+          propStroke.value = color;
+        }
+      });
+      propStrokeText.addEventListener('blur', saveHistoryState);
+
+      btnStrokeNone.addEventListener('click', () => {
+        if (!selectedElement) return;
+        saveHistoryState();
+        selectedElement.setAttribute('stroke', 'none');
+        propStrokeText.value = 'none';
+        saveHistoryState();
+      });
+
+      // Spessore Tratto
+      propStrokeWidth.addEventListener('focus', saveHistoryState);
+      propStrokeWidth.addEventListener('input', (e) => {
+        if (!selectedElement) return;
+        const val = e.target.value;
+        selectedElement.setAttribute('stroke-width', val);
+        propStrokeWidthVal.textContent = `${val}px`;
+      });
+      propStrokeWidth.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      // Riordino Elementi (Porta Sopra / Sotto)
+      btnMoveUp.addEventListener('click', () => {
+        if (!selectedElement) return;
+        const parent = selectedElement.parentNode;
+        if (selectedElement.nextElementSibling) {
+          saveHistoryState();
+          parent.insertBefore(selectedElement.nextElementSibling, selectedElement);
+          rebuildElementsList();
+          saveHistoryState();
+        } else {
+          showToast('Elemento già in primo piano.', 'error');
+        }
+      });
+
+      btnMoveDown.addEventListener('click', () => {
+        if (!selectedElement) return;
+        const parent = selectedElement.parentNode;
+        if (selectedElement.previousElementSibling) {
+          saveHistoryState();
+          parent.insertBefore(selectedElement, selectedElement.previousElementSibling);
+          rebuildElementsList();
+          saveHistoryState();
+        } else {
+          showToast('Elemento già sul fondo.', 'error');
+        }
+      });
+
+      // Elimina Elemento
+      btnDelete.addEventListener('click', () => {
+        if (!selectedElement) return;
+        const confirmDelete = confirm('Sei sicuro di voler eliminare questo elemento?');
+        if (confirmDelete) {
+          saveHistoryState();
+          selectedElement.remove();
+          deselectElement();
+          saveHistoryState();
+          showToast('Elemento rimosso.');
+        }
+      });
+
+      // Scorciatoie da tastiera complessive (Undo, Redo, Delete)
+      document.addEventListener('keydown', (e) => {
+        const isInputActive = document.activeElement.tagName === 'INPUT';
+
+        // Shortcut di Undo (Ctrl + Z o Cmd + Z)
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+          if (isInputActive) return; // Evita conflitti durante l'input testuale
+          e.preventDefault();
+          performUndo();
+        }
+
+        // Shortcut di Redo (Ctrl + Y o Cmd + Shift + Z)
+        if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') || 
+            ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z')) {
+          if (isInputActive) return;
+          e.preventDefault();
+          performRedo();
+        }
+
+        // Shortcut di Eliminazione (Canc o Backspace)
+        if (selectedElement && (e.key === 'Delete' || e.key === 'Backspace')) {
+          if (isInputActive) return;
+          e.preventDefault();
+          saveHistoryState();
+          selectedElement.remove();
+          deselectElement();
+          saveHistoryState();
+          showToast('Elemento rimosso.');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

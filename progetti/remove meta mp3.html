@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP3 Tag Stripper - Rimuovi Metadati MP3 in Blocco</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- JSZip for ZIP download capability -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better appearance */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header/Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-500 to-violet-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <!-- Music note icon with modern styling -->
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                        MP3 Tag Stripper
+                    </h1>
+                    <p class="text-xs text-slate-400">Rimuovi metadati localmente</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-3 py-1">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-xs font-semibold text-indigo-300">Sicurezza Client-Side</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section/Intro -->
+        <div class="text-center max-w-2xl mx-auto mb-10">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                Rimuovi tutti i metadati dai tuoi MP3
+            </h2>
+            <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                Elimina tag ID3v1, ID3v2, informazioni su artisti, album, copertine incorporate e commenti. 
+                Massima privacy: l'elaborazione avviene interamente sul tuo dispositivo, senza caricare file online.
+            </p>
+        </div>
+
+        <!-- Drag & Drop Area -->
+        <div id="drop-zone" class="relative group border-2 border-dashed border-slate-700 hover:border-indigo-500/70 bg-slate-900/30 hover:bg-slate-900/50 rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 ease-out shadow-inner mb-8">
+            <input type="file" id="file-input" multiple accept=".mp3" class="hidden">
+            
+            <div class="flex flex-col items-center space-y-4">
+                <!-- Visual Upload Icon Ring -->
+                <div class="w-16 h-16 rounded-full bg-slate-800/80 group-hover:bg-indigo-500/10 flex items-center justify-center transition-all duration-300 border border-slate-700 group-hover:border-indigo-500/30 shadow-md">
+                    <svg class="w-8 h-8 text-slate-400 group-hover:text-indigo-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                </div>
+                
+                <div>
+                    <p class="text-base sm:text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        Trascina qui i tuoi file .mp3 o <span class="text-indigo-400 group-hover:text-indigo-300 underline underline-offset-4 decoration-2">sfoglia</span>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-2">Supporta file multipli simultaneamente. Massimo 200MB per file consigliato.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Dashboard (Visible only when files are selected) -->
+        <div id="action-dashboard" class="hidden space-y-6">
+            
+            <!-- Global actions & overall stats panel -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+                <!-- Stats Box 1 -->
+                <div class="flex items-center space-x-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                    <div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div id="stat-total" class="text-lg font-bold">0</div>
+                        <div class="text-xs text-slate-400">File totali</div>
+                    </div>
+                </div>
+
+                <!-- Stats Box 2 -->
+                <div class="flex items-center space-x-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div id="stat-processed" class="text-lg font-bold">0</div>
+                        <div class="text-xs text-slate-400">File elaborati con successo</div>
+                    </div>
+                </div>
+
+                <!-- Stats Box 3 -->
+                <div class="flex items-center space-x-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                    <div class="p-2 bg-pink-500/10 rounded-lg text-pink-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div id="stat-saved" class="text-lg font-bold">0 KB</div>
+                        <div class="text-xs text-slate-400">Spazio risparmiato (metadati rimossi)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Action Controls Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-900/40 border border-slate-800 p-4 rounded-xl">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="btn-process-all" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-sm font-semibold rounded-xl transition-all duration-200 flex items-center shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/20 active:scale-95">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Ripulisci Tutti
+                    </button>
+                    
+                    <button id="btn-download-zip" class="hidden px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-xl transition-all duration-200 items-center shadow-lg shadow-emerald-600/10 active:scale-95">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Scarica come ZIP
+                    </button>
+
+                    <button id="btn-download-folder" class="hidden px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold rounded-xl transition-all duration-200 items-center shadow-lg shadow-sky-600/10 active:scale-95" title="Salva direttamente in una cartella locale">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                        </svg>
+                        Scarica Cartella
+                    </button>
+                </div>
+                
+                <button id="btn-clear-all" class="px-4 py-2 text-sm text-slate-400 hover:text-rose-400 bg-slate-800/40 hover:bg-rose-500/10 border border-slate-700/60 hover:border-rose-500/20 rounded-xl transition-all duration-150">
+                    Svuota Lista
+                </button>
+            </div>
+
+            <!-- Files List Container -->
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/60 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-200">Elenco dei file MP3</h3>
+                    <span class="text-xs text-slate-400" id="list-counter">0 file in attesa</span>
+                </div>
+                
+                <div id="files-list" class="divide-y divide-slate-800 max-h-[480px] overflow-y-auto">
+                    <!-- Dynamic Rows will be inserted here by JavaScript -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Custom Notification Toast Container -->
+        <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900 border border-indigo-500 text-slate-200 px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+            <div id="toast-icon-container" class="text-indigo-400">
+                <!-- Icon dynamically replaced -->
+            </div>
+            <span id="toast-message" class="text-sm font-medium">Operazione completata!</span>
+        </div>
+
+        <!-- Explanatory / Feature Section -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-slate-900/30 border border-slate-800/60 rounded-xl p-5 hover:border-slate-800 transition-colors">
+                <div class="text-indigo-400 mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h4 class="font-semibold text-slate-200 mb-2">Sicurezza al 100%</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">I tuoi file rimangono sul tuo computer. Nessun dato audio viene trasmesso online o memorizzato su server esterni. Elaborazione offline istantanea.</p>
+            </div>
+            <div class="bg-slate-900/30 border border-slate-800/60 rounded-xl p-5 hover:border-slate-800 transition-colors">
+                <div class="text-indigo-400 mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                </div>
+                <h4 class="font-semibold text-slate-200 mb-2">Puro File Audio</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">Rimuove in modo pulito sia le tag ID3v2 (all'inizio del file) che le tag ID3v1 (alla fine), lasciando l'audio intatto e diminuendo la dimensione totale.</p>
+            </div>
+            <div class="bg-slate-900/30 border border-slate-800/60 rounded-xl p-5 hover:border-slate-800 transition-colors">
+                <div class="text-indigo-400 mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </div>
+                <h4 class="font-semibold text-slate-200 mb-2">Batch Download</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">Puoi elaborare dozzine di file audio in un click e scaricarli comodamente in un unico pacchetto ZIP organizzato senza perdite di tempo.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-6 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div>
+                &copy; 2026 MP3 Tag Stripper. Tutti i diritti riservati.
+            </div>
+            <div class="flex space-x-4">
+                <span>Privacy 100% Garantita</span>
+                <span>•</span>
+                <span>Progettato in Italia</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic & Scripts -->
+    <script>
+        // Array holding the files to be processed
+        let filesQueue = [];
+
+        // UI references
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const actionDashboard = document.getElementById('action-dashboard');
+        const filesListContainer = document.getElementById('files-list');
+        const listCounter = document.getElementById('list-counter');
+        
+        // Buttons
+        const btnProcessAll = document.getElementById('btn-process-all');
+        const btnDownloadZip = document.getElementById('btn-download-zip');
+        const btnDownloadFolder = document.getElementById('btn-download-folder');
+        const btnClearAll = document.getElementById('btn-clear-all');
+        
+        // Stats
+        const statTotal = document.getElementById('stat-total');
+        const statProcessed = document.getElementById('stat-processed');
+        const statSaved = document.getElementById('stat-saved');
+
+        // Drag and Drop Event Listeners
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('border-indigo-500', 'bg-indigo-500/5', 'scale-[0.99]');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('border-indigo-500', 'bg-indigo-500/5', 'scale-[0.99]');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Helper to format bytes to readable string
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Helper to get consistent cleaned file name
+        function getCleanedFileName(item) {
+            const nameParts = item.file.name.split('.');
+            if (nameParts.length > 1) {
+                const ext = nameParts.pop();
+                return `${nameParts.join('.')}.${ext}`;
+            } else {
+                return `${item.file.name}.mp3`;
+            }
+        }
+
+        // Handles standard file objects uploaded by users
+        function handleFiles(files) {
+            let newlyAdded = false;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
+                    // Check if file is already in queue
+                    const alreadyExists = filesQueue.some(item => item.file.name === file.name && item.file.size === file.size);
+                    if (!alreadyExists) {
+                        filesQueue.push({
+                            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                            file: file,
+                            status: 'pending', // pending, processing, completed, error
+                            originalSize: file.size,
+                            cleanedSize: null,
+                            cleanedBlob: null,
+                            savedSize: 0,
+                            errorMsg: null
+                        });
+                        newlyAdded = true;
+                    }
+                } else {
+                    showToast(`Il file "${file.name}" non è un MP3 valido.`, 'error');
+                }
+            }
+
+            if (newlyAdded) {
+                updateUI();
+                showToast("File aggiunti correttamente!", "success");
+            }
+        }
+
+        // Updates the list render, stats, and button visibility states
+        function updateUI() {
+            if (filesQueue.length === 0) {
+                actionDashboard.classList.add('hidden');
+                return;
+            }
+
+            actionDashboard.classList.remove('hidden');
+            filesListContainer.innerHTML = '';
+            
+            let completedCount = 0;
+            let totalSavedBytes = 0;
+
+            filesQueue.forEach((item) => {
+                if (item.status === 'completed') {
+                    completedCount++;
+                    totalSavedBytes += item.savedSize;
+                }
+
+                const fileRow = document.createElement('div');
+                fileRow.className = "flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:px-6 transition-colors hover:bg-slate-900/25 gap-3";
+                fileRow.id = `row-${item.id}`;
+
+                // Status configurations
+                let statusBadge = '';
+                let actionBtn = '';
+
+                if (item.status === 'pending') {
+                    statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/15">In attesa</span>`;
+                    actionBtn = `
+                        <button onclick="processSingleFile('${item.id}')" class="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 hover:text-white rounded-lg transition-colors" title="Rimuovi metadati">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </button>
+                    `;
+                } else if (item.status === 'processing') {
+                    statusBadge = `
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/15">
+                            <svg class="animate-spin -ml-1 mr-1.5 h-3 w-3 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Elaborazione...
+                        </span>
+                    `;
+                    actionBtn = `<span class="w-9 h-9"></span>`;
+                } else if (item.status === 'completed') {
+                    statusBadge = `
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/15">
+                            Ripulito (-${formatBytes(item.savedSize)})
+                        </span>
+                    `;
+                    actionBtn = `
+                        <button onclick="downloadSingleFile('${item.id}')" class="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-white rounded-lg transition-colors" title="Scarica file ripulito">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                        </button>
+                    `;
+                } else if (item.status === 'error') {
+                    statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/15" title="${item.errorMsg}">Errore</span>`;
+                    actionBtn = `<span class="w-9 h-9"></span>`;
+                }
+
+                fileRow.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0 flex-1">
+                        <div class="p-2 bg-slate-800 rounded-lg shrink-0">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-sm font-medium text-slate-200 truncate" title="${item.file.name}">${item.file.name}</h4>
+                            <div class="flex items-center space-x-2 mt-1 flex-wrap">
+                                <span class="text-xs text-slate-500">${formatBytes(item.originalSize)}</span>
+                                <span class="text-slate-700 text-xs">•</span>
+                                ${statusBadge}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0 self-end sm:self-center">
+                        ${actionBtn}
+                        <button onclick="removeFromFileQueue('${item.id}')" class="p-2 bg-slate-800/40 hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 rounded-lg transition-colors" title="Rimuovi dalla lista">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                filesListContainer.appendChild(fileRow);
+            });
+
+            // Update statistics
+            statTotal.textContent = filesQueue.length;
+            statProcessed.textContent = completedCount;
+            statSaved.textContent = formatBytes(totalSavedBytes);
+            listCounter.textContent = `${filesQueue.length} file - ${completedCount} elaborati`;
+
+            // If any completed, show ZIP and Folder download buttons
+            if (completedCount > 0) {
+                btnDownloadZip.style.display = 'inline-flex';
+                btnDownloadFolder.style.display = 'inline-flex';
+            } else {
+                btnDownloadZip.style.display = 'none';
+                btnDownloadFolder.style.display = 'none';
+            }
+        }
+
+        /**
+         * MP3 metadata stripping implementation.
+         * Locates the ID3v2 container header at the absolute start of the byte array,
+         * extracts its encoded tag length, and strips it.
+         * Also checks the terminal 128 bytes for legacy ID3v1 TAG markers and discards them.
+         */
+        function cleanMp3Metadata(arrayBuffer) {
+            const view = new DataView(arrayBuffer);
+            let startOffset = 0;
+            let endOffset = arrayBuffer.byteLength;
+
+            // 1. Check and strip ID3v2 tags starting at the beginning of the file
+            if (arrayBuffer.byteLength >= 10) {
+                const isID3v2 = view.getUint8(0) === 0x49 && // 'I'
+                                view.getUint8(1) === 0x44 && // 'D'
+                                view.getUint8(2) === 0x33;   // '3'
+                if (isID3v2) {
+                    const majorVersion = view.getUint8(3);
+                    const flags = view.getUint8(5);
+                    
+                    // ID3v2 uses "synchsafe integer" format for the size. Only 7 bits are used per byte (MSB is 0).
+                    const byte6 = view.getUint8(6);
+                    const byte7 = view.getUint8(7);
+                    const byte8 = view.getUint8(8);
+                    const byte9 = view.getUint8(9);
+                    
+                    const tagSize = (byte6 << 21) | (byte7 << 14) | (byte8 << 7) | byte9;
+                    
+                    // ID3v2 header is 10 bytes. The encoded size is the payload excluding the header.
+                    let totalHeaderSize = 10 + tagSize;
+                    
+                    // If footer flag is set (Bit 4), add 10 additional bytes for footer representation
+                    const hasFooter = (flags & 0x10) !== 0;
+                    if (hasFooter) {
+                        totalHeaderSize += 10;
+                    }
+                    
+                    if (totalHeaderSize < arrayBuffer.byteLength) {
+                        startOffset = totalHeaderSize;
+                    }
+                }
+            }
+
+            // 2. Check and strip legacy ID3v1 tags starting at the final 128 bytes
+            if (arrayBuffer.byteLength >= 128) {
+                const offsetID3v1 = arrayBuffer.byteLength - 128;
+                const isID3v1 = view.getUint8(offsetID3v1) === 0x54 &&     // 'T'
+                                view.getUint8(offsetID3v1 + 1) === 0x41 && // 'A'
+                                view.getUint8(offsetID3v1 + 2) === 0x47;   // 'G'
+                if (isID3v1) {
+                    endOffset = offsetID3v1;
+                }
+            }
+
+            // Slice out purely the sound frames
+            return arrayBuffer.slice(startOffset, endOffset);
+        }
+
+        // Processes a single selected file based on its ID
+        async function processSingleFile(id) {
+            const item = filesQueue.find(f => f.id === id);
+            if (!item || item.status === 'processing' || item.status === 'completed') return;
+
+            item.status = 'processing';
+            updateUI();
+
+            try {
+                // Async read file as ArrayBuffer
+                const arrayBuffer = await item.file.arrayBuffer();
+                
+                // Strip tags
+                const cleanedBuffer = cleanMp3Metadata(arrayBuffer);
+                
+                item.cleanedBlob = new Blob([cleanedBuffer], { type: 'audio/mpeg' });
+                item.cleanedSize = item.cleanedBlob.size;
+                item.savedSize = Math.max(0, item.originalSize - item.cleanedSize);
+                item.status = 'completed';
+            } catch (err) {
+                console.error(err);
+                item.status = 'error';
+                item.errorMsg = err.message || 'Errore di lettura o decodifica';
+            }
+
+            updateUI();
+        }
+
+        // Downloads a single cleaned MP3
+        function downloadSingleFile(id) {
+            const item = filesQueue.find(f => f.id === id);
+            if (!item || item.status !== 'completed' || !item.cleanedBlob) return;
+
+            // Simple safe download
+            const url = URL.createObjectURL(item.cleanedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = getCleanedFileName(item);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("File scaricato con successo!", "success");
+        }
+
+        // Removes a file row from list queue
+        function removeFromFileQueue(id) {
+            filesQueue = filesQueue.filter(f => f.id !== id);
+            updateUI();
+            showToast("File rimosso dall'elenco", "info");
+        }
+
+        // Process all queued files sequentially
+        btnProcessAll.addEventListener('click', async () => {
+            const pendingFiles = filesQueue.filter(f => f.status === 'pending');
+            if (pendingFiles.length === 0) {
+                showToast("Tutti i file sono già stati elaborati!", "info");
+                return;
+            }
+
+            for (const item of pendingFiles) {
+                await processSingleFile(item.id);
+            }
+            showToast("Elaborazione batch completata!", "success");
+        });
+
+        // Pack processed MP3 files inside a downloadable ZIP structure
+        btnDownloadZip.addEventListener('click', async () => {
+            const completedItems = filesQueue.filter(item => item.status === 'completed' && item.cleanedBlob);
+            if (completedItems.length === 0) {
+                showToast("Nessun file ripulito pronto per il download!", "error");
+                return;
+            }
+
+            // Initialize ZIP generator
+            const zip = new JSZip();
+            
+            completedItems.forEach(item => {
+                zip.file(getCleanedFileName(item), item.cleanedBlob);
+            });
+
+            try {
+                showToast("Generazione pacchetto ZIP...", "info");
+                const content = await zip.generateAsync({ type: "blob" });
+                
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "MP3_Tag_Stripper_Cleaned.zip";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("Archivio ZIP scaricato!", "success");
+            } catch (err) {
+                console.error(err);
+                showToast("Errore durante la creazione dello ZIP", "error");
+            }
+        });
+
+        // Save processed MP3 files directly to a selected system directory
+        btnDownloadFolder.addEventListener('click', async () => {
+            const completedItems = filesQueue.filter(item => item.status === 'completed' && item.cleanedBlob);
+            if (completedItems.length === 0) {
+                showToast("Nessun file ripulito pronto per il salvataggio!", "error");
+                return;
+            }
+
+            // Check if File System Access API is supported
+            if (!('showDirectoryPicker' in window)) {
+                showToast("La funzione 'Scarica Cartella' non è supportata dal tuo browser attuale. Prova con Google Chrome, Microsoft Edge o Opera, oppure scarica il pacchetto ZIP.", "error");
+                return;
+            }
+
+            try {
+                showToast("Seleziona o crea una cartella di destinazione...", "info");
+                
+                // Prompt user to select directory and request read/write permission
+                const dirHandle = await window.showDirectoryPicker({
+                    mode: 'readwrite'
+                });
+
+                showToast("Salvataggio dei file in corso...", "info");
+                
+                // Write each processed MP3 file sequentially
+                for (const item of completedItems) {
+                    const outputName = getCleanedFileName(item);
+                    // Obtain handles to write inside the selected directory
+                    const fileHandle = await dirHandle.getFileHandle(outputName, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(item.cleanedBlob);
+                    await writable.close();
+                }
+
+                showToast(`Salvati con successo ${completedItems.length} file direttamente nella cartella!`, "success");
+            } catch (err) {
+                // Handle case where user aborted directory picker dialog
+                if (err.name === 'AbortError') {
+                    showToast("Salvataggio annullato.", "info");
+                } else {
+                    console.error(err);
+                    showToast("Errore durante il salvataggio: " + err.message, "error");
+                }
+            }
+        });
+
+        // Svuota completamente la coda
+        btnClearAll.addEventListener('click', () => {
+            filesQueue = [];
+            updateUI();
+            showToast("Lista file svuotata con successo.", "info");
+        });
+
+        // Replaces alert UI patterns with custom notifications
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const iconContainer = document.getElementById('toast-icon-container');
+
+            toastMsg.textContent = message;
+
+            // Border color modifiers based on notification type
+            toast.className = toast.className.replace(/border-[a-z-0-9\/]+/g, '');
+            if (type === 'success') {
+                toast.classList.add('border-emerald-500/50');
+                iconContainer.innerHTML = `
+                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                `;
+            } else if (type === 'error') {
+                toast.classList.add('border-rose-500/50');
+                iconContainer.innerHTML = `
+                    <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                `;
+            } else {
+                toast.classList.add('border-indigo-500/50');
+                iconContainer.innerHTML = `
+                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                `;
+            }
+
+            // Animate In toast
+            toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            // Automatically animate out after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SfondoVia! - Rimuovi Sfondo e Ritaglia File .ICO</title>
+    <!-- Tailwind CSS per uno stile moderno e reattivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc; /* Slate 50 */
+        }
+        /* Scacchiera per trasparenza personalizzabile */
+        .transparency-bg {
+            background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), 
+                              linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #e2e8f0 75%), 
+                              linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+            background-size: 12px 12px;
+            background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+            background-color: #ffffff;
+        }
+        .dark-checkerboard {
+            background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
+                              linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #1e293b 75%), 
+                              linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            background-color: #0f172a;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-4 py-4 sm:px-6">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7C4.547 9.547 4.5 10.768 4.5 12s.047 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.092-1.209.138-2.43.138-3.662z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10.5h.01M15 10.5h.01M9 14.5h6"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-400 bg-clip-text text-transparent">SfondoVia! <span class="text-indigo-500 font-semibold text-sm">BATCH PRO</span></h1>
+                    <p class="text-xs text-slate-400">Rimuovi aloni, sfondo e ritaglia più icone contemporaneamente (max 5 immagini)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                    Fino a 5 Immagini in Batch
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full flex-grow flex flex-col justify-center">
+        
+        <!-- DROPZONE DI CARICAMENTO -->
+        <div id="upload-zone" class="w-full max-w-2xl mx-auto transition-all duration-300">
+            <div class="bg-slate-900 border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-transparent pointer-events-none"></div>
+                
+                <input type="file" id="file-input" accept=".ico,.png,.jpg,.jpeg,.webp" multiple class="hidden">
+                <label for="file-input" class="cursor-pointer block">
+                    <div class="mx-auto w-16 h-16 bg-slate-800 text-indigo-400 rounded-2xl flex items-center justify-center mb-6 border border-slate-700 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-lg sm:text-xl font-semibold mb-2 text-white">Carica o trascina le tue icone</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-6">Trascina uno o più file insieme (fino a un <strong class="text-indigo-400">massimo di 5 immagini</strong>). Supporta .ICO, .PNG, .JPG e .WEBP.</p>
+                    
+                    <span class="inline-flex items-center px-5 py-3 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 transition-all">
+                        Seleziona Immagini
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <!-- AREA DI EDITING E INTERFACCIA PRINCIPALE (Nascosta inizialmente) -->
+        <div id="editor-zone" class="hidden w-full flex flex-col gap-6">
+
+            <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        I tuoi file in elaborazione (Massimo 5)
+                    </h3>
+                    <span id="batch-count" class="text-xs text-indigo-400 font-semibold bg-indigo-950/60 px-2.5 py-1 rounded-lg border border-indigo-900/30">0 / 5 Caricati</span>
+                </div>
+                
+                <!-- Griglia dei 5 slot -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="batch-slots-container">
+                    <!-- I vari slot di immagini verranno generati dinamicamente da JS qui -->
+                </div>
+            </div>
+
+            <!-- Area di Lavoro Bivalente -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- COLONNA SINISTRA: CANVAS & ZOOM CONTROLS -->
+                <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-xl relative overflow-hidden flex flex-col">
+                        
+                        <!-- Barra strumenti superiore Canvas -->
+                        <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-800">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span class="text-sm font-medium text-slate-300" id="file-info-label">File.ico</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="btn-zoom-out" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Riduci Zoom">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                                </button>
+                                <span id="zoom-factor" class="text-xs font-mono font-bold text-slate-400 px-2 min-w-[50px] text-center">100%</span>
+                                <button id="btn-zoom-in" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Aumenta Zoom">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                </button>
+                                <button id="btn-zoom-reset" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Ripristina Zoom">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Area del Canvas con contenitore per Crop Overlay -->
+                        <div class="relative w-full overflow-auto max-h-[60vh] min-h-[300px] flex items-center justify-center bg-slate-950 rounded-2xl border border-slate-800 p-8">
+                            <div class="transparency-bg rounded-lg shadow-inner overflow-hidden relative cursor-crosshair transition-transform duration-100 ease-out" id="canvas-container">
+                                <canvas id="main-canvas" class="block max-w-full h-auto"></canvas>
+                                <!-- Overlay di ritaglio -->
+                                <div id="crop-overlay" class="absolute inset-0 pointer-events-none hidden">
+                                    <!-- Area oscurata esterna e riquadro ritaglio verranno calcolati e renderizzati tramite JS -->
+                                    <div id="crop-box" class="absolute border-2 border-dashed border-indigo-400 cursor-move pointer-events-auto shadow-[0_0_0_9999px_rgba(15,23,42,0.7)]">
+                                        <!-- Maniglie per il ridimensionamento -->
+                                        <div class="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-nwse-resize" data-handle="nw"></div>
+                                        <div class="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-nesw-resize" data-handle="ne"></div>
+                                        <div class="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-nesw-resize" data-handle="sw"></div>
+                                        <div class="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-nwse-resize" data-handle="se"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Barra inferiore info/dimensioni -->
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-800 text-xs text-slate-400">
+                            <span id="canvas-dimensions">0 x 0 pixel</span>
+                            <span id="canvas-status">Seleziona uno strumento per iniziare l'editing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLONNA DESTRA: STRUMENTI, ALONI ED ESPORTAZIONE -->
+                <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+                    
+                    <!-- Azioni / Strumenti di Rimozione e Ritaglio -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+                        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Strumenti Principali
+                        </h2>
+
+                        <!-- Selettore Strumenti (3 Colonne) -->
+                        <div class="grid grid-cols-3 gap-2 mb-6">
+                            <!-- Bacchetta Magica (Flood Fill) -->
+                            <button id="tool-wand" class="flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-indigo-600/10 border-indigo-500 text-indigo-400 hover:bg-indigo-600/20 transition-all text-center group" title="Clicca su un colore per rimuoverlo in modo contiguo">
+                                <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                <span class="text-[10px] font-bold">Bacchetta</span>
+                            </button>
+
+                            <!-- Gomma Manuale -->
+                            <button id="tool-eraser" class="flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group" title="Cancella pixel manualmente col mouse o col tocco">
+                                <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                <span class="text-[10px] font-bold">Gomma</span>
+                            </button>
+
+                            <!-- Ritaglio -->
+                            <button id="tool-crop" class="flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group" title="Ritaglia l'immagine definendo le proporzioni desiderate">
+                                <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                <span class="text-[10px] font-bold">Ritaglia</span>
+                            </button>
+                        </div>
+
+                        <!-- Slide Regolazioni dinamiche e Opzioni Strumenti -->
+                        <div class="space-y-4 mb-6">
+                            <!-- Slider Tolleranza Bacchetta Magica (Default 25) -->
+                            <div id="tolerance-container" class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Tolleranza Colore</span>
+                                    <span id="tolerance-val" class="text-indigo-400 font-mono">25%</span>
+                                </div>
+                                <input id="slider-tolerance" type="range" min="1" max="100" value="25" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                <p class="text-[10px] text-slate-500">Regola la precisione. I bordi verranno sfumati per un look naturale.</p>
+                            </div>
+
+                            <!-- Slider Spessore Gomma -->
+                            <div id="brush-container" class="space-y-1 hidden">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Dimensione Gomma</span>
+                                    <span id="brush-val" class="text-indigo-400 font-mono">10px</span>
+                                </div>
+                                <input id="slider-brush" type="range" min="1" max="50" value="10" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                            </div>
+
+                            <!-- Opzioni di Ritaglio -->
+                            <div id="crop-options-container" class="space-y-3 hidden">
+                                <div class="space-y-1">
+                                    <label class="block text-xs font-semibold text-slate-300">Proporzioni Ritaglio (Aspect Ratio)</label>
+                                    <select id="crop-aspect-ratio" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-2 focus:outline-none focus:border-indigo-500 transition">
+                                        <option value="free" selected>Libero (Nessun vincolo)</option>
+                                        <option value="1:1">1:1 (Quadrato)</option>
+                                        <option value="4:3">4:3 (Standard)</option>
+                                        <option value="3:4">3:4 (Verticale)</option>
+                                        <option value="16:9">16:9 (Widescreen)</option>
+                                        <option value="9:16">9:16 (Verticale Smart)</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button id="btn-apply-crop" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-500/20">
+                                        Ritaglia Immagine
+                                    </button>
+                                    <button id="btn-cancel-crop" class="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 font-semibold text-xs transition">
+                                        Annulla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Azioni Rapide / Magia Automatica -->
+                        <div class="space-y-3">
+                            <button id="btn-auto-remove" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Rileva & Rimuovi Sfondo Auto
+                            </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="btn-undo" disabled class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-800 border border-slate-700 text-xs font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700 hover:text-white transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"></path></svg>
+                                    Annulla
+                                </button>
+                                <button id="btn-reset" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-800 border border-slate-700 text-xs font-medium text-slate-400 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-900/50 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Ripristina
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rifinitura Bordi & Aloni -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-indigo-500/15 text-indigo-400 text-[10px] font-bold px-2.5 py-1 rounded-bl-xl border-l border-b border-indigo-900/30">
+                            RISOLUTORE ALONI
+                        </div>
+                        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            Rifinitura Bordi & Aloni
+                        </h2>
+                        <p class="text-xs text-slate-400 mb-4">Elimina i pixel chiari/scuri residui che circondano il logo dopo la cancellazione.</p>
+
+                        <div class="space-y-4">
+                            <!-- Slider Sensibilità Alone (Default 5px) -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Intensità Pulizia</span>
+                                    <span id="refine-strength-val" class="text-indigo-400 font-mono">5 pixel</span>
+                                </div>
+                                <input id="slider-refine-strength" type="range" min="1" max="10" value="5" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                            </div>
+
+                            <!-- Opzione colore di sfondo originale -->
+                            <div class="flex items-center justify-between py-1 border-t border-slate-800/60 mt-2">
+                                <span class="text-xs text-slate-300">Colore di sfondo da rimuovere:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <div id="bg-color-preview" class="w-4 h-4 rounded border border-slate-700 bg-white" title="Ultimo colore campionato"></div>
+                                    <span id="bg-color-hex" class="text-[10px] font-mono text-slate-400">#FFFFFF</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 pt-2">
+                                <button id="btn-clean-halos" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-indigo-950/40 hover:text-indigo-400 hover:border-indigo-900/40 border border-slate-700 text-xs font-bold text-slate-300 transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                    Elimina Aloni
+                                </button>
+                                <button id="btn-soft-edges" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-emerald-950/40 hover:text-emerald-400 hover:border-emerald-900/40 border border-slate-700 text-xs font-bold text-slate-300 transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Sfoca Bordi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Esportazione singola e collettiva -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+                        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Esporta & Salva Risultati
+                        </h2>
+
+                        <!-- Selezione Formato e Dimensione -->
+                        <div class="space-y-4 mb-6">
+                            <div class="space-y-1">
+                                <label class="block text-xs font-semibold text-slate-300">Risoluzione di Output (.ico/.png)</label>
+                                <select id="export-size" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition">
+                                    <option value="original" selected>Dimensione Originale</option>
+                                    <option value="256">256 x 256 px (Alta Definizione)</option>
+                                    <option value="128">128 x 128 px (Standard Windows/macOS)</option>
+                                    <option value="64">64 x 64 px</option>
+                                    <option value="48">48 x 48 px (Icone Desktop standard)</option>
+                                    <option value="32">32 x 32 px (Favicon classica / Explorer)</option>
+                                    <option value="16">16 x 16 px (Favicon Piccola)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Pulsanti di Download Singolo -->
+                        <div class="flex flex-col gap-2 pb-4 border-b border-slate-800 mb-4">
+                            <h3 class="text-xs font-bold text-slate-400 mb-1">IMMAGINE ATTIVA:</h3>
+                            <button id="btn-download-ico" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all duration-200">
+                                Scarica .ICO Attivo
+                            </button>
+                            <button id="btn-download-png" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-sm transition-all duration-200">
+                                Scarica .PNG Attivo
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-xs font-bold text-slate-400 mb-1">TUTTE LE IMMAGINI (BATCH):</h3>
+                            <button id="btn-download-all-ico" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg transition-all duration-200">
+                                Scarica Tutti come .ICO
+                            </button>
+                            <button id="btn-download-all-png" class="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-slate-850 hover:bg-slate-800 text-emerald-400 border border-emerald-900/40 font-semibold text-xs transition-all duration-200">
+                                Scarica Tutti come .PNG
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottone per resettare e svuotare tutto -->
+                    <button id="btn-clear-all" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-850 hover:border-slate-700 text-rose-500 hover:text-rose-400 text-sm font-semibold transition-all shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Svuota tutto e ricomincia
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione Informativa sul funzionamento -->
+        <section class="mt-16 border-t border-slate-800/80 pt-12 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold text-white mb-6 text-center">Gestisci il ritaglio di più file senza perdere dati</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-400 text-sm">
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800">
+                    <div class="text-indigo-400 font-bold text-lg mb-2">1. Coda Flessibile & Ritaglio</div>
+                    <p class="leading-relaxed">Carica fino a 5 icone contemporaneamente. Puoi passare da un'immagine all'altra, applicare trasparenze o effettuare ritagli precisi mantenendo le proporzioni desiderate.</p>
+                </div>
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800">
+                    <div class="text-indigo-400 font-bold text-lg mb-2">2. Esportazione Cumulativa</div>
+                    <p class="leading-relaxed">Non c'è bisogno di scaricare le icone una ad una. Lo strumento batch consente di estrarre e scaricare simultaneamente tutti i file configurati nei formati corretti.</p>
+                </div>
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800">
+                    <div class="text-indigo-400 font-bold text-lg mb-2">3. Rimozione Professionale</div>
+                    <p class="leading-relaxed">Applica la bacchetta magica o la pulizia aloni singolarmente su ciascuna scheda per regolare la sensibilità secondo le caratteristiche cromatiche specifiche di ogni logo.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-850 bg-slate-950/50 py-6 text-center px-4">
+        <p class="text-xs text-slate-500">
+            SfondoVia! © 2026. Sviluppato interamente in locale. Nessun dato lascia il tuo computer.
+        </p>
+    </footer>
+
+    <!-- AREA MESSAGGI / TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-out flex items-center gap-3 bg-slate-800 text-slate-100 border border-slate-700 px-4 py-3 rounded-2xl shadow-xl max-w-sm pointer-events-none">
+        <div id="toast-icon-box" class="p-1 rounded-lg bg-indigo-500 text-white flex items-center justify-center"></div>
+        <p id="toast-message" class="text-xs font-semibold"></p>
+    </div>
+
+    <script>
+        // --- STRUTTURA INIZIALE E STATO MULTI-IMMAGINE ---
+        let uploadedImages = []; // Memorizza fino a 5 oggetti: { id, name, originalImg, currentCanvasData, undoStack, zoom, lastDeletedColor }
+        let activeIndex = -1; // Indice dell'immagine correntemente selezionata sul canvas
+
+        // Parametri globali attivi per lo strumento
+        let activeTool = 'wand'; 
+        let tolerance = 25; // Default 25%
+        let brushSize = 10;
+        let refineStrength = 5; // Default 5px
+        let isDrawing = false; 
+        let zoom = 1.0;
+
+        // Parametri di ritaglio
+        let cropState = {
+            active: false,
+            startX: 0,
+            startY: 0,
+            width: 0,
+            height: 0,
+            aspectRatio: 'free', // 'free', '1:1', '4:3', '3:4', '16:9', '9:16'
+            isDragging: false,
+            isResizing: false,
+            currentHandle: null,
+            dragStartX: 0,
+            dragStartY: 0
+        };
+
+        // Referenze DOM
+        const uploadZone = document.getElementById('upload-zone');
+        const editorZone = document.getElementById('editor-zone');
+        const fileInput = document.getElementById('file-input');
+        const mainCanvas = document.getElementById('main-canvas');
+        const ctx = mainCanvas.getContext('2d', { willReadFrequently: true });
+        const canvasContainer = document.getElementById('canvas-container');
+        const batchSlotsContainer = document.getElementById('batch-slots-container');
+        const batchCountText = document.getElementById('batch-count');
+
+        // Referenze Controlli
+        const btnZoomIn = document.getElementById('btn-zoom-in');
+        const btnZoomOut = document.getElementById('btn-zoom-out');
+        const btnZoomReset = document.getElementById('btn-zoom-reset');
+        const zoomFactorText = document.getElementById('zoom-factor');
+        const sliderTolerance = document.getElementById('slider-tolerance');
+        const toleranceValText = document.getElementById('tolerance-val');
+        const sliderBrush = document.getElementById('slider-brush');
+        const brushValText = document.getElementById('brush-val');
+        const sliderRefineStrength = document.getElementById('slider-refine-strength');
+        const refineStrengthValText = document.getElementById('refine-strength-val');
+        const toleranceContainer = document.getElementById('tolerance-container');
+        const brushContainer = document.getElementById('brush-container');
+        const cropOptionsContainer = document.getElementById('crop-options-container');
+        
+        const toolWand = document.getElementById('tool-wand');
+        const toolEraser = document.getElementById('tool-eraser');
+        const toolCrop = document.getElementById('tool-crop');
+
+        const cropAspectRatioSelect = document.getElementById('crop-aspect-ratio');
+        const btnApplyCrop = document.getElementById('btn-apply-crop');
+        const btnCancelCrop = document.getElementById('btn-cancel-crop');
+        const cropOverlay = document.getElementById('crop-overlay');
+        const cropBox = document.getElementById('crop-box');
+
+        // Controlli Aloni
+        const bgColorPreview = document.getElementById('bg-color-preview');
+        const bgColorHex = document.getElementById('bg-color-hex');
+        const btnCleanHalos = document.getElementById('btn-clean-halos');
+        const btnSoftEdges = document.getElementById('btn-soft-edges');
+
+        // Bottoni operativi
+        const btnAutoRemove = document.getElementById('btn-auto-remove');
+        const btnUndo = document.getElementById('btn-undo');
+        const btnReset = document.getElementById('btn-reset');
+        const btnDownloadIco = document.getElementById('btn-download-ico');
+        const btnDownloadPng = document.getElementById('btn-download-png');
+        const btnDownloadAllIco = document.getElementById('btn-download-all-ico');
+        const btnDownloadAllPng = document.getElementById('btn-download-all-png');
+        const btnClearAll = document.getElementById('btn-clear-all');
+        
+        const fileInfoLabel = document.getElementById('file-info-label');
+        const canvasDimensions = document.getElementById('canvas-dimensions');
+        const canvasStatusText = document.getElementById('canvas-status');
+        const exportSizeSelect = document.getElementById('export-size');
+
+        // Imposta valori predefiniti anche negli elementi visivi dell'interfaccia
+        sliderTolerance.value = tolerance;
+        toleranceValText.textContent = tolerance + "%";
+        sliderRefineStrength.value = refineStrength;
+        refineStrengthValText.textContent = refineStrength + " pixel";
+
+        // Toast Notification System
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const iconBox = document.getElementById('toast-icon-box');
+
+            toastMessage.textContent = message;
+            
+            if (type === 'error') {
+                iconBox.className = 'p-1 rounded-lg bg-rose-600 text-white flex items-center justify-center';
+                iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+            } else {
+                iconBox.className = 'p-1 rounded-lg bg-indigo-500 text-white flex items-center justify-center';
+                iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Conversione colore in formato HEX per UI
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+
+        function updateLastDeletedColorDisplay(r, g, b) {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+            uploadedImages[activeIndex].lastDeletedColor = { r, g, b, a: 255 };
+            bgColorPreview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+            bgColorHex.textContent = rgbToHex(r, g, b);
+        }
+
+        // --- GESTIONE DEI FILE MULTIPLI ---
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadZone.firstElementChild.classList.add('border-indigo-500', 'bg-slate-850');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadZone.firstElementChild.classList.remove('border-indigo-500', 'bg-slate-850');
+            }, false);
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleMultipleFiles(files);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleMultipleFiles(e.target.files);
+            }
+        });
+
+        // Gestisce la coda di massimo 5 immagini
+        function handleMultipleFiles(files) {
+            const availableSlots = 5 - uploadedImages.length;
+            if (availableSlots <= 0) {
+                showToast("Hai già raggiunto il limite di 5 immagini caricate.", "error");
+                return;
+            }
+
+            let loadedInThisSession = 0;
+            const filesToProcess = Array.from(files).slice(0, availableSlots);
+
+            if (files.length > availableSlots) {
+                showToast(`Puoi caricare massimo 5 file. Solo i primi ${availableSlots} sono stati importati.`, "error");
+            }
+
+            let loaders = filesToProcess.map(file => {
+                return new Promise((resolve) => {
+                    const originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            // Creiamo un canvas provvisorio per estrarre l'ImageData iniziale
+                            const tempCanvas = document.createElement('canvas');
+                            tempCanvas.width = img.naturalWidth;
+                            tempCanvas.height = img.naturalHeight;
+                            const tCtx = tempCanvas.getContext('2d');
+                            tCtx.drawImage(img, 0, 0);
+                            const initialData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+
+                            // Estrazione del primo colore campione dell'angolo superiore per la pulizia aloni
+                            const sampleData = initialData.data;
+                            const r = sampleData[0];
+                            const g = sampleData[1];
+                            const b = sampleData[2];
+
+                            const newImageObj = {
+                                id: Date.now() + Math.random().toString(36).substr(2, 9),
+                                name: originalFileName,
+                                width: img.naturalWidth,
+                                height: img.naturalHeight,
+                                originalImg: img,
+                                canvasData: initialData,
+                                undoStack: [],
+                                zoom: calculateOptimalZoom(img.naturalWidth),
+                                lastDeletedColor: { r, g, b, a: 255 }
+                            };
+
+                            uploadedImages.push(newImageObj);
+                            loadedInThisSession++;
+                            resolve();
+                        };
+                        img.onerror = function() {
+                            showToast(`Impossibile caricare il file ${file.name}.`, "error");
+                            resolve();
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            Promise.all(loaders).then(() => {
+                if (loadedInThisSession > 0) {
+                    showToast(`Caricate ${loadedInThisSession} nuove immagini!`);
+                    // Se non c'era un'immagine attiva, seleziona la prima caricata
+                    if (activeIndex === -1) {
+                        activeIndex = 0;
+                    }
+                    renderBatchSlots();
+                    loadActiveImageIntoCanvas();
+                    
+                    uploadZone.classList.add('hidden');
+                    editorZone.classList.remove('hidden');
+                }
+            });
+        }
+
+        function calculateOptimalZoom(w) {
+            if (w <= 64) return 8.0;
+            if (w <= 128) return 4.0;
+            if (w <= 256) return 2.0;
+            return 1.0;
+        }
+
+        // --- RENDERING DEI 5 SLOT ---
+        function renderBatchSlots() {
+            batchSlotsContainer.innerHTML = '';
+            batchCountText.textContent = `${uploadedImages.length} / 5 Caricati`;
+
+            for (let i = 0; i < 5; i++) {
+                const imgObj = uploadedImages[i];
+                const slotDiv = document.createElement('div');
+                
+                if (imgObj) {
+                    const activeClass = (i === activeIndex) ? 'border-indigo-500 ring-2 ring-indigo-500/50 bg-indigo-950/20' : 'border-slate-800 bg-slate-900 hover:border-slate-700';
+                    
+                    slotDiv.className = `relative flex flex-col items-center justify-between p-2 rounded-xl border ${activeClass} transition cursor-pointer group`;
+                    slotDiv.innerHTML = `
+                        <!-- Mini Preview -->
+                        <div class="w-full aspect-square dark-checkerboard rounded-lg overflow-hidden flex items-center justify-center relative mb-1.5 border border-slate-800/80">
+                            <canvas id="thumb-${imgObj.id}" class="max-w-full max-h-full block object-contain"></canvas>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-300 truncate w-full text-center" title="${imgObj.name}">${imgObj.name}</span>
+                        <span class="text-[9px] text-slate-500 font-mono mt-0.5">${imgObj.width}x${imgObj.height}</span>
+                        
+                        <!-- Bottone di eliminazione -->
+                        <button class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center rounded-full text-xs font-bold shadow-md opacity-0 group-hover:opacity-100 transition duration-150" title="Rimuovi" onclick="event.stopPropagation(); removeImage(${i});">
+                            ×
+                        </button>
+                    `;
+
+                    // Cliccando sul box si cambia l'immagine attiva
+                    slotDiv.addEventListener('click', () => {
+                        deactivateCropMode(); // Rimuove crop attivo prima di cambiare tab
+                        saveCurrentActiveState();
+                        activeIndex = i;
+                        loadActiveImageIntoCanvas();
+                        renderBatchSlots();
+                    });
+
+                    // Disegniamo la miniatura aggiornata
+                    setTimeout(() => {
+                        const thumbCanvas = document.getElementById(`thumb-${imgObj.id}`);
+                        if (thumbCanvas) {
+                            thumbCanvas.width = imgObj.width;
+                            thumbCanvas.height = imgObj.height;
+                            const tCtx = thumbCanvas.getContext('2d');
+                            tCtx.putImageData(imgObj.canvasData, 0, 0);
+                        }
+                    }, 50);
+
+                } else {
+                    // Slot vuoto pronto per l'upload
+                    slotDiv.className = `flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-900/30 text-slate-500 hover:text-slate-400 transition cursor-pointer aspect-square min-h-[90px]`;
+                    slotDiv.innerHTML = `
+                        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span class="text-[10px] font-bold">Aggiungi</span>
+                    `;
+                    slotDiv.addEventListener('click', () => {
+                        fileInput.click();
+                    });
+                }
+
+                batchSlotsContainer.appendChild(slotDiv);
+            }
+        }
+
+        // Elimina un'immagine dalla coda
+        window.removeImage = function(index) {
+            deactivateCropMode();
+            uploadedImages.splice(index, 1);
+            if (uploadedImages.length === 0) {
+                activeIndex = -1;
+                editorZone.classList.add('hidden');
+                uploadZone.classList.remove('hidden');
+                fileInput.value = "";
+            } else {
+                if (activeIndex >= uploadedImages.length) {
+                    activeIndex = uploadedImages.length - 1;
+                }
+                loadActiveImageIntoCanvas();
+                renderBatchSlots();
+            }
+            showToast("Immagine rimossa dalla coda.");
+        };
+
+        // --- SALVATAGGIO E CARICAMENTO DELLO STATO SUL CANVAS ---
+        function saveCurrentActiveState() {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            const currentImgData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+            uploadedImages[activeIndex].canvasData = currentImgData;
+            uploadedImages[activeIndex].zoom = zoom;
+            uploadedImages[activeIndex].width = mainCanvas.width;
+            uploadedImages[activeIndex].height = mainCanvas.height;
+        }
+
+        function loadActiveImageIntoCanvas() {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            const imgObj = uploadedImages[activeIndex];
+
+            // Inizializza il canvas alle dimensioni correnti salvate
+            mainCanvas.width = imgObj.width;
+            mainCanvas.height = imgObj.height;
+
+            // Carica i pixel memorizzati
+            ctx.putImageData(imgObj.canvasData, 0, 0);
+
+            // Applica il livello di zoom salvato
+            zoom = imgObj.zoom || calculateOptimalZoom(imgObj.width);
+            updateZoomDisplay();
+
+            updateUndoButton();
+
+            // Aggiorna le etichette informative
+            fileInfoLabel.textContent = imgObj.name + " (" + imgObj.width + "x" + imgObj.height + ")";
+            canvasDimensions.textContent = imgObj.width + " x " + imgObj.height + " px";
+
+            const bg = imgObj.lastDeletedColor;
+            updateLastDeletedColorDisplay(bg.r, bg.g, bg.b);
+
+            canvasStatusText.textContent = `Immagine attiva: ${imgObj.name}`;
+            
+            // Se eravamo in modalità crop, reimposta le coordinate
+            if (cropState.active) {
+                initCropOverlay();
+            }
+        }
+
+        // --- ZOOM E NAVIGAZIONE ---
+        function updateZoomDisplay() {
+            zoomFactorText.textContent = Math.round(zoom * 100) + "%";
+            canvasContainer.style.transform = `scale(${zoom})`;
+        }
+
+        btnZoomIn.addEventListener('click', () => {
+            if (zoom < 32) {
+                zoom = zoom >= 1 ? zoom + 1 : zoom + 0.25;
+                updateZoomDisplay();
+                if (uploadedImages[activeIndex]) uploadedImages[activeIndex].zoom = zoom;
+            }
+        });
+
+        btnZoomOut.addEventListener('click', () => {
+            if (zoom > 0.25) {
+                zoom = zoom > 1 ? zoom - 1 : zoom - 0.25;
+                updateZoomDisplay();
+                if (uploadedImages[activeIndex]) uploadedImages[activeIndex].zoom = zoom;
+            }
+        });
+
+        btnZoomReset.addEventListener('click', () => {
+            if (activeIndex !== -1 && uploadedImages[activeIndex]) {
+                zoom = calculateOptimalZoom(uploadedImages[activeIndex].width);
+                updateZoomDisplay();
+                uploadedImages[activeIndex].zoom = zoom;
+            }
+        });
+
+        // --- SELEZIONE STRUMENTI & PARAMETRI ---
+        toolWand.addEventListener('click', () => {
+            deactivateCropMode();
+            activeTool = 'wand';
+            toolWand.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-indigo-600/10 border-indigo-500 text-indigo-400 transition-all text-center group";
+            toolEraser.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            toolCrop.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            
+            toleranceContainer.classList.remove('hidden');
+            brushContainer.classList.add('hidden');
+            cropOptionsContainer.classList.add('hidden');
+            canvasStatusText.textContent = "Bacchetta: Clicca sullo sfondo da rimuovere";
+        });
+
+        toolEraser.addEventListener('click', () => {
+            deactivateCropMode();
+            activeTool = 'eraser';
+            toolEraser.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-indigo-600/10 border-indigo-500 text-indigo-400 transition-all text-center group";
+            toolWand.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            toolCrop.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            
+            brushContainer.classList.remove('hidden');
+            toleranceContainer.classList.add('hidden');
+            cropOptionsContainer.classList.add('hidden');
+            canvasStatusText.textContent = "Gomma: Trascina sul canvas per cancellare";
+        });
+
+        toolCrop.addEventListener('click', () => {
+            activeTool = 'crop';
+            toolCrop.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-indigo-600/10 border-indigo-500 text-indigo-400 transition-all text-center group";
+            toolWand.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            toolEraser.className = "flex flex-col items-center justify-center p-2.5 rounded-2xl border bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-center group";
+            
+            cropOptionsContainer.classList.remove('hidden');
+            toleranceContainer.classList.add('hidden');
+            brushContainer.classList.add('hidden');
+            canvasStatusText.textContent = "Ritaglia: Regola e trascina l'area evidenziata";
+            
+            activateCropMode();
+        });
+
+        sliderTolerance.addEventListener('input', (e) => {
+            tolerance = parseInt(e.target.value);
+            toleranceValText.textContent = tolerance + "%";
+        });
+
+        sliderBrush.addEventListener('input', (e) => {
+            brushSize = parseInt(e.target.value);
+            brushValText.textContent = brushSize + "px";
+        });
+
+        sliderRefineStrength.addEventListener('input', (e) => {
+            refineStrength = parseInt(e.target.value);
+            refineStrengthValText.textContent = refineStrength + " pixel";
+        });
+
+        // --- SISTEMA DI RITAGLIO (CROP) CON PROPORZIONI ---
+        function activateCropMode() {
+            cropState.active = true;
+            cropState.aspectRatio = cropAspectRatioSelect.value;
+            cropOverlay.classList.remove('hidden');
+            initCropOverlay();
+        }
+
+        function deactivateCropMode() {
+            cropState.active = false;
+            cropOverlay.classList.add('hidden');
+        }
+
+        function initCropOverlay() {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            const w = mainCanvas.width;
+            const h = mainCanvas.height;
+
+            // Avviamo il box all'80% della dimensione del canvas centrato
+            let boxW = w * 0.8;
+            let boxH = h * 0.8;
+
+            applyAspectRatioRules(boxW, boxH, w, h);
+        }
+
+        // Calcola larghezza ed altezza in base al rapporto di forma impostato
+        function applyAspectRatioRules(suggestedW, suggestedH, maxW, maxH) {
+            let ratio = null;
+            
+            switch (cropState.aspectRatio) {
+                case '1:1': ratio = 1; break;
+                case '4:3': ratio = 4 / 3; break;
+                case '3:4': ratio = 3 / 4; break;
+                case '16:9': ratio = 16 / 9; break;
+                case '9:16': ratio = 9 / 16; break;
+                default: ratio = null; // Libero
+            }
+
+            let boxW = suggestedW;
+            let boxH = suggestedH;
+
+            if (ratio !== null) {
+                if (boxW / boxH > ratio) {
+                    boxW = boxH * ratio;
+                } else {
+                    boxH = boxW / ratio;
+                }
+
+                // Protezione overflow limiti canvas
+                if (boxW > maxW) {
+                    boxW = maxW;
+                    boxH = boxW / ratio;
+                }
+                if (boxH > maxH) {
+                    boxH = maxH;
+                    boxW = boxH * ratio;
+                }
+            }
+
+            cropState.width = Math.round(boxW);
+            cropState.height = Math.round(boxH);
+            cropState.startX = Math.round((maxW - cropState.width) / 2);
+            cropState.startY = Math.round((maxH - cropState.height) / 2);
+
+            drawCropBoxUI();
+        }
+
+        // Disegna l'overlay in pixel reali basandosi sulle dimensioni dell'immagine
+        function drawCropBoxUI() {
+            if (!cropState.active) return;
+
+            const cw = mainCanvas.width;
+            const ch = mainCanvas.height;
+
+            // Posizioni e grandezza espresse in percentuale rispetto alla dimensione naturale del canvas
+            const leftPct = (cropState.startX / cw) * 100;
+            const topPct = (cropState.startY / ch) * 100;
+            const widthPct = (cropState.width / cw) * 100;
+            const heightPct = (cropState.height / ch) * 100;
+
+            cropBox.style.left = `${leftPct}%`;
+            cropBox.style.top = `${topPct}%`;
+            cropBox.style.width = `${widthPct}%`;
+            cropBox.style.height = `${heightPct}%`;
+        }
+
+        cropAspectRatioSelect.addEventListener('change', (e) => {
+            cropState.aspectRatio = e.target.value;
+            const w = mainCanvas.width;
+            const h = mainCanvas.height;
+            applyAspectRatioRules(cropState.width, cropState.height, w, h);
+        });
+
+        // Eventi di trascinamento e ridimensionamento della maschera di ritaglio
+        cropBox.addEventListener('mousedown', handleCropStart);
+        cropBox.addEventListener('touchstart', handleCropStart, { passive: false });
+
+        function handleCropStart(e) {
+            if (!cropState.active) return;
+            e.stopPropagation();
+
+            const isTouch = e.type.startsWith('touch');
+            const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+            const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+
+            const handle = e.target.getAttribute('data-handle');
+            
+            cropState.dragStartX = clientX;
+            cropState.dragStartY = clientY;
+
+            if (handle) {
+                cropState.isResizing = true;
+                cropState.currentHandle = handle;
+            } else {
+                cropState.isDragging = true;
+            }
+
+            if (!isTouch) {
+                window.addEventListener('mousemove', handleCropMove);
+                window.addEventListener('mouseup', handleCropEnd);
+            } else {
+                window.addEventListener('touchmove', handleCropMove, { passive: false });
+                window.addEventListener('touchend', handleCropEnd);
+            }
+            e.preventDefault();
+        }
+
+        function handleCropMove(e) {
+            if (!cropState.isDragging && !cropState.isResizing) return;
+            e.preventDefault();
+
+            const isTouch = e.type.startsWith('touch');
+            const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+            const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+
+            // Calcola la differenza in pixel fisici sul monitor e converti tenendo conto dello zoom corrente
+            const deltaX = (clientX - cropState.dragStartX) / zoom;
+            const deltaY = (clientY - cropState.dragStartY) / zoom;
+
+            const cw = mainCanvas.width;
+            const ch = mainCanvas.height;
+
+            let ratio = null;
+            switch (cropState.aspectRatio) {
+                case '1:1': ratio = 1; break;
+                case '4:3': ratio = 4 / 3; break;
+                case '3:4': ratio = 3 / 4; break;
+                case '16:9': ratio = 16 / 9; break;
+                case '9:16': ratio = 9 / 16; break;
+            }
+
+            if (cropState.isDragging) {
+                let nextX = cropState.startX + deltaX;
+                let nextY = cropState.startY + deltaY;
+
+                // Contenimento all'interno del file
+                if (nextX < 0) nextX = 0;
+                if (nextX + cropState.width > cw) nextX = cw - cropState.width;
+                if (nextY < 0) nextY = 0;
+                if (nextY + cropState.height > ch) nextY = ch - cropState.height;
+
+                cropState.startX = Math.round(nextX);
+                cropState.startY = Math.round(nextY);
+
+            } else if (cropState.isResizing) {
+                let handle = cropState.currentHandle;
+                let nextX = cropState.startX;
+                let nextY = cropState.startY;
+                let nextW = cropState.width;
+                let nextH = cropState.height;
+
+                const minSize = 10;
+
+                if (ratio === null) {
+                    // Ridimensionamento libero (Free)
+                    if (handle.includes('e')) {
+                        nextW = Math.max(minSize, cropState.width + deltaX);
+                        if (nextX + nextW > cw) nextW = cw - nextX;
+                    }
+                    if (handle.includes('w')) {
+                        const possibleW = cropState.width - deltaX;
+                        if (possibleW >= minSize && cropState.startX + deltaX >= 0) {
+                            nextX = cropState.startX + deltaX;
+                            nextW = possibleW;
+                        }
+                    }
+                    if (handle.includes('s')) {
+                        nextH = Math.max(minSize, cropState.height + deltaY);
+                        if (nextY + nextH > ch) nextH = ch - nextY;
+                    }
+                    if (handle.includes('n')) {
+                        const possibleH = cropState.height - deltaY;
+                        if (possibleH >= minSize && cropState.startY + deltaY >= 0) {
+                            nextY = cropState.startY + deltaY;
+                            nextH = possibleH;
+                        }
+                    }
+                } else {
+                    // Ridimensionamento proporzionale (Vincolato)
+                    if (handle === 'se') {
+                        nextW = Math.max(minSize, cropState.width + deltaX);
+                        nextH = nextW / ratio;
+                        if (nextX + nextW > cw || nextY + nextH > ch) {
+                            const scale = Math.min((cw - nextX) / nextW, (ch - nextY) / nextH);
+                            nextW *= scale;
+                            nextH *= scale;
+                        }
+                    } else if (handle === 'sw') {
+                        nextW = Math.max(minSize, cropState.width - deltaX);
+                        nextH = nextW / ratio;
+                        
+                        // Calcola potenziale spostamento coordinata X
+                        const computedDeltaX = cropState.width - nextW;
+                        if (cropState.startX + computedDeltaX < 0 || nextY + nextH > ch) {
+                            const scale = Math.min((cropState.startX) / (cropState.width - nextW), (ch - nextY) / nextH);
+                            nextW = cropState.width - (cropState.width - nextW) * scale;
+                            nextH = nextW / ratio;
+                        }
+                        nextX = cropState.startX + (cropState.width - nextW);
+                    } else if (handle === 'ne') {
+                        nextW = Math.max(minSize, cropState.width + deltaX);
+                        nextH = nextW / ratio;
+                        
+                        const computedDeltaY = cropState.height - nextH;
+                        if (nextX + nextW > cw || cropState.startY + computedDeltaY < 0) {
+                            const scale = Math.min((cw - nextX) / nextW, (cropState.startY) / (cropState.height - nextH));
+                            nextW = cropState.width + (nextW - cropState.width) * scale;
+                            nextH = nextW / ratio;
+                        }
+                        nextY = cropState.startY + (cropState.height - nextH);
+                    } else if (handle === 'nw') {
+                        nextW = Math.max(minSize, cropState.width - deltaX);
+                        nextH = nextW / ratio;
+
+                        const computedDeltaX = cropState.width - nextW;
+                        const computedDeltaY = cropState.height - nextH;
+
+                        if (cropState.startX + computedDeltaX < 0 || cropState.startY + computedDeltaY < 0) {
+                            const scale = Math.min(cropState.startX / computedDeltaX, cropState.startY / computedDeltaY);
+                            nextW = cropState.width - (cropState.width - nextW) * scale;
+                            nextH = nextW / ratio;
+                        }
+                        nextX = cropState.startX + (cropState.width - nextW);
+                        nextY = cropState.startY + (cropState.height - nextH);
+                    }
+                }
+
+                cropState.startX = Math.round(nextX);
+                cropState.startY = Math.round(nextY);
+                cropState.width = Math.round(nextW);
+                cropState.height = Math.round(nextH);
+            }
+
+            cropState.dragStartX = clientX;
+            cropState.dragStartY = clientY;
+            drawCropBoxUI();
+        }
+
+        function handleCropEnd() {
+            cropState.isDragging = false;
+            cropState.isResizing = false;
+            cropState.currentHandle = null;
+
+            window.removeEventListener('mousemove', handleCropMove);
+            window.removeEventListener('mouseup', handleCropEnd);
+            window.removeEventListener('touchmove', handleCropMove);
+            window.removeEventListener('touchend', handleCropEnd);
+        }
+
+        // --- CONFERMA ED ESECUZIONE DEL RITAGLIO ---
+        btnApplyCrop.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex] || !cropState.active) return;
+
+            // Salva lo stato precedente nello stack dell'Undo
+            saveStateToUndoStack();
+
+            const x = cropState.startX;
+            const y = cropState.startY;
+            const w = cropState.width;
+            const h = cropState.height;
+
+            if (w <= 0 || h <= 0) return;
+
+            // Legge l'area ritagliata dal canvas corrente
+            const croppedData = ctx.getImageData(x, y, w, h);
+
+            // Ridimensiona il canvas principale alle dimensioni ritagliate
+            mainCanvas.width = w;
+            mainCanvas.height = h;
+
+            // Inserisce i dati ritagliati nel canvas
+            ctx.putImageData(croppedData, 0, 0);
+
+            // Sincronizza lo stato attivo dell'immagine
+            uploadedImages[activeIndex].width = w;
+            uploadedImages[activeIndex].height = h;
+            uploadedImages[activeIndex].canvasData = croppedData;
+
+            // Disattiva e aggiorna la UI
+            deactivateCropMode();
+            renderBatchSlots();
+
+            // Ritorna allo strumento Bacchetta Magica di default
+            toolWand.click();
+
+            // Aggiorna info dimensionali
+            canvasDimensions.textContent = `${w} x ${h} px`;
+            fileInfoLabel.textContent = `${uploadedImages[activeIndex].name} (${w}x${h})`;
+
+            showToast("Immagine ritagliata con successo!");
+        });
+
+        btnCancelCrop.addEventListener('click', () => {
+            deactivateCropMode();
+            toolWand.click();
+        });
+
+
+        // --- GESTIONE ANNULLA / UNDO ---
+        function saveStateToUndoStack() {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            const imageData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+            uploadedImages[activeIndex].undoStack.push({
+                data: imageData,
+                width: mainCanvas.width,
+                height: mainCanvas.height
+            });
+            
+            if (uploadedImages[activeIndex].undoStack.length > 15) {
+                uploadedImages[activeIndex].undoStack.shift(); 
+            }
+            updateUndoButton();
+        }
+
+        function updateUndoButton() {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) {
+                btnUndo.disabled = true;
+                return;
+            }
+
+            const currentStack = uploadedImages[activeIndex].undoStack;
+            if (currentStack && currentStack.length > 0) {
+                btnUndo.disabled = false;
+                btnUndo.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-indigo-950/20 border border-indigo-900/40 text-xs font-medium text-indigo-400 hover:bg-indigo-900/30 hover:text-indigo-300 transition cursor-pointer";
+            } else {
+                btnUndo.disabled = true;
+                btnUndo.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-800 border border-slate-700 text-xs font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition";
+            }
+        }
+
+        btnUndo.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            const currentStack = uploadedImages[activeIndex].undoStack;
+            if (currentStack.length > 0) {
+                const previousState = currentStack.pop();
+
+                mainCanvas.width = previousState.width;
+                mainCanvas.height = previousState.height;
+                ctx.putImageData(previousState.data, 0, 0);
+                
+                // Sincronizza lo stato dell'immagine
+                uploadedImages[activeIndex].canvasData = previousState.data;
+                uploadedImages[activeIndex].width = previousState.width;
+                uploadedImages[activeIndex].height = previousState.height;
+                
+                // Aggiorna scritte UI
+                fileInfoLabel.textContent = uploadedImages[activeIndex].name + " (" + previousState.width + "x" + previousState.height + ")";
+                canvasDimensions.textContent = previousState.width + " x " + previousState.height + " px";
+
+                updateUndoButton();
+                renderBatchSlots(); // Aggiorna la miniatura
+                showToast("Ultima azione annullata");
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            if (confirm("Ripristinare l'immagine selezionata allo stato originale?")) {
+                deactivateCropMode();
+                const imgObj = uploadedImages[activeIndex];
+                
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = imgObj.originalImg.naturalWidth;
+                tempCanvas.height = imgObj.originalImg.naturalHeight;
+                const tCtx = tempCanvas.getContext('2d');
+                tCtx.drawImage(imgObj.originalImg, 0, 0);
+                
+                const originalData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                imgObj.canvasData = originalData;
+                imgObj.width = tempCanvas.width;
+                imgObj.height = tempCanvas.height;
+                imgObj.undoStack = [];
+                
+                loadActiveImageIntoCanvas();
+                renderBatchSlots();
+                toolWand.click();
+                showToast("Immagine ripristinata allo stato iniziale.");
+            }
+        });
+
+        btnClearAll.addEventListener('click', () => {
+            if (confirm("Sei sicuro di voler svuotare tutte le immagini caricate?")) {
+                deactivateCropMode();
+                uploadedImages = [];
+                activeIndex = -1;
+                fileInput.value = "";
+                editorZone.classList.add('hidden');
+                uploadZone.classList.remove('hidden');
+                showToast("Coda di lavoro svuotata.");
+            }
+        });
+
+
+        // --- COORDINATE ED EVENTI GENERALI DEL CANVAS ---
+        function getCanvasCoordinates(e) {
+            const rect = mainCanvas.getBoundingClientRect();
+            
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const scaleX = mainCanvas.width / rect.width;
+            const scaleY = mainCanvas.height / rect.height;
+
+            const x = Math.floor((clientX - rect.left) * scaleX);
+            const y = Math.floor((clientY - rect.top) * scaleY);
+
+            return { x, y };
+        }
+
+        function handleStart(e) {
+            if (activeIndex === -1 || !uploadedImages[activeIndex] || cropState.active) return;
+            const coords = getCanvasCoordinates(e);
+
+            if (activeTool === 'wand') {
+                saveStateToUndoStack();
+                floodFillErase(coords.x, coords.y, tolerance);
+            } else if (activeTool === 'eraser') {
+                saveStateToUndoStack();
+                isDrawing = true;
+                eraseManual(coords.x, coords.y);
+            }
+            e.preventDefault();
+        }
+
+        function handleMove(e) {
+            if (!isDrawing || activeTool !== 'eraser' || cropState.active) return;
+            const coords = getCanvasCoordinates(e);
+            eraseManual(coords.x, coords.y);
+            e.preventDefault();
+        }
+
+        function handleEnd() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveCurrentActiveState();
+                renderBatchSlots(); 
+            }
+        }
+
+        mainCanvas.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+
+        mainCanvas.addEventListener('touchstart', handleStart, { passive: false });
+        mainCanvas.addEventListener('touchmove', handleMove, { passive: false });
+        mainCanvas.addEventListener('touchend', handleEnd);
+
+
+        // --- ALGORITMO DI RIMOZIONE CON SFUMATURA (FEATHERED FLOOD FILL) ---
+        function floodFillErase(startX, startY, tolValue) {
+            const width = mainCanvas.width;
+            const height = mainCanvas.height;
+            
+            if (startX < 0 || startX >= width || startY < 0 || startY >= height) return;
+
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+
+            const startIdx = (startY * width + startX) * 4;
+            const targetR = data[startIdx];
+            const targetG = data[startIdx + 1];
+            const targetB = data[startIdx + 2];
+            const targetA = data[startIdx + 3];
+
+            if (targetA === 0) return;
+
+            updateLastDeletedColorDisplay(targetR, targetG, targetB);
+
+            const visited = new Uint8Array(width * height);
+            const queue = [];
+            
+            queue.push(startX, startY);
+            visited[startY * width + startX] = 1;
+
+            const toleranceThreshold = (tolValue / 100) * 441.67;
+            const toleranceThresholdSq = toleranceThreshold * toleranceThreshold;
+            const innerThresholdSq = toleranceThresholdSq * 0.45;
+
+            while (queue.length > 0) {
+                const currY = queue.pop();
+                const currX = queue.pop();
+
+                const idx = (currY * width + currX) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                const a = data[idx + 3];
+
+                const dr = r - targetR;
+                const dg = g - targetG;
+                const db = b - targetB;
+                const da = a - targetA;
+                const distSq = dr*dr + dg*dg + db*db + da*da;
+
+                if (distSq <= toleranceThresholdSq) {
+                    if (distSq <= innerThresholdSq) {
+                        data[idx + 3] = 0; 
+                    } else {
+                        const range = toleranceThresholdSq - innerThresholdSq;
+                        const factor = (distSq - innerThresholdSq) / range; 
+                        const calculatedAlpha = Math.floor(a * factor);
+                        if (calculatedAlpha < data[idx + 3]) {
+                            data[idx + 3] = calculatedAlpha;
+                        }
+                    }
+
+                    const neighbors = [
+                        [currX + 1, currY],
+                        [currX - 1, currY],
+                        [currX, currY + 1],
+                        [currX, currY - 1]
+                    ];
+
+                    for (const [nx, ny] of neighbors) {
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                            const nIdx = ny * width + nx;
+                            if (visited[nIdx] === 0) {
+                                visited[nIdx] = 1;
+                                queue.push(nx, ny);
+                            }
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            saveCurrentActiveState();
+            renderBatchSlots(); 
+        }
+
+        // GOMMA MANUALE
+        function eraseManual(x, y) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // --- AUTO-RILEVAMENTO AUTOMATICO SFONDO ---
+        btnAutoRemove.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            saveStateToUndoStack();
+            
+            const width = mainCanvas.width;
+            const height = mainCanvas.height;
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+
+            const borderColors = [];
+            for (let x = 0; x < width; x += Math.max(1, Math.floor(width / 50))) {
+                borderColors.push(getPixelColor(data, x, 0, width));
+                borderColors.push(getPixelColor(data, x, height - 1, width));
+            }
+            for (let y = 0; y < height; y += Math.max(1, Math.floor(height / 50))) {
+                borderColors.push(getPixelColor(data, 0, y, width));
+                borderColors.push(getPixelColor(data, width - 1, y, width));
+            }
+
+            const bgCandidate = getDominantColor(borderColors);
+            if (!bgCandidate) {
+                showToast("Nessun sfondo rilevato sui bordi dell'immagine", "error");
+                return;
+            }
+
+            updateLastDeletedColorDisplay(bgCandidate.r, bgCandidate.g, bgCandidate.b);
+
+            const visited = new Uint8Array(width * height);
+            const queue = [];
+            const threshold = (tolerance / 100) * 441.67;
+            const thresholdSq = threshold * threshold;
+            const innerThresholdSq = thresholdSq * 0.45;
+
+            const addBorderPixelIfCompatible = (bx, by) => {
+                const idx = (by * width + bx) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                const a = data[idx + 3];
+                
+                if (a === 0) return;
+
+                const dr = r - bgCandidate.r;
+                const dg = g - bgCandidate.g;
+                const db = b - bgCandidate.b;
+                const da = a - bgCandidate.a;
+                const distSq = dr*dr + dg*dg + db*db + da*da;
+
+                if (distSq <= thresholdSq) {
+                    const nIdx = by * width + bx;
+                    if (visited[nIdx] === 0) {
+                        visited[nIdx] = 1;
+                        queue.push(bx, by);
+                    }
+                }
+            };
+
+            for (let x = 0; x < width; x++) {
+                addBorderPixelIfCompatible(x, 0);
+                addBorderPixelIfCompatible(x, height - 1);
+            }
+            for (let y = 0; y < height; y++) {
+                addBorderPixelIfCompatible(0, y);
+                addBorderPixelIfCompatible(width - 1, y);
+            }
+
+            while (queue.length > 0) {
+                const currY = queue.pop();
+                const currX = queue.pop();
+
+                const idx = (currY * width + currX) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                const a = data[idx + 3];
+
+                const dr = r - bgCandidate.r;
+                const dg = g - bgCandidate.g;
+                const db = b - bgCandidate.b;
+                const da = a - bgCandidate.a;
+                const distSq = dr*dr + dg*dg + db*db + da*da;
+
+                if (distSq <= thresholdSq) {
+                    if (distSq <= innerThresholdSq) {
+                        data[idx + 3] = 0;
+                    } else {
+                        const range = thresholdSq - innerThresholdSq;
+                        const factor = (distSq - innerThresholdSq) / range;
+                        const calculatedAlpha = Math.floor(a * factor);
+                        if (calculatedAlpha < data[idx + 3]) {
+                            data[idx + 3] = calculatedAlpha;
+                        }
+                    }
+
+                    const neighbors = [
+                        [currX + 1, currY],
+                        [currX - 1, currY],
+                        [currX, currY + 1],
+                        [currX, currY - 1]
+                    ];
+
+                    for (const [nx, ny] of neighbors) {
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                            const nIdx = ny * width + nx;
+                            if (visited[nIdx] === 0) {
+                                visited[nIdx] = 1;
+
+                                const vIdx = nIdx * 4;
+                                const vr = data[vIdx];
+                                const vg = data[vIdx+1];
+                                const vb = data[vIdx+2];
+                                const va = data[vIdx+3];
+
+                                const vdr = vr - bgCandidate.r;
+                                const vdg = vg - bgCandidate.g;
+                                const vdb = vb - bgCandidate.b;
+                                const vda = va - bgCandidate.a;
+                                const vdistSq = vdr*vdr + vdg*vdg + vdb*vdb + vda*vda;
+
+                                if (vdistSq <= thresholdSq) {
+                                    queue.push(nx, ny);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            saveCurrentActiveState();
+            renderBatchSlots();
+            showToast("Rimozione automatica completata!");
+        });
+
+        function getPixelColor(data, x, y, width) {
+            const idx = (y * width + x) * 4;
+            return {
+                r: data[idx],
+                g: data[idx + 1],
+                b: data[idx + 2],
+                a: data[idx + 3]
+            };
+        }
+
+        function getDominantColor(colors) {
+            if (colors.length === 0) return null;
+            
+            const groups = [];
+            const threshold = 30 * 30;
+
+            for (const color of colors) {
+                if (color.a === 0) continue;
+                
+                let foundGroup = false;
+                for (const g of groups) {
+                    const dr = color.r - g.r;
+                    const dg = color.g - g.g;
+                    const db = color.b - g.b;
+                    if (dr*dr + dg*dg + db*db < threshold) {
+                        g.count++;
+                        g.r = Math.round((g.r + color.r) / 2);
+                        g.g = Math.round((g.g + color.g) / 2);
+                        g.b = Math.round((g.b + color.b) / 2);
+                        foundGroup = true;
+                        break;
+                    }
+                }
+                if (!foundGroup) {
+                    groups.push({ ...color, count: 1 });
+                }
+            }
+
+            if (groups.length === 0) return null;
+            groups.sort((a, b) => b.count - a.count);
+            return groups[0];
+        }
+
+
+        // --- ALGORITMO DI PULIZIA ALONI (DEFRINGING) ---
+        btnCleanHalos.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            saveStateToUndoStack();
+            
+            const width = mainCanvas.width;
+            const height = mainCanvas.height;
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+            const output = ctx.createImageData(width, height);
+            output.data.set(data);
+
+            const searchRadius = refineStrength; 
+            const bg = uploadedImages[activeIndex].lastDeletedColor;
+
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    const idx = (y * width + x) * 4;
+                    const a = data[idx + 3];
+
+                    if (a > 0) {
+                        let hasTransparentNeighbor = false;
+                        let solidNeighbors = [];
+
+                        for (let dy = -searchRadius; dy <= searchRadius; dy++) {
+                            for (let dx = -searchRadius; dx <= searchRadius; dx++) {
+                                const nx = x + dx;
+                                const ny = y + dy;
+                                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                    const nIdx = (ny * width + nx) * 4;
+                                    const na = data[nIdx + 3];
+                                    if (na < 150) {
+                                        hasTransparentNeighbor = true;
+                                    }
+                                    if (na > 220) {
+                                        solidNeighbors.push({
+                                            r: data[nIdx],
+                                            g: data[nIdx + 1],
+                                            b: data[nIdx + 2],
+                                            a: na
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        if (hasTransparentNeighbor) {
+                            const r = data[idx];
+                            const g = data[idx + 1];
+                            const b = data[idx + 2];
+
+                            const dr = r - bg.r;
+                            const dg = g - bg.g;
+                            const db = b - bg.b;
+                            const distToBg = Math.sqrt(dr*dr + dg*dg + db*db);
+
+                            if (distToBg < 150) {
+                                const fadeRatio = distToBg / 150; 
+                                output.data[idx + 3] = Math.max(0, Math.floor(a * fadeRatio * 0.75));
+
+                                if (solidNeighbors.length > 0) {
+                                    let avgR = 0, avgG = 0, avgB = 0;
+                                    for (const sn of solidNeighbors) {
+                                        avgR += sn.r;
+                                        avgG += sn.g;
+                                        avgB += sn.b;
+                                    }
+                                    avgR = Math.floor(avgR / solidNeighbors.length);
+                                    avgG = Math.floor(avgG / solidNeighbors.length);
+                                    avgB = Math.floor(avgB / solidNeighbors.length);
+
+                                    output.data[idx] = Math.floor(r * 0.2 + avgR * 0.8);
+                                    output.data[idx + 1] = Math.floor(g * 0.2 + avgG * 0.8);
+                                    output.data[idx + 2] = Math.floor(b * 0.2 + avgB * 0.8);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(output, 0, 0);
+            saveCurrentActiveState();
+            renderBatchSlots();
+            showToast("Bordi e aloni ripuliti!");
+        });
+
+        // AMMORBIDIMENTO SELETTIVO BORDI
+        btnSoftEdges.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+
+            saveStateToUndoStack();
+
+            const width = mainCanvas.width;
+            const height = mainCanvas.height;
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+            const output = ctx.createImageData(width, height);
+            output.data.set(data);
+
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    const idx = (y * width + x) * 4;
+                    const a = data[idx + 3];
+
+                    if (a > 0 && a < 255) {
+                        let alphaSum = 0;
+                        let count = 0;
+
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                                alphaSum += data[nIdx + 3];
+                                count++;
+                            }
+                        }
+
+                        output.data[idx + 3] = Math.floor(alphaSum / count);
+                    }
+                }
+            }
+
+            ctx.putImageData(output, 0, 0);
+            saveCurrentActiveState();
+            renderBatchSlots();
+            showToast("Smussamento contorno applicato!");
+        });
+
+
+        // --- GENERAZIONE FILE DI ESPORTAZIONE (ICO/PNG) ---
+        function getExportedCanvas(sourceCanvas) {
+            const targetSizeVal = exportSizeSelect.value;
+            
+            if (targetSizeVal === 'original') {
+                return sourceCanvas;
+            }
+
+            const targetSize = parseInt(targetSizeVal);
+            const resizeCanvas = document.createElement('canvas');
+            resizeCanvas.width = targetSize;
+            resizeCanvas.height = targetSize;
+            const rCtx = resizeCanvas.getContext('2d');
+
+            rCtx.imageSmoothingEnabled = true;
+            rCtx.imageSmoothingQuality = 'high';
+
+            rCtx.drawImage(sourceCanvas, 0, 0, resizeCanvas.width, resizeCanvas.height);
+            return resizeCanvas;
+        }
+
+        // Helper per estrarre un canvas provvisorio di un oggetto immagine specifico (per il download cumulativo)
+        function getCanvasFromImageData(imgObj) {
+            const c = document.createElement('canvas');
+            c.width = imgObj.width;
+            c.height = imgObj.height;
+            const cx = c.getContext('2d');
+            cx.putImageData(imgObj.canvasData, 0, 0);
+            return c;
+        }
+
+        // --- SCARICARE IMMAGINE ATTIVA ---
+        btnDownloadPng.addEventListener('click', () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+            
+            const outCanvas = getExportedCanvas(mainCanvas);
+            const url = outCanvas.toDataURL('image/png');
+            
+            const link = document.createElement('a');
+            link.download = `${uploadedImages[activeIndex].name}_trasparente.png`;
+            link.href = url;
+            link.click();
+            showToast("File PNG scaricato con successo!");
+        });
+
+        btnDownloadIco.addEventListener('click', async () => {
+            if (activeIndex === -1 || !uploadedImages[activeIndex]) return;
+            
+            const outCanvas = getExportedCanvas(mainCanvas);
+            
+            try {
+                const icoBlob = await convertCanvasToIcoBlob(outCanvas);
+                const url = URL.createObjectURL(icoBlob);
+                const link = document.createElement('a');
+                link.download = `${uploadedImages[activeIndex].name}_trasparente.ico`;
+                link.href = url;
+                link.click();
+                
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+                showToast("File ICO generato e scaricato!");
+            } catch (err) {
+                console.error(err);
+                showToast("Errore durante la compilazione dell'ICO.", "error");
+            }
+        });
+
+        // --- DOWNLOAD BATCH (TUTTE LE IMMAGINI CON UN CLICK) ---
+        btnDownloadAllPng.addEventListener('click', () => {
+            if (uploadedImages.length === 0) return;
+            
+            saveCurrentActiveState(); // Assicurati che lo stato del canvas attivo sia salvato nell'array
+
+            uploadedImages.forEach((imgObj) => {
+                const imgCanvas = getCanvasFromImageData(imgObj);
+                const outCanvas = getExportedCanvas(imgCanvas);
+                const url = outCanvas.toDataURL('image/png');
+                
+                const link = document.createElement('a');
+                link.download = `${imgObj.name}_trasparente.png`;
+                link.href = url;
+                link.click();
+            });
+
+            showToast(`Download batch di ${uploadedImages.length} PNG avviato!`);
+        });
+
+        btnDownloadAllIco.addEventListener('click', async () => {
+            if (uploadedImages.length === 0) return;
+            
+            saveCurrentActiveState(); // Sincronizza lo stato attivo
+
+            for (const imgObj of uploadedImages) {
+                const imgCanvas = getCanvasFromImageData(imgObj);
+                const outCanvas = getExportedCanvas(imgCanvas);
+                
+                try {
+                    const icoBlob = await convertCanvasToIcoBlob(outCanvas);
+                    const url = URL.createObjectURL(icoBlob);
+                    
+                    const link = document.createElement('a');
+                    link.download = `${imgObj.name}_trasparente.ico`;
+                    link.href = url;
+                    link.click();
+                    
+                    await new Promise(r => setTimeout(r, 150));
+                    URL.revokeObjectURL(url);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            showToast(`Download batch di ${uploadedImages.length} file ICO avviato!`);
+        });
+
+        // COMPILATORE NATIVO CLIENT-SIDE DA CANVAS A .ICO (Format Multi-Bitrate/Alpha PNG Embedded)
+        function convertCanvasToIcoBlob(canvas) {
+            return new Promise((resolve, reject) => {
+                canvas.toBlob(async (pngBlob) => {
+                    if (!pngBlob) {
+                        reject(new Error("Errore di rendering del blob PNG"));
+                        return;
+                    }
+
+                    try {
+                        const pngBuffer = await pngBlob.arrayBuffer();
+                        const pngSize = pngBuffer.byteLength;
+
+                        const icoHeaderSize = 6;
+                        const icoDirSize = 16;
+                        const icoBuffer = new ArrayBuffer(icoHeaderSize + icoDirSize + pngSize);
+                        const view = new DataView(icoBuffer);
+
+                        // --- ICON HEADER ---
+                        view.setUint16(0, 0, true);     
+                        view.setUint16(2, 1, true);     
+                        view.setUint16(4, 1, true);     
+
+                        // --- ICON DIRECTORY ENTRY ---
+                        let w = canvas.width >= 256 ? 0 : canvas.width;
+                        let h = canvas.height >= 256 ? 0 : canvas.height;
+                        view.setUint8(6, w);            
+                        view.setUint8(7, h);            
+                        view.setUint8(8, 0);            
+                        view.setUint8(9, 0);            
+                        view.setUint16(10, 1, true);    
+                        view.setUint16(12, 32, true);   
+                        view.setUint32(14, pngSize, true); 
+                        view.setUint32(18, icoHeaderSize + icoDirSize, true); 
+
+                        // --- COPIA DEI DATI PNG ---
+                        const destUint8 = new Uint8Array(icoBuffer, icoHeaderSize + icoDirSize);
+                        destUint8.set(new Uint8Array(pngBuffer));
+
+                        resolve(new Blob([icoBuffer], { type: 'image/x-icon' }));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }, 'image/png');
+            });
+        }
+    </script>
+</body>
+</html>
