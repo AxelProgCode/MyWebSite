@@ -32,6 +32,7 @@ body{
 
 .navbar ul li{
     list-style: none;
+    position: relative;
 }
 
 .navbar ul li a{
@@ -40,6 +41,10 @@ body{
     font-size: 16px;
     margin-right: 25px;
     transition: color 0.3s ease;
+}
+
+.navbar ul li a.active {
+    color: #ffb742;
 }
 
 .navbar ul li:hover a{

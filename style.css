@@ -32,6 +32,7 @@ body{
 
 .navbar ul li{
     list-style: none;
+    position: relative;
 }
 
 .navbar ul li a{
@@ -42,6 +43,10 @@ body{
     transition: color 0.3s ease;
 }
 
+.navbar ul li a.active {
+    color: #ffb742;
+}
+
 .navbar ul li:hover a{
     color: #ffb742;
 }
@@ -49,6 +54,7 @@ body{
 .navbar ul li:last-child a{
     margin: 0;
 }
+
 
 .hire-btn{
     background: #ffb742;
