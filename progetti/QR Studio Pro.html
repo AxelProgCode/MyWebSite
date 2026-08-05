@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Studio Pro - Generatore e Lettore QR Code</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Styling Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <!-- HTML5 QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- jsQR Library for image fallbacks -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white custom-scrollbar">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-qrcode text-xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">QR Studio <span class="text-xs px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-semibold border border-brand-500/30">PRO</span></h1>
+                </div>
+            </div>
+
+            <!-- Main Tabs Bar -->
+            <nav class="flex space-x-1 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+                <button id="tab-btn-create" onclick="switchTab('create')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-brand-600 text-white shadow-md shadow-brand-600/30">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden sm:inline">Crea QR</span>
+                </button>
+                <button id="tab-btn-scan" onclick="switchTab('scan')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200">
+                    <i class="fa-solid fa-expand"></i>
+                    <span class="hidden sm:inline">Scansiona QR</span>
+                </button>
+                <button id="tab-btn-history" onclick="switchTab('history')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span class="hidden sm:inline">Cronologia</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- TAB 1: CREATION WORKSPACE -->
+        <div id="tab-create" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Form Configuration Panel -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Preset Types Selection -->
+                <div class="glass-panel rounded-2xl p-5 shadow-xl">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Tipo di Contenuto</label>
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="type-selector-group">
+                        <button type="button" data-type="url" onclick="selectType('url')" class="type-btn active flex flex-col items-center justify-center p-3 rounded-xl border border-brand-500/50 bg-brand-500/10 text-brand-300 font-medium text-xs transition-all duration-200 hover:border-brand-500">
+                            <i class="fa-solid fa-link text-lg mb-1.5"></i>
+                            URL / Link
+                        </button>
+                        <button type="button" data-type="wifi" onclick="selectType('wifi')" class="type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white">
+                            <i class="fa-solid fa-wifi text-lg mb-1.5"></i>
+                            Wi-Fi
+                        </button>
+                        <button type="button" data-type="vcard" onclick="selectType('vcard')" class="type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white">
+                            <i class="fa-solid fa-address-card text-lg mb-1.5"></i>
+                            Contatto
+                        </button>
+                        <button type="button" data-type="email" onclick="selectType('email')" class="type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white">
+                            <i class="fa-solid fa-envelope text-lg mb-1.5"></i>
+                            Email
+                        </button>
+                        <button type="button" data-type="whatsapp" onclick="selectType('whatsapp')" class="type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white">
+                            <i class="fa-brands fa-whatsapp text-lg mb-1.5"></i>
+                            WhatsApp
+                        </button>
+                        <button type="button" data-type="text" onclick="selectType('text')" class="type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white">
+                            <i class="fa-solid fa-align-left text-lg mb-1.5"></i>
+                            Testo Libero
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input Fields Form Panel -->
+                <div class="glass-panel rounded-2xl p-6 shadow-xl">
+                    <h2 class="text-lg font-semibold mb-4 text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-brand-400"></i> Dati del QR Code
+                    </h2>
+                    
+                    <!-- Dynamic Fields Container -->
+                    <div id="form-fields-container" class="space-y-4">
+                        <!-- URL / Text Form -->
+                        <div id="form-url" class="form-section space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Indirizzo Web o Testo</label>
+                                <input type="url" id="input-url" placeholder="https://esempio.it" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-white placeholder-slate-500">
+                            </div>
+                        </div>
+
+                        <!-- Wi-Fi Form -->
+                        <div id="form-wifi" class="form-section hidden space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Nome rete (SSID)</label>
+                                <input type="text" id="wifi-ssid" placeholder="LaMiaReteWiFi" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-white">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                                    <input type="password" id="wifi-password" placeholder="Password Rete" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Cifratura</label>
+                                    <select id="wifi-encryption" onchange="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-white">
+                                        <option value="WPA">WPA / WPA2 / WPA3</option>
+                                        <option value="WEP">WEP</option>
+                                        <option value="nopass">Nessuna (Rete Aperta)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- vCard Form -->
+                        <div id="form-vcard" class="form-section hidden space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nome</label>
+                                    <input type="text" id="vcard-fn" placeholder="Mario" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Cognome</label>
+                                    <input type="text" id="vcard-ln" placeholder="Rossi" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Telefono</label>
+                                    <input type="tel" id="vcard-phone" placeholder="+39 333 1234567" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email</label>
+                                    <input type="email" id="vcard-email" placeholder="mario.rossi@email.it" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Azienda / Organizzazione</label>
+                                <input type="text" id="vcard-org" placeholder="Azienda S.p.A." oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                            </div>
+                        </div>
+
+                        <!-- Email Form -->
+                        <div id="form-email" class="form-section hidden space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Indirizzo Email Destinatario</label>
+                                <input type="email" id="email-to" placeholder="contatto@azienda.it" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Oggetto</label>
+                                <input type="text" id="email-subject" placeholder="Richiesta informazioni" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Testo Messaggio</label>
+                                <textarea id="email-body" rows="3" placeholder="Scrivi qui il messaggio predefinito..." oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white custom-scrollbar"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Form -->
+                        <div id="form-whatsapp" class="form-section hidden space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Numero WhatsApp (con prefisso internazionale)</label>
+                                <input type="tel" id="wa-phone" placeholder="393331234567" oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Messaggio Iniziale</label>
+                                <textarea id="wa-text" rows="3" placeholder="Ciao! Vorrei maggiori dettagli..." oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white custom-scrollbar"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Plain Text Form -->
+                        <div id="form-text" class="form-section hidden space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Testo libero</label>
+                                <textarea id="input-plain-text" rows="4" placeholder="Inserisci il tuo testo qui..." oninput="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white custom-scrollbar"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customization Accordion/Tabs Panel -->
+                <div class="glass-panel rounded-2xl p-6 shadow-xl space-y-5">
+                    <h2 class="text-lg font-semibold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-palette text-brand-400"></i> Personalizza Design
+                    </h2>
+
+                    <!-- Styles Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Dots Style -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Stile Punti Interni</label>
+                            <select id="style-dots" onchange="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <option value="square">Quadrati Standard</option>
+                                <option value="dots">Puntini Tondi</option>
+                                <option value="rounded" selected>Morbidi (Rounded)</option>
+                                <option value="extra-rounded">Super Arrotondati</option>
+                                <option value="classy">Eleganti (Classy)</option>
+                            </select>
+                        </div>
+
+                        <!-- Corner Frame Style -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Stile Cornici Angolari</label>
+                            <select id="style-corners-square" onchange="triggerQRUpdate()" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <option value="square">Quadrato</option>
+                                <option value="dot">Cerchio</option>
+                                <option value="extra-rounded" selected>Angoli Morbidi</option>
+                            </select>
+                        </div>
+
+                        <!-- Colors Picker -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Colore QR Code</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="color-dots" value="#6366f1" onchange="triggerQRUpdate()" class="h-9 w-12 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer p-0.5">
+                                <input type="text" id="color-dots-text" value="#6366f1" oninput="syncColorInput('dots')" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white uppercase font-mono">
+                            </div>
+                        </div>
+
+                        <!-- Background Color Picker -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Colore Sfondo</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="color-bg" value="#ffffff" onchange="triggerQRUpdate()" class="h-9 w-12 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer p-0.5">
+                                <input type="text" id="color-bg-text" value="#ffffff" oninput="syncColorInput('bg')" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white uppercase font-mono">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo Upload / Selector -->
+                    <div class="pt-3 border-t border-slate-800">
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Logo Personalizzato al Centro</label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl cursor-pointer text-xs font-medium text-slate-300 transition-all">
+                                <i class="fa-solid fa-cloud-arrow-up mr-2 text-brand-400"></i> Carica Immagine
+                                <input type="file" id="logo-file-input" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
+                            </label>
+                            <button type="button" id="btn-remove-logo" onclick="removeLogo()" class="hidden px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-medium transition-all">
+                                <i class="fa-solid fa-trash mr-1"></i> Rimuovi Logo
+                            </button>
+                            <span id="logo-file-name" class="text-xs text-slate-400 truncate max-w-[150px]">Nessun logo selezionato</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Preview Side Panel -->
+            <div class="lg:col-span-5 flex flex-col items-center">
+                <div class="glass-panel rounded-2xl p-6 shadow-2xl w-full sticky top-24 flex flex-col items-center">
+                    <div class="flex items-center justify-between w-full mb-4">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Anteprima in tempo reale</h3>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Pronto
+                        </span>
+                    </div>
+
+                    <!-- QR Box Wrapper -->
+                    <div class="relative p-6 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-inner flex items-center justify-center min-h-[300px] w-full group">
+                        <div id="canvas-container" class="transition-transform duration-300 transform group-hover:scale-[1.02]"></div>
+                    </div>
+
+                    <!-- Export Actions Grid -->
+                    <div class="w-full grid grid-cols-2 gap-3 mt-6">
+                        <button onclick="downloadQR('png')" class="flex items-center justify-center space-x-2 py-3 px-4 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition-all duration-200">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Scarica PNG</span>
+                        </button>
+                        <button onclick="downloadQR('svg')" class="flex items-center justify-center space-x-2 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-xl border border-slate-700 transition-all duration-200">
+                            <i class="fa-solid fa-file-code"></i>
+                            <span>Scarica SVG</span>
+                        </button>
+                        <button onclick="copyQRToClipboard()" class="col-span-2 flex items-center justify-center space-x-2 py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold rounded-xl border border-slate-800 transition-all duration-200">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copia Immagine negli Appunti</span>
+                        </button>
+                    </div>
+
+                    <!-- Save to history prompt -->
+                    <div class="w-full mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Vuoi salvare questo QR nei preferiti?</span>
+                        <button onclick="saveCurrentQRToHistory()" class="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                            <i class="fa-solid fa-bookmark"></i> Salva in Cronologia
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SCANNER WORKSPACE -->
+        <div id="tab-scan" class="hidden max-w-4xl mx-auto space-y-6">
+            <div class="glass-panel rounded-2xl p-6 shadow-xl">
+                <!-- Scan Mode Switching Buttons -->
+                <div class="flex justify-center border-b border-slate-800 pb-4 mb-6">
+                    <div class="bg-slate-900 p-1 rounded-xl flex space-x-1 border border-slate-800">
+                        <button id="scan-mode-cam" onclick="switchScanMode('camera')" class="px-5 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white shadow-md transition-all">
+                            <i class="fa-solid fa-camera mr-2"></i> Fotocamera
+                        </button>
+                        <button id="scan-mode-file" onclick="switchScanMode('file')" class="px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition-all">
+                            <i class="fa-solid fa-file-image mr-2"></i> Carica Immagine
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Camera Scanner Container -->
+                <div id="scan-camera-container" class="flex flex-col items-center space-y-4">
+                    <div class="relative w-full max-w-md bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 min-h-[300px] flex items-center justify-center">
+                        <div id="reader" class="w-full"></div>
+                        <div id="camera-placeholder" class="text-center p-6 space-y-3">
+                            <i class="fa-solid fa-camera text-4xl text-slate-600"></i>
+                            <p class="text-sm text-slate-400">Clicca sul pulsante sottostante per avviare la fotocamera ed inquadrare un codice QR</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="btn-start-cam" onclick="startCamera()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Avvia Fotocamera
+                        </button>
+                        <button id="btn-stop-cam" onclick="stopCamera()" class="hidden px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-stop"></i> Ferma Fotocamera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File Drag and Drop Container -->
+                <div id="scan-file-container" class="hidden flex flex-col items-center">
+                    <label id="drop-zone" for="scan-file-input" class="w-full max-w-lg border-2 border-dashed border-slate-700 hover:border-brand-500 bg-slate-900/40 hover:bg-slate-900/80 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group">
+                        <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-500 group-hover:text-brand-400 transition-colors mb-3"></i>
+                        <p class="text-sm font-semibold text-slate-200 group-hover:text-white mb-1">Trascina qui un'immagine QR o fai clic per sfogliare</p>
+                        <p class="text-xs text-slate-500">Supporta PNG, JPG, WEBP, SVG</p>
+                        <input type="file" id="scan-file-input" accept="image/*" onchange="handleFileScan(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Scan Result Display Panel -->
+            <div id="scan-result-panel" class="hidden glass-panel rounded-2xl p-6 shadow-xl border border-brand-500/30">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i> Codice QR Rilevato!
+                    </h3>
+                    <span id="scan-result-type-badge" class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 text-xs font-semibold uppercase">TESTO</span>
+                </div>
+
+                <!-- Scanned Details Box -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 mb-4 font-mono text-sm text-slate-200 break-all leading-relaxed" id="scan-result-text">
+                </div>
+
+                <!-- Parsed Custom Action Panel (Wi-Fi, Contact details) -->
+                <div id="scan-parsed-details" class="hidden mb-4 p-4 rounded-xl bg-slate-800/50 border border-slate-700/60 text-xs text-slate-300 space-y-2">
+                </div>
+
+                <!-- Result Actions -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="copyScanResult()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700">
+                        <i class="fa-regular fa-copy"></i> Copia Contenuto
+                    </button>
+                    <a id="scan-open-link-btn" href="#" target="_blank" class="hidden px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Apri Link
+                    </a>
+                    <button onclick="saveScanToHistory()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-brand-400 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-800">
+                        <i class="fa-solid fa-bookmark"></i> Salva in Cronologia
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: HISTORY WORKSPACE -->
+        <div id="tab-history" class="hidden max-w-5xl mx-auto space-y-6">
+            <div class="glass-panel rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Cronologia QR Code</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">I codici QR creati e scansionati salvati in locale</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="clearHistory()" class="px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-trash-can mr-1.5"></i> Cancella Tutto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Grid List -->
+                <div id="history-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="history-empty" class="hidden text-center py-12">
+                    <i class="fa-solid fa-box-open text-4xl text-slate-600 mb-3"></i>
+                    <p class="text-slate-400 text-sm">Nessun codice QR salvato nella cronologia.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <p>© 2026 QR Studio Pro — Strumento moderno per la gestione dei QR Code</p>
+    </footer>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <script>
+        // Global State Variables
+        let currentTab = 'create';
+        let currentType = 'url';
+        let qrCodeInstance = null;
+        let html5QrCodeScanner = null;
+        let logoBase64 = null;
+        let lastScanResult = null;
+
+        // Initialize App on DOM Load
+        window.onload = function () {
+            initQRGenerator();
+            loadHistory();
+            setupDragAndDrop();
+        };
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            currentTab = tabName;
+            ['create', 'scan', 'history'].forEach(t => {
+                const tabEl = document.getElementById(`tab-${t}`);
+                const btnEl = document.getElementById(`tab-btn-${t}`);
+                if (t === tabName) {
+                    tabEl.classList.remove('hidden');
+                    btnEl.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-brand-600 text-white shadow-md shadow-brand-600/30";
+                } else {
+                    tabEl.classList.add('hidden');
+                    btnEl.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200";
+                }
+            });
+
+            if (tabName !== 'scan' && html5QrCodeScanner) {
+                stopCamera();
+            }
+            if (tabName === 'history') {
+                renderHistory();
+            }
+        }
+
+        // Initialize QRCodeStyling Object
+        function initQRGenerator() {
+            const initialData = getQRData();
+            
+            qrCodeInstance = new QRCodeStyling({
+                width: 280,
+                height: 280,
+                type: "canvas",
+                data: initialData || "https://esempio.it",
+                image: logoBase64 || "",
+                dotsOptions: {
+                    color: document.getElementById('color-dots').value,
+                    type: document.getElementById('style-dots').value
+                },
+                backgroundOptions: {
+                    color: document.getElementById('color-bg').value,
+                },
+                cornersSquareOptions: {
+                    color: document.getElementById('color-dots').value,
+                    type: document.getElementById('style-corners-square').value
+                },
+                cornersDotOptions: {
+                    color: document.getElementById('color-dots').value,
+                    type: "dot"
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 4,
+                    imageSize: 0.35
+                },
+                qrOptions: {
+                    errorCorrectionLevel: 'H'
+                }
+            });
+
+            const container = document.getElementById("canvas-container");
+            container.innerHTML = "";
+            qrCodeInstance.append(container);
+        }
+
+        // Select Input Type Presets
+        function selectType(type) {
+            currentType = type;
+            document.querySelectorAll('#type-selector-group button').forEach(btn => {
+                if (btn.getAttribute('data-type') === type) {
+                    btn.className = "type-btn active flex flex-col items-center justify-center p-3 rounded-xl border border-brand-500/50 bg-brand-500/10 text-brand-300 font-medium text-xs transition-all duration-200 hover:border-brand-500";
+                } else {
+                    btn.className = "type-btn flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 font-medium text-xs transition-all duration-200 hover:border-slate-700 hover:text-white";
+                }
+            });
+
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.add('hidden'));
+            const targetForm = document.getElementById(`form-${type}`);
+            if (targetForm) targetForm.classList.remove('hidden');
+
+            triggerQRUpdate();
+        }
+
+        // Format Payload Data based on current Form Inputs
+        function getQRData() {
+            switch (currentType) {
+                case 'url':
+                    return document.getElementById('input-url').value.trim() || "https://esempio.it";
+                case 'wifi':
+                    const ssid = document.getElementById('wifi-ssid').value.trim();
+                    const pass = document.getElementById('wifi-password').value;
+                    const enc = document.getElementById('wifi-encryption').value;
+                    if (!ssid) return "WIFI:S:MioWiFi;T:WPA;P:password;;";
+                    return `WIFI:S:${ssid};T:${enc};P:${pass};;`;
+                case 'vcard':
+                    const fn = document.getElementById('vcard-fn').value.trim() || "Nome";
+                    const ln = document.getElementById('vcard-ln').value.trim() || "Cognome";
+                    const phone = document.getElementById('vcard-phone').value.trim();
+                    const email = document.getElementById('vcard-email').value.trim();
+                    const org = document.getElementById('vcard-org').value.trim();
+                    return `BEGIN:VCARD\nVERSION:3.0\nN:${ln};${fn};;;\nFN:${fn} ${ln}\nORG:${org}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+                case 'email':
+                    const to = document.getElementById('email-to').value.trim();
+                    const sub = encodeURIComponent(document.getElementById('email-subject').value.trim());
+                    const body = encodeURIComponent(document.getElementById('email-body').value.trim());
+                    return `mailto:${to}?subject=${sub}&body=${body}`;
+                case 'whatsapp':
+                    const waPhone = document.getElementById('wa-phone').value.trim().replace(/[^0-9]/g, '');
+                    const waMsg = encodeURIComponent(document.getElementById('wa-text').value.trim());
+                    return `https://wa.me/${waPhone}?text=${waMsg}`;
+                case 'text':
+                    return document.getElementById('input-plain-text').value.trim() || "Testo di esempio";
+                default:
+                    return "https://esempio.it";
+            }
+        }
+
+        // Live Update QR Styling and Content
+        function triggerQRUpdate() {
+            if (!qrCodeInstance) return;
+
+            const content = getQRData();
+            const dotColor = document.getElementById('color-dots').value;
+            const bgColor = document.getElementById('color-bg').value;
+            const dotStyle = document.getElementById('style-dots').value;
+            const cornerStyle = document.getElementById('style-corners-square').value;
+
+            qrCodeInstance.update({
+                data: content,
+                image: logoBase64 || "",
+                dotsOptions: {
+                    color: dotColor,
+                    type: dotStyle
+                },
+                backgroundOptions: {
+                    color: bgColor,
+                },
+                cornersSquareOptions: {
+                    color: dotColor,
+                    type: cornerStyle
+                },
+                cornersDotOptions: {
+                    color: dotColor,
+                    type: "dot"
+                }
+            });
+        }
+
+        // Sync Color Inputs
+        function syncColorInput(type) {
+            const textInput = document.getElementById(`color-${type}-text`);
+            const pickerInput = document.getElementById(`color-${type}`);
+            let val = textInput.value;
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9A-F]{6}$/i.test(val)) {
+                pickerInput.value = val;
+                triggerQRUpdate();
+            }
+        }
+
+        // Custom Logo Handler
+        function handleLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                logoBase64 = evt.target.result;
+                document.getElementById('logo-file-name').innerText = file.name;
+                document.getElementById('btn-remove-logo').classList.remove('hidden');
+                triggerQRUpdate();
+                showToast("Logo caricato con successo!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeLogo() {
+            logoBase64 = null;
+            document.getElementById('logo-file-input').value = "";
+            document.getElementById('logo-file-name').innerText = "Nessun logo selezionato";
+            document.getElementById('btn-remove-logo').classList.add('hidden');
+            triggerQRUpdate();
+            showToast("Logo rimosso");
+        }
+
+        // Export Actions
+        function downloadQR(extension) {
+            if (!qrCodeInstance) return;
+            qrCodeInstance.download({
+                name: `qr-code-${Date.now()}`,
+                extension: extension
+            });
+            showToast(`Scaricamento QR (.${extension}) avviato!`);
+        }
+
+        async function copyQRToClipboard() {
+            try {
+                const canvas = document.querySelector('#canvas-container canvas');
+                if (!canvas) {
+                    showToast("Impossibile copiare l'immagine", "error");
+                    return;
+                }
+                canvas.toBlob(blob => {
+                    const item = new ClipboardItem({ 'image/png': blob });
+                    navigator.clipboard.write([item]).then(() => {
+                        showToast("Immagine QR copiata negli appunti!");
+                    }).catch(() => {
+                        showToast("Copia non supportata dal browser", "error");
+                    });
+                });
+            } catch (err) {
+                showToast("Errore durante la copia", "error");
+            }
+        }
+
+        // Scanner Functions
+        function switchScanMode(mode) {
+            const camBtn = document.getElementById('scan-mode-cam');
+            const fileBtn = document.getElementById('scan-mode-file');
+            const camContainer = document.getElementById('scan-camera-container');
+            const fileContainer = document.getElementById('scan-file-container');
+
+            if (mode === 'camera') {
+                camBtn.className = "px-5 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white shadow-md transition-all";
+                fileBtn.className = "px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition-all";
+                camContainer.classList.remove('hidden');
+                fileContainer.classList.add('hidden');
+            } else {
+                fileBtn.className = "px-5 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white shadow-md transition-all";
+                camBtn.className = "px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition-all";
+                fileContainer.classList.remove('hidden');
+                camContainer.classList.add('hidden');
+                stopCamera();
+            }
+        }
+
+        function startCamera() {
+            if (!html5QrCodeScanner) {
+                html5QrCodeScanner = new Html5Qrcode("reader");
+            }
+
+            document.getElementById('camera-placeholder').classList.add('hidden');
+            document.getElementById('btn-start-cam').classList.add('hidden');
+            document.getElementById('btn-stop-cam').classList.remove('hidden');
+
+            const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+            html5QrCodeScanner.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                showToast("Impossibile accedere alla fotocamera", "error");
+                stopCamera();
+            });
+        }
+
+        function stopCamera() {
+            if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
+                html5QrCodeScanner.stop().then(() => {
+                    document.getElementById('camera-placeholder').classList.remove('hidden');
+                    document.getElementById('btn-start-cam').classList.remove('hidden');
+                    document.getElementById('btn-stop-cam').classList.add('hidden');
+                }).catch(err => console.error(err));
+            } else {
+                document.getElementById('camera-placeholder').classList.remove('hidden');
+                document.getElementById('btn-start-cam').classList.remove('hidden');
+                document.getElementById('btn-stop-cam').classList.add('hidden');
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            handleDecodedQR(decodedText);
+        }
+
+        function onScanFailure(error) {
+            // Silence routine frame scan errors
+        }
+
+        function handleFileScan(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!html5QrCodeScanner) {
+                html5QrCodeScanner = new Html5Qrcode("reader");
+            }
+
+            html5QrCodeScanner.scanFile(file, true)
+                .then(decodedText => {
+                    handleDecodedQR(decodedText);
+                })
+                .catch(err => {
+                    // Fallback to jsQR canvas processing
+                    scanWithJsQR(file);
+                });
+        }
+
+        function scanWithJsQR(file) {
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        handleDecodedQR(code.data);
+                    } else {
+                        showToast("Nessun codice QR leggibile trovato nell'immagine", "error");
+                    }
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleDecodedQR(text) {
+            lastScanResult = text;
+            const panel = document.getElementById('scan-result-panel');
+            const resultTextEl = document.getElementById('scan-result-text');
+            const typeBadge = document.getElementById('scan-result-type-badge');
+            const openBtn = document.getElementById('scan-open-link-btn');
+            const parsedDetails = document.getElementById('scan-parsed-details');
+
+            panel.classList.remove('hidden');
+            resultTextEl.innerText = text;
+            parsedDetails.classList.add('hidden');
+            parsedDetails.innerHTML = "";
+
+            // Check if valid URL
+            if (/^https?:\/\//i.test(text)) {
+                typeBadge.innerText = "LINK WEB";
+                openBtn.href = text;
+                openBtn.classList.remove('hidden');
+            } else if (text.startsWith('WIFI:')) {
+                typeBadge.innerText = "RETE WI-FI";
+                openBtn.classList.add('hidden');
+                parseAndDisplayWiFi(text, parsedDetails);
+            } else if (text.includes('BEGIN:VCARD')) {
+                typeBadge.innerText = "CONTATTO vCard";
+                openBtn.classList.add('hidden');
+                parseAndDisplayVCard(text, parsedDetails);
+            } else {
+                typeBadge.innerText = "TESTO LIBERO";
+                openBtn.classList.add('hidden');
+            }
+
+            showToast("QR Code scansionato con successo!");
+        }
+
+        function parseAndDisplayWiFi(wifiStr, container) {
+            container.classList.remove('hidden');
+            const ssidMatch = wifiStr.match(/S:([^;]+);/);
+            const passMatch = wifiStr.match(/P:([^;]+);/);
+            const typeMatch = wifiStr.match(/T:([^;]+);/);
+
+            const ssid = ssidMatch ? ssidMatch[1] : 'Sconosciuto';
+            const pass = passMatch ? passMatch[1] : 'Nessuna';
+            const type = typeMatch ? typeMatch[1] : 'Aperta';
+
+            container.innerHTML = `
+                <div class="font-semibold text-slate-200 mb-1">Dettagli Rete Wi-Fi:</div>
+                <div><strong class="text-slate-400">SSID:</strong> ${escapeHtml(ssid)}</div>
+                <div><strong class="text-slate-400">Password:</strong> ${escapeHtml(pass)}</div>
+                <div><strong class="text-slate-400">Sicurezza:</strong> ${escapeHtml(type)}</div>
+            `;
+        }
+
+        function parseAndDisplayVCard(vcardStr, container) {
+            container.classList.remove('hidden');
+            const fnMatch = vcardStr.match(/FN:([^\n\r]+)/);
+            const telMatch = vcardStr.match(/TEL:([^\n\r]+)/);
+            const emailMatch = vcardStr.match(/EMAIL:([^\n\r]+)/);
+
+            container.innerHTML = `
+                <div class="font-semibold text-slate-200 mb-1">Contatto Rilevato:</div>
+                ${fnMatch ? `<div><strong class="text-slate-400">Nome:</strong> ${escapeHtml(fnMatch[1])}</div>` : ''}
+                ${telMatch ? `<div><strong class="text-slate-400">Telefono:</strong> ${escapeHtml(telMatch[1])}</div>` : ''}
+                ${emailMatch ? `<div><strong class="text-slate-400">Email:</strong> ${escapeHtml(emailMatch[1])}</div>` : ''}
+            `;
+        }
+
+        function copyScanResult() {
+            if (!lastScanResult) return;
+            navigator.clipboard.writeText(lastScanResult).then(() => {
+                showToast("Contenuto scansionato copiato!");
+            });
+        }
+
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            if (!dropZone) return;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('border-brand-500', 'bg-slate-900/90'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('border-brand-500', 'bg-slate-900/90'), false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    document.getElementById('scan-file-input').files = files;
+                    handleFileScan({ target: { files: files } });
+                }
+            });
+        }
+
+        // History Storage Logic
+        function loadHistory() {
+            const saved = localStorage.getItem('qr_studio_history');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveHistory(list) {
+            localStorage.setItem('qr_studio_history', JSON.stringify(list));
+        }
+
+        function saveCurrentQRToHistory() {
+            const data = getQRData();
+            const history = loadHistory();
+            const newItem = {
+                id: Date.now(),
+                type: 'created',
+                preset: currentType,
+                content: data,
+                timestamp: new Date().toLocaleString('it-IT')
+            };
+            history.unshift(newItem);
+            saveHistory(history);
+            showToast("QR Code salvato in cronologia!");
+        }
+
+        function saveScanToHistory() {
+            if (!lastScanResult) return;
+            const history = loadHistory();
+            const newItem = {
+                id: Date.now(),
+                type: 'scanned',
+                preset: 'scan',
+                content: lastScanResult,
+                timestamp: new Date().toLocaleString('it-IT')
+            };
+            history.unshift(newItem);
+            saveHistory(history);
+            showToast("Scansione salvata in cronologia!");
+        }
+
+        function renderHistory() {
+            const history = loadHistory();
+            const grid = document.getElementById('history-grid');
+            const emptyState = document.getElementById('history-empty');
+
+            grid.innerHTML = "";
+
+            if (history.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            history.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded ${item.type === 'created' ? 'bg-brand-500/20 text-brand-300' : 'bg-emerald-500/20 text-emerald-300'}">
+                                ${item.type === 'created' ? 'Creato' : 'Scansionato'}
+                            </span>
+                            <span class="text-[10px] text-slate-500">${item.timestamp}</span>
+                        </div>
+                        <p class="text-xs text-slate-300 font-mono break-all line-clamp-3 mb-4">${escapeHtml(item.content)}</p>
+                    </div>
+                    <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800/80">
+                        <button onclick="copyToClipboard('${escapeJsString(item.content)}')" class="p-1.5 text-slate-400 hover:text-white text-xs" title="Copia">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <button onclick="deleteHistoryItem(${item.id})" class="p-1.5 text-red-400 hover:text-red-300 text-xs" title="Elimina">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function deleteHistoryItem(id) {
+            let history = loadHistory();
+            history = history.filter(item => item.id !== id);
+            saveHistory(history);
+            renderHistory();
+            showToast("Elemento rimosso dalla cronologia");
+        }
+
+        function clearHistory() {
+            if (confirm("Sei sicuro di voler cancellare tutta la cronologia?")) {
+                localStorage.removeItem('qr_studio_history');
+                renderHistory();
+                showToast("Cronologia svuotata");
+            }
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === 'error' ? 'bg-red-900/90 border-red-500/50 text-red-100' : 'bg-slate-900/95 border-brand-500/50 text-white';
+            const icon = type === 'error' ? 'fa-circle-exclamation text-red-400' : 'fa-circle-check text-brand-400';
+
+            toast.className = `flex items-center space-x-3 px-4 py-3 rounded-xl border shadow-2xl backdrop-blur-md text-xs font-medium transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto ${bgColor}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Auto Remove after 3s
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Helper Utilities
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copiato negli appunti!");
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function escapeJsString(str) {
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+        }
+    </script>
+</body>
+</html>
