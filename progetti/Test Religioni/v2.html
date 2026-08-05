@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test delle Religioni</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        mystic: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#1e0c3e',
+                        },
+                        amberGold: {
+                            300: '#fde047',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .bg-glass {
+            background: rgba(20, 16, 45, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .option-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 26, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6d28d9;
+        }
+        .tab-active {
+            background-color: #6d28d9 !important;
+            color: #ffffff !important;
+            border-color: #a78bfa !important;
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 20s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-purple-600 selection:text-white">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-purple-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="app.showSection('home')">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-700 via-indigo-600 to-amber-500 flex items-center justify-center shadow-lg shadow-purple-900/50">
+                    <i class="fa-solid font-bold fa-compass text-slate-950 text-xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <span class="font-serif text-lg font-bold tracking-wider gold-gradient-text block leading-none">Test delle Religioni</span>
+                    <span class="text-[10px] text-purple-300 tracking-widest uppercase">Bussola Spirituale</span>
+                </div>
+            </div>
+
+            <nav class="hidden lg:flex items-center space-x-1 sm:space-x-3">
+                <button onclick="app.showSection('home')" id="nav-home" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-purple-300 hover:text-white hover:bg-purple-900/30">
+                    <i class="fa-solid fa-house mr-1.5"></i> Home
+                </button>
+                <button onclick="app.startQuiz()" id="nav-quiz" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-purple-300 hover:text-white hover:bg-purple-900/30">
+                    <i class="fa-solid fa-clipboard-question mr-1.5"></i> Test Metafisico
+                </button>
+                <button onclick="app.showExplore()" id="nav-explore" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-purple-300 hover:text-white hover:bg-purple-900/30">
+                    <i class="fa-solid fa-book-open-reader mr-1.5"></i> Enciclopedia Fedi
+                </button>
+                <button onclick="app.showSection('phrases')" id="nav-phrases" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-purple-300 hover:text-white hover:bg-purple-900/30">
+                    <i class="fa-solid fa-quote-left mr-1.5"></i> Frasi
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button id="mobile-menu-btn" onclick="app.toggleMobileMenu()" class="lg:hidden p-2 text-purple-300 hover:text-white rounded-lg focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-slate-950/95 border-b border-purple-900/50 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="app.showSection('home'); app.toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-purple-900/40"><i class="fa-solid fa-house mr-2"></i>Home</button>
+            <button onclick="app.startQuiz(); app.toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-purple-900/40"><i class="fa-solid fa-clipboard-question mr-2"></i>Test Metafisico</button>
+            <button onclick="app.showExplore(); app.toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-purple-900/40"><i class="fa-solid fa-book-open-reader mr-2"></i>Enciclopedia Fedi</button>
+            <button onclick="app.showSection('phrases'); app.toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-purple-900/40"><i class="fa-solid fa-quote-left mr-2"></i>Frasi</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col justify-center">
+
+        <!-- SECTION 1: HOME LANDING -->
+        <section id="section-home" class="py-6 md:py-10 flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
+            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-purple-900/40 border border-purple-500/30 text-purple-300 text-xs sm:text-sm font-medium animate-pulse">
+                <i class="fa-solid fa-sparkles text-amber-400"></i>
+                <span>Analisi comparativa completa su 25 religioni e credi</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-serif font-bold text-white tracking-tight leading-tight">
+                A quale <span class="gold-gradient-text">Religione, Filosofia o Credo</span> appartiene la tua anima?
+            </h1>
+
+            <p class="text-lg sm:text-xl text-slate-300 max-w-3xl font-light leading-relaxed">
+                Esplora la tua mappa concettuale interiore. Rispondi alle 14 domande del nostro Test Metafisico, addentrati nell'enciclopedia di oltre 25 visioni del mondo oppure lasciati ispirare dalle riflessioni e argomentazioni razionaliste sull'esistenza di Dio.
+            </p>
+
+            <!-- Quick Access Grid Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full pt-4 text-left">
+                <div onclick="app.startQuiz()" class="bg-glass p-6 rounded-2xl border border-purple-800/40 hover:border-amber-500/60 cursor-pointer transition-all hover:-translate-y-1 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-xl text-white mb-2">Test Metafisico</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">14 domande vettoriali per scoprire la tua affinità in % e la tua Mappa Radar con oltre 25 tradizioni mondiali.</p>
+                </div>
+
+                <div onclick="app.showExplore()" class="bg-glass p-6 rounded-2xl border border-purple-800/40 hover:border-purple-500/60 cursor-pointer transition-all hover:-translate-y-1 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-book-journal-whills"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-xl text-white mb-2">Enciclopedia (25+)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Fedi monoteiste, dharmiche, pagane, esoteriche, stoiche, secolari e tradizioni eterodosse.</p>
+                </div>
+
+                <div onclick="app.showSection('phrases')" class="bg-glass p-6 rounded-2xl border border-purple-800/40 hover:border-indigo-500/60 cursor-pointer transition-all hover:-translate-y-1 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-quote-left"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-xl text-white mb-2">Frasi e Riflessioni</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Aforismi e paradossi logici su fede, teismo, preghiera, male e prova dell'esistenza di Dio.</p>
+                </div>
+            </div>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                <button onclick="app.startQuiz()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white font-bold text-lg shadow-xl shadow-purple-900/40 transform hover:-translate-y-0.5 transition-all flex items-center justify-center space-x-3 group">
+                    <span>Inizia il Test</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <button onclick="app.showExplore()" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold text-base transition-colors flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Esplora Tutte le Fedi</span>
+                </button>
+                <button onclick="app.showSection('phrases')" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold text-base transition-colors flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-quote-left text-amber-400"></i>
+                    <span>Leggi le Riflessioni</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: QUIZ INTERFACE -->
+        <section id="section-quiz" class="hidden py-4 max-w-3xl mx-auto w-full">
+            <!-- Quiz Header / Progress Bar -->
+            <div class="bg-slate-900/80 p-6 rounded-2xl border border-purple-900/50 mb-6 shadow-xl">
+                <div class="flex items-center justify-between mb-3 text-xs sm:text-sm text-purple-300 font-medium">
+                    <span id="quiz-question-number">Domanda 1 di 14</span>
+                    <span id="quiz-category-badge" class="px-2.5 py-0.5 rounded-full bg-purple-950 border border-purple-700/50 text-amber-300 font-semibold">Natura del Divino</span>
+                </div>
+                <!-- Progress track -->
+                <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-purple-900/30">
+                    <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-purple-600 rounded-full transition-all duration-300 w-[7.14%]"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-glass p-6 sm:p-8 rounded-2xl border border-purple-800/40 shadow-2xl relative">
+                <h2 id="quiz-question-text" class="text-xl sm:text-2xl font-serif font-bold text-white mb-6 leading-relaxed">
+                    <!-- Dynamic Question Text -->
+                </h2>
+
+                <div id="quiz-options-container" class="space-y-3">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex items-center justify-between mt-8 pt-4 border-t border-slate-800">
+                    <button id="btn-prev-question" onclick="app.prevQuestion()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-2">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                        <span>Precedente</span>
+                    </button>
+
+                    <div class="text-xs text-slate-500 italic hidden sm:block">Scegli la risposta più vicina alla tua visione</div>
+
+                    <button id="btn-next-question" onclick="app.nextQuestion()" disabled class="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-2">
+                        <span>Successiva</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: RESULTS VIEW -->
+        <section id="section-results" class="hidden py-6 space-y-8 max-w-5xl mx-auto w-full">
+            <!-- Top Match Banner -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 rounded-3xl p-6 sm:p-10 border border-amber-500/30 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-[180px] pointer-events-none text-amber-400">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left space-y-2">
+                        <span class="inline-block px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                            <i class="fa-solid fa-certificate mr-1"></i> Risultato di Massima Affinità
+                        </span>
+                        <h2 id="result-top-title" class="text-3xl sm:text-5xl font-serif font-extrabold text-white gold-gradient-text">
+                            <!-- Top religion name -->
+                        </h2>
+                        <p id="result-top-subtitle" class="text-slate-300 text-base sm:text-lg font-light max-w-xl">
+                            <!-- Subtitle / Short summary -->
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center p-6 bg-slate-900/80 rounded-2xl border border-purple-500/30 min-w-[170px] text-center shadow-lg">
+                        <span class="text-xs text-slate-400 uppercase font-semibold mb-1">Affinità Globale</span>
+                        <span id="result-top-score" class="text-4xl sm:text-5xl font-extrabold text-amber-400 font-serif">
+                            0%
+                        </span>
+                        <span class="text-[10px] text-purple-300 mt-1">Analizzati 25+ Credi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breakdown Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left 2 columns: Complete Match Percentages List -->
+                <div class="lg:col-span-2 space-y-4 bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+                        <h3 class="font-serif text-xl font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-list-ol text-purple-400"></i>
+                            <span>Classifica Completa di Affinità (25+)</span>
+                        </h3>
+                        <input type="text" id="results-search-filter" oninput="app.filterResultsList()" placeholder="Cerca tradizioni..." class="px-3 py-1 text-xs rounded-lg bg-slate-950 border border-slate-700 text-slate-200 focus:outline-none focus:border-purple-500 w-full sm:w-auto">
+                    </div>
+
+                    <div id="results-bars-container" class="space-y-3 pt-2 max-h-[500px] overflow-y-auto pr-2">
+                        <!-- Progress bars injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right 1 column: Radar Chart / Dimension Breakdown -->
+                <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-6">
+                    <div>
+                        <h3 class="font-serif text-xl font-bold text-white mb-2 flex items-center space-x-2">
+                            <i class="fa-solid fa-compass text-amber-400"></i>
+                            <span>Radar Metafisico</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">Mappa visiva dei tuoi 8 assi concettuali:</p>
+                        
+                        <div class="relative w-full aspect-square flex items-center justify-center bg-slate-950/50 rounded-xl p-2 border border-slate-800/80 min-h-[280px]">
+                            <canvas id="radarCanvas" class="w-full h-full block"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-950/40 rounded-xl border border-purple-800/30">
+                        <div class="text-xs text-purple-200 font-semibold mb-1">💡 Nota di Sintesi Metafisica</div>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            È del tutto naturale registrare percentuali elevate in tradizioni differenti. Il pensiero umano spazia spesso dall'etica umanista alla contemplazione mista o naturale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deep Dive Section for Top Match -->
+            <div class="bg-glass p-6 sm:p-8 rounded-3xl border border-purple-900/40 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-purple-900/50 pb-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-900/50 border border-purple-500/30 flex items-center justify-center text-amber-400 text-2xl" id="result-detail-icon">
+                        <i class="fa-solid fa-place-of-worship"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-2xl font-bold text-white">Analisi Approfondita: <span id="result-detail-title" class="text-amber-400"></span></h3>
+                        <p class="text-xs text-purple-300">Pilastri spirituali, testi sacri e pensatori chiave</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-purple-300 flex items-center space-x-2">
+                            <i class="fa-solid fa-bullseye text-amber-400"></i>
+                            <span>Principi Fondamentali</span>
+                        </h4>
+                        <ul id="result-detail-tenets" class="space-y-2 text-sm text-slate-300">
+                            <!-- Tenets injected here -->
+                        </ul>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-purple-300 flex items-center space-x-2">
+                            <i class="fa-solid fa-link text-indigo-400"></i>
+                            <span>Corrispondenza con le Tue Risposte</span>
+                        </h4>
+                        <p id="result-detail-alignment" class="text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                            <!-- Dynamic text based on answer matching -->
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-purple-900/30 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 block mb-1">Pensatori / Maestri / Figure di Riferimento:</span>
+                        <span id="result-detail-figures" class="text-sm text-amber-200 font-serif"></span>
+                    </div>
+                    <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 block mb-1">Testi Fondamentali Consigliati:</span>
+                        <span id="result-detail-texts" class="text-sm text-purple-200 italic"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <button onclick="app.startQuiz()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-800 hover:bg-purple-700 text-white font-semibold text-sm transition-colors flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Rifai il Test</span>
+                </button>
+                <button onclick="app.copyResultsSummary()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-colors flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Copia Sintesi Risultati</span>
+                </button>
+                <button onclick="app.showExplore()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-sm transition-colors flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Confronta nell'Enciclopedia</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 4: EXPLORE TRADITIONS (25+) -->
+        <section id="section-explore" class="hidden py-6 space-y-6 max-w-6xl mx-auto w-full">
+            <div class="text-center space-y-2 max-w-2xl mx-auto">
+                <h2 class="text-3xl font-serif font-bold text-white">Enciclopedia delle Fedi</h2>
+                <p class="text-sm text-slate-400">Esplora e naviga l'universo delle tradizioni spirituali, filosofiche e religiose del mondo.</p>
+                <div class="pt-2 max-w-md mx-auto">
+                    <input type="text" id="explore-search-input" oninput="app.filterExploreSearch()" placeholder="Cerca tra 25 tradizioni (es. Stoicismo, Taoismo, Islam, Wicca...)" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-purple-800 text-sm text-white focus:outline-none focus:border-amber-400 placeholder-slate-500 shadow-inner">
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2 pb-2" id="explore-tabs">
+                <button onclick="app.filterExplore('all', this)" class="explore-tab tab-active px-3 py-1.5 rounded-full text-xs font-semibold bg-purple-700 text-white border border-purple-500 transition-all">Tutte (25)</button>
+                <button onclick="app.filterExplore('monotheistic', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Abramitiche & Monoteiste</button>
+                <button onclick="app.filterExplore('eastern', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Orientali & Dharmiche</button>
+                <button onclick="app.filterExplore('naturalistic', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Naturalistiche & Animiste</button>
+                <button onclick="app.filterExplore('esoteric', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Esoteriche & Mistiche</button>
+                <button onclick="app.filterExplore('secular', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Secolari & Filosofiche</button>
+                <button onclick="app.filterExplore('unorthodox', this)" class="explore-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-600 transition-all">Eterodosse & Parodistiche</button>
+            </div>
+
+            <!-- Grid of Religion Cards -->
+            <div id="explore-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injected dynamically -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: FRASI & CRITICA SULL'ESISTENZA DI DIO -->
+        <section id="section-phrases" class="hidden py-6 space-y-6 max-w-5xl mx-auto w-full">
+            <div class="text-center space-y-3 max-w-2xl mx-auto">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-950 border border-indigo-700/50 text-indigo-300 text-xs">
+                    <i class="fa-solid fa-quote-left text-amber-400"></i>
+                    <span>Dio non esiste — Pensiero Critico e Razionale</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white">Riflessioni e Paradossi Logici</h2>
+                <p class="text-sm text-slate-400">Raccolta di frasi, dilemmi epistemologici e argomentazioni razionali sul teismo, la fede e la prova dell'esistenza del divino.</p>
+                
+                <!-- Random Quote / Search Bar Controls -->
+                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button onclick="app.getRandomPhrase()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm shadow-md flex items-center justify-center space-x-2 transition-all">
+                        <i class="fa-solid fa-shuffle"></i>
+                        <span>Genera Frase Casuale</span>
+                    </button>
+                    <div class="w-full sm:w-72">
+                        <input type="text" id="phrases-search-input" oninput="app.filterPhrasesSearch()" placeholder="Cerca tra le frasi o argomenti..." class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-purple-800 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400 placeholder-slate-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme Filter Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-2" id="phrases-theme-buttons">
+                <!-- Theme buttons injected dynamically -->
+            </div>
+
+            <!-- Quotes Container Grid -->
+            <div id="phrases-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <!-- Quote Cards Injected Dynamically JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto bg-slate-950 border-t border-purple-900/30 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-compass text-amber-500"></i>
+                <span class="font-serif text-slate-300 font-semibold">Test delle Religioni</span>
+            </div>
+            <div>
+                <span>Studiata per la comprensione delle culture e il rispetto reciproco</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-slate-100 px-5 py-3 rounded-xl border border-purple-500 shadow-2xl flex items-center space-x-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Messaggio</span>
+    </div>
+
+    <script>
+
+        // 1. DATA: 25+ RELIGIONS, PHILOSOPHIES & TRADITIONS DATABASE
+        const RELIGIONS_DATA = [
+            {
+                id: 'cattolicesimo',
+                name: 'Cattolicesimo',
+                category: 'monotheistic',
+                subtitle: 'Tradizione cristiana apostolica centrata su Cristo, i 7 Sacramenti e il Magistero della Chiesa.',
+                icon: 'fa-cross',
+                color: '#8b5cf6',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 1.0, divine_person: 1.0, sacred_text: 0.9, ritualism: 1.0, karma_reincarnation: 0.0, nature_deity: 0.2, secular_humanism: 0.1 },
+                tenets: [
+                    'Trinità: Dio è unico in tre persone coeterne.',
+                    'Sacramenti come veicoli di grazia divina.',
+                    'Autorità della Chiesa e della Tradizione guidata dal Papa.',
+                    'Salvezza per grazia attraverso fede ed opere.'
+                ],
+                figures: 'Gesù di Nazaret, San Tommaso d\'Aquino, Sant\'Agostino',
+                texts: 'Bibbia (VT e NT), Catechismo della Chiesa Cattolica'
+            },
+            {
+                id: 'protestantesimo',
+                name: 'Protestantesimo',
+                category: 'monotheistic',
+                subtitle: 'Riforma cristiana focalizzata sulla Sola Scrittura e l\'accesso diretto a Dio per sola fede.',
+                icon: 'fa-book-bible',
+                color: '#6366f1',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 1.0, divine_person: 1.0, sacred_text: 1.0, ritualism: 0.4, karma_reincarnation: 0.0, nature_deity: 0.2, secular_humanism: 0.2 },
+                tenets: [
+                    'Sola Scriptura: La Bibbia unica autorità infallibile.',
+                    'Sola Fide & Sola Gratia: Salvezza donata liberamente da Dio.',
+                    'Sacerdozio universale di tutti i credenti.'
+                ],
+                figures: 'Martin Lutero, Giovanni Calvino, Karl Barth',
+                texts: 'La Bibbia, Confessioni di fede riformate'
+            },
+            {
+                id: 'ortodossia',
+                name: 'Cristianesimo Ortodosso',
+                category: 'monotheistic',
+                subtitle: 'Tradizione cristiana d\'Oriente focalizzata sulla teosi (divinizzazione dell\'uomo) e la mistica liturgica.',
+                icon: 'fa-church',
+                color: '#7c3aed',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 1.0, divine_person: 1.0, sacred_text: 0.9, ritualism: 1.0, karma_reincarnation: 0.0, nature_deity: 0.3, secular_humanism: 0.1 },
+                tenets: [
+                    'Teosi: L\'uomo è chiamato a diventare partecipe della natura divina.',
+                    'Venerazione delle icone sacre come finestre sul cielo.',
+                    'Mantenimento fedele dei Padri della Chiesa e dei Concili ecumenici.'
+                ],
+                figures: 'San Basilio, San Giovanni Crisostomo, Gregorio Palamas',
+                texts: 'Bibbia (Settanta), Filocalia, Canoni dei 7 Concili'
+            },
+            {
+                id: 'islam',
+                name: 'Islam (Sunnita & Sciita)',
+                category: 'monotheistic',
+                subtitle: 'Monoteismo puro e sottomissione al Creatore (Allah) rivelato al profeta Maometto.',
+                icon: 'fa-star-and-crescent',
+                color: '#10b981',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 1.0, divine_person: 0.9, sacred_text: 1.0, ritualism: 0.9, karma_reincarnation: 0.0, nature_deity: 0.1, secular_humanism: 0.0 },
+                tenets: [
+                    'Tawhid: Unicità ed inaccessibilità trascendente di Allah.',
+                    'Cinque Pilastri (Testimonianza, Preghiera, Elemosina, Digiuno, Pellegrinaggio).',
+                    'Sigillo dei Profeti: Maometto come ultimo messaggero divino.'
+                ],
+                figures: 'Profeta Maometto, Al-Ghazali, Ibn Sina (Avicenna)',
+                texts: 'Il Sacro Corano, gli Hadith (Raccolte di detti)'
+            },
+            {
+                id: 'sufismo',
+                name: 'Sufismo (Mistica Islamica)',
+                category: 'esoteric',
+                subtitle: 'Via interiore ed esoterica dell\'Islam centrata sull\'amore divino e la dissoluzione dell\'ego in Allah.',
+                icon: 'fa-kaaba',
+                color: '#059669',
+                dimensions: { monotheism: 0.9, afterlife_heaven: 0.8, divine_person: 0.7, sacred_text: 0.8, ritualism: 0.7, karma_reincarnation: 0.2, nature_deity: 0.8, secular_humanism: 0.3 },
+                tenets: [
+                    'Fana: Dissoluzione dell\'ego egoico nell\'Amore di Dio.',
+                    'Ricerca della Verità interiore (Haqiqa) oltre la lettera esterna.',
+                    'Dhikr e danza sacra come forme di meditazione.'
+                ],
+                figures: 'Gialal al-Din Rumi, Ibn Arabi, Rabia al-Adawiyya',
+                texts: 'Masnavi di Rumi, Le Rivelazioni della Mecca'
+            },
+            {
+                id: 'ebraismo',
+                name: 'Ebraismo',
+                category: 'monotheistic',
+                subtitle: 'Alleanza storica tra il Popolo Ebraico e l\'Unico Dio, fondata sulla Torah e l\'etica terrena.',
+                icon: 'fa-star-of-david',
+                color: '#3b82f6',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 0.5, divine_person: 0.9, sacred_text: 0.9, ritualism: 0.8, karma_reincarnation: 0.1, nature_deity: 0.2, secular_humanism: 0.3 },
+                tenets: [
+                    'Monoteismo Etico e santificazione della vita presente tramite le 613 Mitzvot.',
+                    'Tikkun Olam: Il dovere di riparare e migliorare il mondo.',
+                    'Centralità dello studio e della discussione rabbinica.'
+                ],
+                figures: 'Mosè, Maimonide, Rabbi Hillel, Martin Buber',
+                texts: 'Torah, Tanakh (Bibbia ebraica), Talmud'
+            },
+            {
+                id: 'bahai',
+                name: 'Fede Bahá\'í',
+                category: 'monotheistic',
+                subtitle: 'Religione monoteista universale che proclama l\'unità essenziale di tutte le religioni e dell\'umanità.',
+                icon: 'fa-certificate',
+                color: '#0284c7',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 0.8, divine_person: 0.8, sacred_text: 0.8, ritualism: 0.5, karma_reincarnation: 0.2, nature_deity: 0.4, secular_humanism: 0.6 },
+                tenets: [
+                    'Unità di Dio, Unità della Religione e Unità della Famiglia Umana.',
+                    'Rivelazione progressiva: I fondatori delle religioni sono manifestazioni del medesimo Dio.',
+                    'Eliminazione di tutti i pregiudizi e parità tra uomo e donna.'
+                ],
+                figures: 'Bahá\'u\'lláh, il Báb, \'Abdu\'l-Bahá',
+                texts: 'Kitáb-i-Aqdas, Le Parole Celate'
+            },
+            {
+                id: 'zoroastrismo',
+                name: 'Zoroastrismo (Mazdeismo)',
+                category: 'monotheistic',
+                subtitle: 'Antichissima fede persiana basata sul dualismo cosmico tra il Bene (Ahura Mazda) e il Male.',
+                icon: 'fa-fire',
+                color: '#f97316',
+                dimensions: { monotheism: 0.9, afterlife_heaven: 0.9, divine_person: 0.8, sacred_text: 0.8, ritualism: 0.7, karma_reincarnation: 0.0, nature_deity: 0.5, secular_humanism: 0.3 },
+                tenets: [
+                    'Buoni Pensieri, Buone Parole, Buone Azioni.',
+                    'Lotta cosmica tra il Signore della Saggezza e le forze del Caos.',
+                    'Riverenza per il Fuoco come simbolo di purificazione e luce divina.'
+                ],
+                figures: 'Zarathustra (Zoroastro)',
+                texts: 'Avesta, Gatha'
+            },
+            {
+                id: 'induismo',
+                name: 'Induismo (Sanatana Dharma)',
+                category: 'eastern',
+                subtitle: 'Tradizione dharmica millenaria focalizzata sull\'Assoluto (Brahman), il Karma e il ciclo delle rinascite.',
+                icon: 'fa-om',
+                color: '#f59e0b',
+                dimensions: { monotheism: 0.4, afterlife_heaven: 0.2, divine_person: 0.6, sacred_text: 0.7, ritualism: 0.8, karma_reincarnation: 1.0, nature_deity: 0.8, secular_humanism: 0.1 },
+                tenets: [
+                    'L\'Atman (anima) è identica al Brahman (Realtà Ultima).',
+                    'Karma e Samsara: Il ciclo di morte e rinascita retto dalle proprie azioni.',
+                    'Moksha: Liberazione finale dal ciclo delle reincarnazioni.'
+                ],
+                figures: 'Adi Shankara, Sri Ramakrishna, Mahatma Gandhi',
+                texts: 'Veda, Upanishad, Bhagavad Gita, Ramayana'
+            },
+            {
+                id: 'buddismo_theravada',
+                name: 'Buddismo (Theravada / Zen / Mahayana)',
+                category: 'eastern',
+                subtitle: 'Via di risveglio fondata sulle Quattro Nobili Verità, la meditazione e il superamento della sofferenza.',
+                icon: 'fa-dharmachakra',
+                color: '#d97706',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.1, divine_person: 0.1, sacred_text: 0.6, ritualism: 0.5, karma_reincarnation: 0.9, nature_deity: 0.5, secular_humanism: 0.5 },
+                tenets: [
+                    'Quattro Nobili Verità e l\'Ottuplice Sentiero.',
+                    'Anatta (Assenza di un sè immutabile/Ego).',
+                    'Nirvana: Estinzione del desiderio egoico e dell\'illusione.'
+                ],
+                figures: 'Siddhartha Gautama (Buddha), Nagarjuna, Dalai Lama, Bodhidharma',
+                texts: 'Dhammapada, Sutra del Cuore, Sutra del Loto'
+            },
+            {
+                id: 'jainismo',
+                name: 'Jainismo (Giainismo)',
+                category: 'eastern',
+                subtitle: 'Fede dharmica radicale basata sulla non-violenza assoluta (Ahimsa) e la purezza dell\'anima.',
+                icon: 'fa-hand',
+                color: '#eab308',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.1, divine_person: 0.0, sacred_text: 0.6, ritualism: 0.6, karma_reincarnation: 1.0, nature_deity: 0.6, secular_humanism: 0.4 },
+                tenets: [
+                    'Ahimsa: Non-violenza suprema verso ogni forma di vita animale e vegetale.',
+                    'Anekantavada: La verità ha molteplici sfaccettature e prospettive.',
+                    'Ascetismo e distacco dai beni materiali per liberare l\'anima (Jiva).'
+                ],
+                figures: 'Mahavira (24° Tirthankara)',
+                texts: 'Agama jainisti, Tattvartha Sutra'
+            },
+            {
+                id: 'sikhismo',
+                name: 'Sikhismo',
+                category: 'eastern',
+                subtitle: 'Fede monoteista d\'origine punjabi basata sull\'uguaglianza, il servizio disinteressato e la devozione a Dio.',
+                icon: 'fa-khanda',
+                color: '#facc15',
+                dimensions: { monotheism: 1.0, afterlife_heaven: 0.3, divine_person: 0.5, sacred_text: 0.9, ritualism: 0.5, karma_reincarnation: 0.8, nature_deity: 0.6, secular_humanism: 0.4 },
+                tenets: [
+                    'Ik Onkar: Dio è Uno, Creatore Senza Paura e Senza Odio.',
+                    'Uguaglianza totale di tutte le razze, generi e caste sociali.',
+                    'Seva: Servizio comunitario disinteressato e cucina condivisa (Langar).'
+                ],
+                figures: 'Guru Nanak, Guru Gobind Singh',
+                texts: 'Guru Granth Sahib (Libro Sacro vivente)'
+            },
+            {
+                id: 'taoismo',
+                name: 'Taoismo (Daoismo)',
+                category: 'eastern',
+                subtitle: 'Filosofia e via spirituale di spontaneità ed armonia con il principio cosmico innominabile (il Tao).',
+                icon: 'fa-yin-yang',
+                color: '#14b8a6',
+                dimensions: { monotheism: 0.1, afterlife_heaven: 0.2, divine_person: 0.1, sacred_text: 0.5, ritualism: 0.4, karma_reincarnation: 0.5, nature_deity: 1.0, secular_humanism: 0.4 },
+                tenets: [
+                    'Il Tao: La sorgente ineffabile che fluisce nell\'universo.',
+                    'Wu Wei: Azione naturale senza sforzo egoico né forzature.',
+                    'Equilibrio armonico delle forze complementari Yin e Yang.'
+                ],
+                figures: 'Laozi (Lao Tzu), Zhuangzi',
+                texts: 'Tao Te Ching, Libro di Zhuangzi'
+            },
+            {
+                id: 'confucianesimo',
+                name: 'Confucianesimo',
+                category: 'eastern',
+                subtitle: 'Filosofia etica e sociale cinese focalizzata sulla virtù, l\'armonia familiare e l\'ordine rituale.',
+                icon: 'fa-scroll',
+                color: '#0d9488',
+                dimensions: { monotheism: 0.2, afterlife_heaven: 0.2, divine_person: 0.2, sacred_text: 0.7, ritualism: 0.8, karma_reincarnation: 0.2, nature_deity: 0.4, secular_humanism: 0.8 },
+                tenets: [
+                    'Ren (Benevolenza/Umanità) e Li (Correttezza rituale).',
+                    'Pietà Filiale: Rispetto profondo per gli antenati e la famiglia.',
+                    'Coltivazione di sé per diventare un individuo nobilissimo (Junzi).'
+                ],
+                figures: 'Confucio (Kong Fuzi), Mencio',
+                texts: 'I Dialoghi (Analetti), I Quattro Libri'
+            },
+            {
+                id: 'shintoismo',
+                name: 'Shintoismo',
+                category: 'naturalistic',
+                subtitle: 'Spiritualità indigena giapponese basata sulla venerazione degli spiriti della natura (Kami) e la purificazione.',
+                icon: 'fa-torii-gate',
+                color: '#ef4444',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.2, divine_person: 0.3, sacred_text: 0.3, ritualism: 0.9, karma_reincarnation: 0.3, nature_deity: 1.0, secular_humanism: 0.3 },
+                tenets: [
+                    'Tutti i luoghi naturali (montagne, alberi, fiumi) ospitano i Kami.',
+                    'Harai: Importanza centrale dei rituali di purificazione rituale.',
+                    'Vivere in armonia e gratitudine verso la bellezza del mondo naturale.'
+                ],
+                figures: 'Sacerdoti Kannushi, Tradizioni Shinto popolari',
+                texts: 'Kojiki, Nihon Shoki'
+            },
+            {
+                id: 'paganismo',
+                name: 'Paganismo & Wicca',
+                category: 'naturalistic',
+                subtitle: 'Riverenza neopagana per la Terra, le stagioni, la Dea Madre, i cicli cosmici e la magia immanente.',
+                icon: 'fa-leaf',
+                color: '#22c55e',
+                dimensions: { monotheism: 0.1, afterlife_heaven: 0.3, divine_person: 0.4, sacred_text: 0.2, ritualism: 0.8, karma_reincarnation: 0.7, nature_deity: 1.0, secular_humanism: 0.2 },
+                tenets: [
+                    'La Natura stessa è viva, sacra e immanente.',
+                    'Rede Wiccan: "Fai ciò che vuoi, purché non danneggi nessuno".',
+                    'Celebrazione delle stagioni (Ruota dell\'Anno) e delle fasi lunari.'
+                ],
+                figures: 'Gerald Gardner, Doreen Valiente, Starhawk',
+                texts: 'Il Libro delle Ombre, Tradizioni orali'
+            },
+            {
+                id: 'animismo',
+                name: 'Animismo & Sciamanesimo Tradizionale',
+                category: 'naturalistic',
+                subtitle: 'La credenza che ogni ente (animali, piante, rocce, elementi) possieda uno spirito o anima vivente.',
+                icon: 'fa-feather',
+                color: '#16a34a',
+                dimensions: { monotheism: 0.1, afterlife_heaven: 0.4, divine_person: 0.3, sacred_text: 0.0, ritualism: 0.8, karma_reincarnation: 0.5, nature_deity: 1.0, secular_humanism: 0.2 },
+                tenets: [
+                    'Non esiste barriera rigida tra mondo umano, animale e spirituale.',
+                    'Lo Sciamano comunica con gli spiriti guida per la guarigione della tribù.',
+                    'Rispetto sacrale e reciprocità per ogni risorsa estratta dalla natura.'
+                ],
+                figures: 'Sciamani indigeni di America, Siberia e Oceania',
+                texts: 'Tradizione orale e canti di medicina'
+            },
+            {
+                id: 'panteismo_spinoza',
+                name: 'Panteismo (Spinozismo)',
+                category: 'naturalistic',
+                subtitle: 'Visione filosofica per cui Dio e la Natura/Universo sono la medesima ed unica sostanza infinita.',
+                icon: 'fa-infinity',
+                color: '#0284c7',
+                dimensions: { monotheism: 0.3, afterlife_heaven: 0.1, divine_person: 0.0, sacred_text: 0.1, ritualism: 0.1, karma_reincarnation: 0.2, nature_deity: 1.0, secular_humanism: 0.7 },
+                tenets: [
+                    'Deus Sive Natura: Dio ovvero la Natura (nessun creatore antropomorfo esterno).',
+                    'L\'Universo opera secondo un ordine razionale e matematico perfetto.',
+                    'Sentimento di meraviglia e devozione cosmica (Amor Dei Intellectualis).'
+                ],
+                figures: 'Baruch Spinoza, Albert Einstein, Carl Sagan',
+                texts: 'Etica dimostrata con metodo geometrico (Spinoza)'
+            },
+            {
+                id: 'gnosticismo',
+                name: 'Gnosticismo & Ermetismo',
+                category: 'esoteric',
+                subtitle: 'Misticismo esoterico centrato sulla Gnosi (conoscenza diretta interiore del Divino nascosto).',
+                icon: 'fa-ankh',
+                color: '#a855f7',
+                dimensions: { monotheism: 0.5, afterlife_heaven: 0.7, divine_person: 0.4, sacred_text: 0.6, ritualism: 0.6, karma_reincarnation: 0.6, nature_deity: 0.5, secular_humanism: 0.2 },
+                tenets: [
+                    'La salvezza avviene tramite la Gnosi (risveglio della scintilla divina interiore).',
+                    'Il mondo materiale fu plasmato dall\'ignorante Demiurgo, distinto dal Dio Supremo.',
+                    'Come in alto, così in basso: Corrispondenza tra Microcosmo e Macrocosmo.'
+                ],
+                figures: 'Valentino, Ermete Trismegisto, Carl Jung',
+                texts: 'Vangeli Gnostici di Nag Hammadi, Corpus Hermeticum'
+            },
+            {
+                id: 'stoicismo',
+                name: 'Stoicismo',
+                category: 'secular',
+                subtitle: 'Filosofia ellenistica centrata sulle virtù razionali, il controllo delle passioni e l\'accettazione del Fato.',
+                icon: 'fa-monument',
+                color: '#64748b',
+                dimensions: { monotheism: 0.3, afterlife_heaven: 0.1, divine_person: 0.1, sacred_text: 0.3, ritualism: 0.1, karma_reincarnation: 0.1, nature_deity: 0.7, secular_humanism: 0.9 },
+                tenets: [
+                    'Dicotomia del Controllo: Concentrati su ciò che dipende da te, accetta il resto.',
+                    'Amor Fati: Abbraccia il tuo destino con equanimità e forza d\'animo.',
+                    'La Virtù (Saggezza, Coraggio, Giustizia, Temperanza) è l\'unico vero bene.'
+                ],
+                figures: 'Marco Aurelio, Seneca, Epitteto, Zenone di Cizio',
+                texts: 'Pensieri (Marco Aurelio), Lettere a Lucilio (Seneca)'
+            },
+            {
+                id: 'esistenzialismo',
+                name: 'Esistenzialismo & Nichilismo',
+                category: 'secular',
+                subtitle: 'Filosofia centrata sulla libertà radicale: l\'esistenza precede l\'essenza; il senso va creato da sé.',
+                icon: 'fa-masks-theater',
+                color: '#475569',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.0, divine_person: 0.0, sacred_text: 0.0, ritualism: 0.0, karma_reincarnation: 0.0, nature_deity: 0.1, secular_humanism: 0.9 },
+                tenets: [
+                    'L\'Esistenza precede l\'Essenza: Nessun destino precostituito, sei ciò che scegli di essere.',
+                    'Consapevolezza dell\'Assurdo e responsabilità individuale totale.',
+                    'Rifiuto dei dogmi preconfezionati e ricerca dell\'autenticità.'
+                ],
+                figures: 'Jean-Paul Sartre, Friedrich Nietzsche, Albert Camus',
+                texts: 'L\'Essere e il Nulla, Il Mito di Sisifo, Così parlò Zarathustra'
+            },
+            {
+                id: 'umanesimo_secolare',
+                name: 'Umanesimo Secolare & Ateo',
+                category: 'secular',
+                subtitle: 'Visione del mondo etica, democratica e razionale basata sul metodo scientifico e la dignità umana.',
+                icon: 'fa-atom',
+                color: '#ec4899',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.0, divine_person: 0.0, sacred_text: 0.0, ritualism: 0.0, karma_reincarnation: 0.0, nature_deity: 0.1, secular_humanism: 1.0 },
+                tenets: [
+                    'L\'etica non richiede la fede religiosa, ma nasce dall\'empatia e dalla ragione.',
+                    'Fiducia nella scienza e nel pensiero critico per il progresso della società.',
+                    'Questa vita terrena è la nostra unica certezza e opportunità.'
+                ],
+                figures: 'Bertrand Russell, Richard Dawkins, Carl Sagan',
+                texts: 'Manifesto Umanista, Perché non sono cristiano (Russell)'
+            },
+            {
+                id: 'agnosticismo',
+                name: 'Agnosticismo',
+                category: 'secular',
+                subtitle: 'Posizione filosofica basata sulla consapevolezza dei limiti epistemologici dell\'uomo riguardo al Divino.',
+                icon: 'fa-circle-question',
+                color: '#94a3b8',
+                dimensions: { monotheism: 0.2, afterlife_heaven: 0.2, divine_person: 0.1, sacred_text: 0.1, ritualism: 0.1, karma_reincarnation: 0.1, nature_deity: 0.2, secular_humanism: 0.8 },
+                tenets: [
+                    'Onestà intellettuale: Ammettere che la metafisica trascende la prova empirica.',
+                    'Sospensione del giudizio in assenza di prove definitive.',
+                    'Pragmatismo etico focalizzato sulle azioni concrete del presente.'
+                ],
+                figures: 'Thomas Henry Huxley, David Hume, Immanuel Kant',
+                texts: 'Critica della Ragion Pura, Saggi sull\'intelletto umano'
+            },
+            {
+                id: 'satanismo_lavey',
+                name: 'Satanismo Razionale (LaVeyano / Tempio)',
+                category: 'unorthodox',
+                subtitle: 'Filosofia individualista e razionale che usa il simbolo di Satana come metafora di indipendenza e scetticismo.',
+                icon: 'fa-bolt',
+                color: '#dc2626',
+                dimensions: { monotheism: 0.0, afterlife_heaven: 0.0, divine_person: 0.0, sacred_text: 0.2, ritualism: 0.4, karma_reincarnation: 0.0, nature_deity: 0.2, secular_humanism: 0.8 },
+                tenets: [
+                    'Non-credenza in Satana o Dio letterali: Satana è simbolo di rivalsa ed etica libertaria.',
+                    'Autonomia del proprio corpo ed etica basata sul consenso reciproco.',
+                    'Scetticismo verso le autorità dogmatiche e difesa della laicità.'
+                ],
+                figures: 'Anton LaVey, Lucien Greaves',
+                texts: 'La Bibbia Satanica, I Sette Tenenti del Tempio Satanico'
+            },
+            {
+                id: 'pastafarianesimo',
+                name: 'Pastafarianesimo (Prodigioso Spaghetti)',
+                category: 'unorthodox',
+                subtitle: 'Religione satirica parodistica creata per promuovere la laicità della scienza e l\'umorismo metafisico.',
+                icon: 'fa-bowl-rice',
+                color: '#f97316',
+                dimensions: { monotheism: 0.1, afterlife_heaven: 0.2, divine_person: 0.1, sacred_text: 0.2, ritualism: 0.3, karma_reincarnation: 0.0, nature_deity: 0.1, secular_humanism: 0.9 },
+                tenets: [
+                    'Creatore Supremo: Il Prodigioso Spaghetto Volante (FSM).',
+                    'Paradiso con vulcano di birra e fabbrica di spogliarellisti.',
+                    'I 8 "Condimenti" (I Davvero Preferirei Che Tu Non Fatti...)'
+                ],
+                figures: 'Bobby Henderson (Il Fondatore)',
+                texts: 'Il Libro Sacro del Prodigioso Spaghetto Volante'
+            },
+            {
+                id: 'spiritualita_eclettica',
+                name: 'Spiritualità Eclettica & New Age',
+                category: 'esoteric',
+                subtitle: 'Ricerca individuale libera che sintetizza elementi da diverse tradizioni mistiche, olistiche e cosmiche.',
+                icon: 'fa-wand-magic-sparkles',
+                color: '#a855f7',
+                dimensions: { monotheism: 0.3, afterlife_heaven: 0.5, divine_person: 0.4, sacred_text: 0.3, ritualism: 0.5, karma_reincarnation: 0.8, nature_deity: 0.8, secular_humanism: 0.3 },
+                tenets: [
+                    'Autonomia interiore: Il percorso spirituale è un abito fatto su misura.',
+                    'Connessione energetica ed olismo tra corpo, mente e spirito.',
+                    'Integrazione della saggezza universale di ogni cultura.'
+                ],
+                figures: 'Eckhart Tolle, Deepak Chopra, Alan Watts',
+                texts: 'Il Potere di Adesso, Scritti di misticismo olistico'
+            }
+        ];
+
+        // 2. DATA: QUIZ QUESTIONS
+        const QUIZ_QUESTIONS = [
+            {
+                id: 1,
+                category: 'Natura del Divino',
+                question: 'Qual è la tua idea fondamentale sull\'esistenza e la natura di Dio o del Divino?',
+                options: [
+                    {
+                        text: 'Dio è un Essere Personale Unico, Trascendente e Creatore, che ci ama e ascolta le preghiere.',
+                        vector: { monotheism: 1.0, divine_person: 1.0, nature_deity: 0.1, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'Non c\'è un Dio personificato; Dio e la Natura/Universo coincidono in una sola sostanza infinita.',
+                        vector: { monotheism: 0.3, divine_person: 0.0, nature_deity: 1.0, secular_humanism: 0.5 }
+                    },
+                    {
+                        text: 'Esistono molteplici divinità, principi cosmici, spiriti o emanazioni divine intrecciate.',
+                        vector: { monotheism: 0.1, divine_person: 0.4, nature_deity: 0.9, karma_reincarnation: 0.6 }
+                    },
+                    {
+                        text: 'Non esistono dei né entità soprannaturali. L\'universo è puramente materiale e governato dalle leggi della fisica.',
+                        vector: { monotheism: 0.0, divine_person: 0.0, nature_deity: 0.1, secular_humanism: 1.0 }
+                    },
+                    {
+                        text: 'È impossibile per l\'intelletto umano sapere se Dio esista o meno; è un quesito privo di risposta empirica.',
+                        vector: { monotheism: 0.2, divine_person: 0.1, nature_deity: 0.2, secular_humanism: 0.8 }
+                    }
+                ]
+            },
+            {
+                id: 2,
+                category: 'Vita dopo la Morte',
+                question: 'Cosa credi che avvenga alla coscienza individuale dopo la morte fisica?',
+                options: [
+                    {
+                        text: 'L\'anima entra nel Regno dei Cieli (o Stato Spirituale eterno) in base alla grazia o alle azioni.',
+                        vector: { afterlife_heaven: 1.0, karma_reincarnation: 0.0, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'Ci reincarniamo in nuove forme di vita secondo la legge del Karma finché non otteniamo la liberazione.',
+                        vector: { afterlife_heaven: 0.1, karma_reincarnation: 1.0, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'La nostra energia si scioglie e ritorna a fondersi con il grande flusso cosmico naturale.',
+                        vector: { afterlife_heaven: 0.2, karma_reincarnation: 0.6, nature_deity: 0.9, secular_humanism: 0.3 }
+                    },
+                    {
+                        text: 'La coscienza svanisce del tutto. La morte è la fine biologica; l\'unica eredità è ciò che lasciamo agli altri.',
+                        vector: { afterlife_heaven: 0.0, karma_reincarnation: 0.0, secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 3,
+                category: 'Origine dell\'Etica',
+                question: 'Qual è la fonte primaria che definisce ciò che è bene e ciò che è male?',
+                options: [
+                    {
+                        text: 'I comandamenti e le leggi etiche rivelate da Dio nei testi sacri.',
+                        vector: { sacred_text: 1.0, monotheism: 0.9, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'La causa-effetto karmica e la profonda compassione (Ahimsa) per tutti i viventi.',
+                        vector: { karma_reincarnation: 0.9, nature_deity: 0.6, secular_humanism: 0.3 }
+                    },
+                    {
+                        text: 'L\'empatia, la ragione, i diritti umani universali e il consenso reciproco.',
+                        vector: { secular_humanism: 1.0, sacred_text: 0.0, ritualism: 0.0 }
+                    },
+                    {
+                        text: 'L\'armonia con la ragione universale (Logos) e la natura, accettando ciò che è in nostro potere.',
+                        vector: { nature_deity: 0.8, secular_humanism: 0.8, monotheism: 0.2 }
+                    }
+                ]
+            },
+            {
+                id: 4,
+                category: 'Testi Sacri',
+                question: 'Come consideri i testi sacri delle religioni tradizionali?',
+                options: [
+                    {
+                        text: 'Rivelazione divina diretta ed inerrante, da seguire con fedeltà.',
+                        vector: { sacred_text: 1.0, monotheism: 0.9, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'Fonti di saggezza antica ricche di simboli, da interpretare spiritualmente e con apertura.',
+                        vector: { sacred_text: 0.6, secular_humanism: 0.5, karma_reincarnation: 0.5 }
+                    },
+                    {
+                        text: 'Capolavori di letteratura e cultura umana, privi di autorità soprannaturale su di noi.',
+                        vector: { sacred_text: 0.0, secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 5,
+                category: 'Scopo della Vita',
+                question: 'Qual è il significato o lo scopo supremo dell\'esistenza umana?',
+                options: [
+                    {
+                        text: 'Conoscere e servire Dio, ottenendo la salvezza e amando il prossimo.',
+                        vector: { monotheism: 1.0, afterlife_heaven: 0.9, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'Spezzare le catene dell\'illusione (Maya/Ego) e risvegliarsi all\'Unità cosmica.',
+                        vector: { karma_reincarnation: 0.9, nature_deity: 0.7, secular_humanism: 0.2 }
+                    },
+                    {
+                        text: 'Fluire spontaneamente con il corso della Natura senza forzature egoiche.',
+                        vector: { nature_deity: 1.0, karma_reincarnation: 0.4, secular_humanism: 0.4 }
+                    },
+                    {
+                        text: 'Siamo noi a dover dare significato alla nostra vita attraverso scelte libere, relazioni e conoscenza.',
+                        vector: { secular_humanism: 1.0, monotheism: 0.0 }
+                    }
+                ]
+            },
+            {
+                id: 6,
+                category: 'Ritualità e Pratica',
+                question: 'Che valore attribuisci ai riti, alle preghiere o alla meditazione?',
+                options: [
+                    {
+                        text: 'I sacramenti, la preghiera quotidiana ed i riti codificati sono essenziali per connettersi con Dio.',
+                        vector: { ritualism: 1.0, monotheism: 0.8, sacred_text: 0.7 }
+                    },
+                    {
+                        text: 'La meditazione silenziosa, la mindfulness ed il lavoro interiore sono la vera pratica spirituale.',
+                        vector: { ritualism: 0.6, karma_reincarnation: 0.8, nature_deity: 0.6, secular_humanism: 0.4 }
+                    },
+                    {
+                        text: 'Celebrazioni stagionali, purificazioni o rituali simbolici della Terra sono arricchenti.',
+                        vector: { ritualism: 0.8, nature_deity: 1.0, karma_reincarnation: 0.4 }
+                    },
+                    {
+                        text: 'Non ho bisogno di riti o preghiere. La mia pratica è l\'azione etica, lo studio e la scienza.',
+                        vector: { ritualism: 0.0, secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 7,
+                category: 'Scienza e Fede',
+                question: 'Come ti poni di fronte alle scoperte scientifiche sull\'universo?',
+                options: [
+                    {
+                        text: 'La scienza esplora i meccanismi fisici, ma le risposte ultime sul senso della vita spettano alla fede.',
+                        vector: { monotheism: 0.8, sacred_text: 0.7, secular_humanism: 0.2 }
+                    },
+                    {
+                        text: 'Scienza e misticismo sono due facce della stessa medaglia: la fisica quantistica riflette l\'Unità antica.',
+                        vector: { nature_deity: 0.8, karma_reincarnation: 0.6, secular_humanism: 0.5 }
+                    },
+                    {
+                        text: 'Il metodo scientifico è l\'unica candela nel buio e la sola fonte affidabile di verità sul reale.',
+                        vector: { secular_humanism: 1.0, sacred_text: 0.0, monotheism: 0.0 }
+                    }
+                ]
+            },
+            {
+                id: 8,
+                category: 'Origine della Sofferenza',
+                question: 'Perché esiste il male o la sofferenza nel mondo?',
+                options: [
+                    {
+                        text: 'Fa parte della prova terrena, del libero arbitrio umano o del misterioso piano divino.',
+                        vector: { monotheism: 0.9, afterlife_heaven: 0.8 }
+                    },
+                    {
+                        text: 'È l\'effetto cumulativo delle azioni passate (Karma) o dell\'attaccamento egoico all\'illusione.',
+                        vector: { karma_reincarnation: 1.0, nature_deity: 0.5 }
+                    },
+                    {
+                        text: 'Il bene e il male sono concetti umani; la natura opera per leggi prive di intenzione morale.',
+                        vector: { secular_humanism: 0.9, nature_deity: 0.7 }
+                    }
+                ]
+            },
+            {
+                id: 9,
+                category: 'Pluralismo Religioso',
+                question: 'Cosa pensi delle varie religioni del pianeta?',
+                options: [
+                    {
+                        text: 'Solo la mia fede (o una via precisa) detiene la pienezza della Verità rivelata.',
+                        vector: { monotheism: 0.8, sacred_text: 0.9, secular_humanism: 0.0 }
+                    },
+                    {
+                        text: 'Tutte le vie autentiche sono sentieri diversi per scalare la stessa ed unica montagna divina.',
+                        vector: { nature_deity: 0.8, karma_reincarnation: 0.7, secular_humanism: 0.5 }
+                    },
+                    {
+                        text: 'Sono tutte narrazioni culturali umane inventate per dare conforto o controllo sociale.',
+                        vector: { secular_humanism: 1.0, sacred_text: 0.0 }
+                    }
+                ]
+            },
+            {
+                id: 10,
+                category: 'Natura dell\'Anima / Ego',
+                question: 'Qual è la vera natura del tuo "Io" o dell\'anima?',
+                options: [
+                    {
+                        text: 'Un\'anima immortale unica creata da Dio che conserverà la sua identità per l\'eternità.',
+                        vector: { monotheism: 0.9, afterlife_heaven: 0.9 }
+                    },
+                    {
+                        text: 'L\'Io/Ego è un\'illusione provvisoria; l\'anima reale è tutt\'uno con il Brahman/Cosmo.',
+                        vector: { karma_reincarnation: 0.9, nature_deity: 0.8 }
+                    },
+                    {
+                        text: 'L\'Io è il prodotto emergente della complessa attività neuronale del cervello.',
+                        vector: { secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 11,
+                category: 'L\'Ambiente e il Pianeta',
+                question: 'Come consideri la Natura ed i suoi esseri non umani?',
+                options: [
+                    {
+                        text: 'Il creato è affidato da Dio all\'umanità, che deve esserne custode premurosa.',
+                        vector: { monotheism: 0.8, sacred_text: 0.6 }
+                    },
+                    {
+                        text: 'La Natura è la cattedrale sacra del Divino; piante e animali hanno pari valore spirituale dell\'uomo.',
+                        vector: { nature_deity: 1.0, karma_reincarnation: 0.7 }
+                    },
+                    {
+                        text: 'È l\'ecosistema unico che permette la nostra vita; va difeso per etica ecologica e senso pratico.',
+                        vector: { secular_humanism: 1.0, nature_deity: 0.4 }
+                    }
+                ]
+            },
+            {
+                id: 12,
+                category: 'Misticismo e Gnosi',
+                question: 'Quanto valore dai all\'esperienza spirituale diretta o estatica?',
+                options: [
+                    {
+                        text: 'Fondamentale: La vera conoscenza nasce dall\'illuminazione interiore, dal risveglio o dall\'unione mistica.',
+                        vector: { nature_deity: 0.7, karma_reincarnation: 0.7, sacred_text: 0.4 }
+                    },
+                    {
+                        text: 'È importante ma deve rimanere guidata dai dogmi e dalle autorità della tradizione.',
+                        vector: { monotheism: 0.9, ritualism: 0.8 }
+                    },
+                    {
+                        text: 'Le esperienze mistiche sono stati alterati di coscienza spiegabili con la neurochimica.',
+                        vector: { secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 13,
+                category: 'Concetto del Tempo',
+                question: 'Come concepisci il passare del Tempo nell\'Universo?',
+                options: [
+                    {
+                        text: 'Lineare: Ha avuto un inizio (Creazione) e avrà un termine (Giudizio/Fine dei tempi).',
+                        vector: { monotheism: 0.9, afterlife_heaven: 0.8 }
+                    },
+                    {
+                        text: 'Ciclico: L\'Universo ed i mondi nascono, si dissolvono e rinascono in un\'infinita ruota dell\'eterno ritorno.',
+                        vector: { karma_reincarnation: 0.9, nature_deity: 0.8 }
+                    },
+                    {
+                        text: 'Una dimensione dello spazio-tempo descritta dalla fisica, priva di fine metafisica.',
+                        vector: { secular_humanism: 1.0 }
+                    }
+                ]
+            },
+            {
+                id: 14,
+                category: 'Umorismo e Metafisica',
+                question: 'Che posto hanno l\'umorismo, l\'ironia ed il dubbio nella tua visione spirituale?',
+                options: [
+                    {
+                        text: 'I dogmi sacri richiedono profondo rispetto e solennità; la verità è una cosa seria.',
+                        vector: { monotheism: 0.8, sacred_text: 0.8 }
+                    },
+                    {
+                        text: 'L\'ironia ed il paradosso sono ottimi strumenti Zen o filosofici per frantumare le certezze dell\'Ego.',
+                        vector: { karma_reincarnation: 0.6, nature_deity: 0.6, secular_humanism: 0.7 }
+                    },
+                    {
+                        text: 'L\'umorismo, la satira e la capacità di ridere di se stessi sono la massima espressione di libertà intellettuale.',
+                        vector: { secular_humanism: 1.0 }
+                    }
+                ]
+            }
+        ];
+
+        // 3. DATA: EXACT PHRASES FROM "frasi.txt Dio non esiste"
+        const PHRASES_DATA = [
+            {
+                id: 0,
+                title: "0. Inferno",
+                quote: "Se Dio perdona veramente, l'Inferno non può esistere. Se l'Inferno esiste, Dio non esiste.",
+                author: "Critica della teologia del Perdono",
+                tradition: "Razionalismo / Ateismo",
+                theme: "god",
+                icon: "fa-fire-flame-curved"
+            },
+            {
+                id: 1,
+                title: "1. La Prospettiva",
+                quote: "Io sostengo che siamo entrambi atei. Io credo solo in un dio di meno rispetto a te. Quando capirai perché tu rifiuti tutti gli altri possibili dei, capirai perché io rifiuto il tuo.",
+                author: "Stephen F. Roberts",
+                tradition: "Ateismo / Umanesimo Secolare",
+                theme: "god",
+                icon: "fa-eye"
+            },
+            {
+                id: 2,
+                title: "2. Il Senso Logico",
+                quote: "Ciò che può essere affermato senza prove, può essere respinto senza prove.",
+                author: "Christopher Hitchens (Rasoio di Hitchens)",
+                tradition: "Razionalismo / Epistemologia",
+                theme: "ethics",
+                icon: "fa-scale-unbalanced-flip"
+            },
+            {
+                id: 3,
+                title: "3. Il paradosso del male",
+                quote: "Dio vuole impedire il male, ma non può? Allora non è onnipotente. Può, ma non vuole? Allora è malvagio. Può e vuole? Allora da dove viene il male?",
+                author: "Paradosso di Epicuro",
+                tradition: "Filosofia Greca / Teodicea",
+                theme: "god",
+                icon: "fa-brain"
+            },
+            {
+                id: 4,
+                title: "4. La Creazione",
+                quote: "Se ogni cosa deve avere una causa, allora chi ha creato Dio? Se Dio è l'unica eccezione, perché non può esserlo anche l'universo?",
+                author: "Critica della Prima Causa (Bertrand Russell)",
+                tradition: "Ateismo / Cosmologia Razionale",
+                theme: "god",
+                icon: "fa-atom"
+            },
+            {
+                id: 5,
+                title: "5. La Preghiera",
+                quote: "Qual è la probabilità che la tua preghiera venga esaudita, rispetto a quella che venga esaudita la preghiera di un estraneo che chiede l'opposto?",
+                author: "Riflessione sulla Preghiera",
+                tradition: "Pensiero Critico / Scetticismo",
+                theme: "life",
+                icon: "fa-hands-praying"
+            },
+            {
+                id: 6,
+                title: "6. Confronto con la Logica Comune",
+                quote: "Se sostenessi di avere un unicorno invisibile e immateriale nel mio garage, e rifiutassi ogni metodo per dimostrarne l'esistenza, mi crederesti? La fede è la stessa cosa.",
+                author: "Analogia dello Scetticismo (stile Sagan / Russell)",
+                tradition: "Scetticismo Scientifico",
+                theme: "ethics",
+                icon: "fa-magnifying-glass"
+            },
+            {
+                id: 7,
+                title: "7. Religioni",
+                quote: "Se l’esistenza di Dio fosse così evidente, perché le religioni sono tante e in contraddizione?",
+                author: "Argomento della Pluralità Religiosa",
+                tradition: "Agnosticismo / Razionalismo",
+                theme: "god",
+                icon: "fa-globe"
+            },
+            {
+                id: 8,
+                title: "8. Leggenda",
+                quote: "Non confondere tradizione con verità: molte verità accettate un tempo sono cambiate con l’evidenza.",
+                author: "Principio dell'Evidenza Scientifica",
+                tradition: "Metodo Scientifico",
+                theme: "ethics",
+                icon: "fa-book"
+            },
+            {
+                id: 9,
+                title: "9. Prova?",
+                quote: "Cosa ti convincerebbe davvero a cambiare idea? Quale prova accetteresti?",
+                author: "Principio di Falsificabilità",
+                tradition: "Epistemologia Critica",
+                theme: "inner",
+                icon: "fa-circle-question"
+            },
+            {
+                id: 10,
+                title: "10. Credere",
+                quote: "Credere non rende più vero ciò in cui si crede.",
+                author: "Aforisma Epistemologico",
+                tradition: "Pensiero Razionale",
+                theme: "inner",
+                icon: "fa-lightbulb"
+            }
+        ];
+
+        // 4. APPLICATION CLASS ENGINE
+        class BeliefCompassApp {
+            constructor() {
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.calculatedScores = [];
+                this.activePhraseTheme = 'all';
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.renderExploreGrid(RELIGIONS_DATA);
+                    this.renderPhraseThemes();
+                    this.renderPhrases(PHRASES_DATA);
+                });
+            }
+
+            showSection(sectionId) {
+                const sections = ['home', 'quiz', 'results', 'explore', 'phrases'];
+                sections.forEach(id => {
+                    const el = document.getElementById(`section-${id}`);
+                    if (el) {
+                        if (id === sectionId) {
+                            el.classList.remove('hidden');
+                        } else {
+                            el.classList.add('hidden');
+                        }
+                    }
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            toggleMobileMenu() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            }
+
+            startQuiz() {
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.showSection('quiz');
+                this.renderQuestion();
+            }
+
+            renderQuestion() {
+                const q = QUIZ_QUESTIONS[this.currentQuestionIndex];
+                const total = QUIZ_QUESTIONS.length;
+
+                document.getElementById('quiz-question-number').innerText = `Domanda ${q.id} di ${total}`;
+                document.getElementById('quiz-category-badge').innerText = q.category;
+                
+                const percent = ((this.currentQuestionIndex + 1) / total) * 100;
+                document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+                document.getElementById('quiz-question-text').innerText = q.question;
+
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+
+                const selectedIndex = this.userAnswers[q.id];
+
+                q.options.forEach((opt, idx) => {
+                    const isSelected = selectedIndex === idx;
+                    const card = document.createElement('div');
+                    card.className = `option-card p-4 rounded-xl border cursor-pointer flex items-center space-x-4 transition-all ${
+                        isSelected 
+                        ? 'bg-purple-900/60 border-amber-400 text-white shadow-lg shadow-purple-950/50' 
+                        : 'bg-slate-900/70 border-slate-800 hover:border-purple-600/50 text-slate-200'
+                    }`;
+                    card.onclick = () => this.selectOption(q.id, idx);
+
+                    card.innerHTML = `
+                        <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                            isSelected ? 'border-amber-400 bg-amber-500/20 text-amber-300' : 'border-slate-600 text-transparent'
+                        }">
+                            <i class="fa-solid fa-check text-xs"></i>
+                        </div>
+                        <span class="text-sm font-medium leading-relaxed">${opt.text}</span>
+                    `;
+                    optionsContainer.appendChild(card);
+                });
+
+                document.getElementById('btn-prev-question').disabled = this.currentQuestionIndex === 0;
+                
+                const nextBtn = document.getElementById('btn-next-question');
+                if (selectedIndex !== undefined) {
+                    nextBtn.disabled = false;
+                    if (this.currentQuestionIndex === total - 1) {
+                        nextBtn.innerHTML = `<span>Mostra Risultati</span> <i class="fa-solid fa-square-poll-vertical text-xs"></i>`;
+                    } else {
+                        nextBtn.innerHTML = `<span>Successiva</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+                    }
+                } else {
+                    nextBtn.disabled = true;
+                }
+            }
+
+            selectOption(questionId, optionIndex) {
+                this.userAnswers[questionId] = optionIndex;
+                this.renderQuestion();
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.renderQuestion();
+                }
+            }
+
+            nextQuestion() {
+                if (this.userAnswers[QUIZ_QUESTIONS[this.currentQuestionIndex].id] === undefined) return;
+
+                if (this.currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.renderQuestion();
+                } else {
+                    this.calculateAndShowResults();
+                }
+            }
+
+            calculateAndShowResults() {
+                const userVector = {
+                    monotheism: 0,
+                    afterlife_heaven: 0,
+                    divine_person: 0,
+                    sacred_text: 0,
+                    ritualism: 0,
+                    karma_reincarnation: 0,
+                    nature_deity: 0,
+                    secular_humanism: 0
+                };
+
+                let totalAnswers = 0;
+
+                QUIZ_QUESTIONS.forEach(q => {
+                    const ansIdx = this.userAnswers[q.id];
+                    if (ansIdx !== undefined) {
+                        const optVector = q.options[ansIdx].vector;
+                        for (let k in optVector) {
+                            userVector[k] = (userVector[k] || 0) + optVector[k];
+                        }
+                        totalAnswers++;
+                    }
+                });
+
+                if (totalAnswers > 0) {
+                    for (let k in userVector) {
+                        userVector[k] = userVector[k] / totalAnswers;
+                    }
+                }
+
+                const scores = RELIGIONS_DATA.map(rel => {
+                    let distance = 0;
+                    let maxDiffSum = 0;
+
+                    const keys = Object.keys(rel.dimensions);
+                    keys.forEach(k => {
+                        const uVal = userVector[k] || 0;
+                        const rVal = rel.dimensions[k] || 0;
+                        distance += Math.abs(uVal - rVal);
+                        maxDiffSum += 1.0;
+                    });
+
+                    let similarity = Math.max(0, 100 - (distance / maxDiffSum) * 100);
+                    similarity = Math.round(similarity);
+
+                    return {
+                        religion: rel,
+                        score: similarity
+                    };
+                });
+
+                scores.sort((a, b) => b.score - a.score);
+                this.calculatedScores = scores;
+
+                this.renderResultsUI(scores, userVector);
+                this.showSection('results');
+            }
+
+            renderResultsUI(scores, userVector) {
+                const top = scores[0];
+
+                document.getElementById('result-top-title').innerText = top.religion.name;
+                document.getElementById('result-top-subtitle').innerText = top.religion.subtitle;
+                document.getElementById('result-top-score').innerText = `${top.score}%`;
+
+                this.renderResultsBarsList(scores);
+
+                const topRel = top.religion;
+                document.getElementById('result-detail-title').innerText = topRel.name;
+                document.getElementById('result-detail-icon').innerHTML = `<i class="fa-solid ${topRel.icon}"></i>`;
+                
+                const tenetsUl = document.getElementById('result-detail-tenets');
+                tenetsUl.innerHTML = '';
+                topRel.tenets.forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start space-x-2';
+                    li.innerHTML = `<i class="fa-solid fa-check text-emerald-400 mt-1 text-xs shrink-0"></i><span>${t}</span>`;
+                    tenetsUl.appendChild(li);
+                });
+
+                document.getElementById('result-detail-alignment').innerText = 
+                    `Il tuo profilo concettuale dimostra una forte risonanza del ${top.score}% con i principi fondamentali di ${topRel.name}. ` +
+                    `La tua visione concorda in particolar modo sulla concezione del cosmo, dell'etica e della natura trascendente o immanente del divino.`;
+
+                document.getElementById('result-detail-figures').innerText = topRel.figures;
+                document.getElementById('result-detail-texts').innerText = topRel.texts;
+
+                // Draw Radar Chart
+                setTimeout(() => {
+                    this.drawRadarChart(userVector);
+                }, 50);
+            }
+
+            renderResultsBarsList(scoresList) {
+                const container = document.getElementById('results-bars-container');
+                container.innerHTML = '';
+
+                scoresList.forEach((item, rank) => {
+                    const rel = item.religion;
+                    const pct = item.score;
+
+                    const row = document.createElement('div');
+                    row.className = 'p-3 bg-slate-950/70 rounded-xl border border-slate-800/80 flex flex-col space-y-1.5';
+                    row.innerHTML = `
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-xs font-serif font-bold text-slate-500 w-6">#${rank + 1}</span>
+                                <i class="fa-solid ${rel.icon} text-amber-400 w-5 text-center"></i>
+                                <span class="font-bold text-white">${rel.name}</span>
+                            </div>
+                            <span class="font-serif font-bold text-sm" style="color: ${rel.color};">${pct}%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                            <div class="h-full rounded-full transition-all duration-700" style="width: ${pct}%; background-color: ${rel.color};"></div>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            filterResultsList() {
+                const query = document.getElementById('results-search-filter').value.toLowerCase();
+                const filtered = this.calculatedScores.filter(s => s.religion.name.toLowerCase().includes(query));
+                this.renderResultsBarsList(filtered);
+            }
+
+            drawRadarChart(userVector) {
+                const canvas = document.getElementById('radarCanvas');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+
+                const parent = canvas.parentElement;
+                const width = parent.clientWidth || 300;
+                const height = parent.clientHeight || 300;
+
+                // Set actual canvas size considering HiDPI devices
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.scale(dpr, dpr);
+
+                ctx.clearRect(0, 0, width, height);
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) / 2 - 35;
+
+                const labels = [
+                    'Monoteismo',
+                    'Oltre / Cieli',
+                    'Divino Personale',
+                    'Testi Sacri',
+                    'Ritualità',
+                    'Karma / Reincarnaz.',
+                    'Natura / Panteismo',
+                    'Umanesimo / Scienza'
+                ];
+
+                const keys = [
+                    'monotheism',
+                    'afterlife_heaven',
+                    'divine_person',
+                    'sacred_text',
+                    'ritualism',
+                    'karma_reincarnation',
+                    'nature_deity',
+                    'secular_humanism'
+                ];
+
+                const totalAxes = labels.length;
+
+                // 1. Draw Concentric Polygonal Web Grid
+                const gridLevels = 4;
+                for (let level = 1; level <= gridLevels; level++) {
+                    const r = (radius / gridLevels) * level;
+                    ctx.beginPath();
+                    for (let i = 0; i < totalAxes; i++) {
+                        const angle = (Math.PI * 2 / totalAxes) * i - Math.PI / 2;
+                        const x = centerX + r * Math.cos(angle);
+                        const y = centerY + r * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = 'rgba(167, 139, 250, 0.15)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+
+                // 2. Draw Radial Axis Lines & Labels
+                ctx.font = '10px "Plus Jakarta Sans", sans-serif';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                for (let i = 0; i < totalAxes; i++) {
+                    const angle = (Math.PI * 2 / totalAxes) * i - Math.PI / 2;
+                    const xEnd = centerX + radius * Math.cos(angle);
+                    const yEnd = centerY + radius * Math.sin(angle);
+
+                    // Axis Line
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(xEnd, yEnd);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Text Label positioning
+                    const labelR = radius + 18;
+                    const lx = centerX + labelR * Math.cos(angle);
+                    const ly = centerY + labelR * Math.sin(angle);
+
+                    // Offset adjustments for text quad position
+                    if (Math.abs(Math.cos(angle)) < 0.1) {
+                        ctx.textAlign = 'center';
+                    } else if (Math.cos(angle) > 0) {
+                        ctx.textAlign = 'left';
+                    } else {
+                        ctx.textAlign = 'right';
+                    }
+
+                    ctx.fillText(labels[i], lx, ly);
+                }
+
+                // 3. Draw User Vector Polygon Data
+                ctx.beginPath();
+                for (let i = 0; i < totalAxes; i++) {
+                    const key = keys[i];
+                    const val = Math.min(1.0, Math.max(0.05, userVector[key] || 0.1));
+                    const r = radius * val;
+                    const angle = (Math.PI * 2 / totalAxes) * i - Math.PI / 2;
+                    const vx = centerX + r * Math.cos(angle);
+                    const vy = centerY + r * Math.sin(angle);
+
+                    if (i === 0) ctx.moveTo(vx, vy);
+                    else ctx.lineTo(vx, vy);
+                }
+                ctx.closePath();
+
+                // Fill translucent polygon
+                ctx.fillStyle = 'rgba(167, 139, 250, 0.35)';
+                ctx.fill();
+
+                // Stroke Polygon outline
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // 4. Draw Vertex Nodes
+                for (let i = 0; i < totalAxes; i++) {
+                    const key = keys[i];
+                    const val = Math.min(1.0, Math.max(0.05, userVector[key] || 0.1));
+                    const r = radius * val;
+                    const angle = (Math.PI * 2 / totalAxes) * i - Math.PI / 2;
+                    const vx = centerX + r * Math.cos(angle);
+                    const vy = centerY + r * Math.sin(angle);
+
+                    ctx.beginPath();
+                    ctx.arc(vx, vy, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+            }
+
+            showExplore() {
+                this.showSection('explore');
+            }
+
+            renderExploreGrid(religions) {
+                const grid = document.getElementById('explore-grid');
+                grid.innerHTML = '';
+
+                religions.forEach(rel => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-glass p-6 rounded-2xl border border-purple-900/40 hover:border-purple-500/60 transition-all flex flex-col justify-between space-y-4 shadow-xl';
+                    
+                    const tenetsList = rel.tenets.map(t => `<li class="flex items-start space-x-1.5"><i class="fa-solid fa-angle-right text-amber-400 text-xs mt-1 shrink-0"></i><span>${t}</span></li>`).join('');
+
+                    card.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-10 h-10 rounded-xl bg-purple-900/40 border border-purple-700/50 flex items-center justify-center text-amber-400 text-lg">
+                                    <i class="fa-solid ${rel.icon}"></i>
+                                </div>
+                                <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-purple-300 font-semibold">${rel.category}</span>
+                            </div>
+
+                            <h3 class="font-serif font-bold text-xl text-white">${rel.name}</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">${rel.subtitle}</p>
+
+                            <div class="pt-2 border-t border-purple-900/30">
+                                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider block mb-1">Pilastri Principali:</span>
+                                <ul class="text-xs text-slate-300 space-y-1">
+                                    ${tenetsList}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-purple-900/30 text-[11px] text-slate-400 space-y-1">
+                            <div><strong class="text-slate-300">Riferimenti:</strong> ${rel.figures}</div>
+                            <div><strong class="text-slate-300">Testi:</strong> <span class="italic text-purple-300">${rel.texts}</span></div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            filterExplore(category, btn) {
+                document.querySelectorAll('.explore-tab').forEach(t => t.classList.remove('tab-active'));
+                btn.classList.add('tab-active');
+
+                if (category === 'all') {
+                    this.renderExploreGrid(RELIGIONS_DATA);
+                } else {
+                    const filtered = RELIGIONS_DATA.filter(r => r.category === category);
+                    this.renderExploreGrid(filtered);
+                }
+            }
+
+            filterExploreSearch() {
+                const query = document.getElementById('explore-search-input').value.toLowerCase();
+                const filtered = RELIGIONS_DATA.filter(r => 
+                    r.name.toLowerCase().includes(query) || 
+                    r.subtitle.toLowerCase().includes(query) ||
+                    r.figures.toLowerCase().includes(query)
+                );
+                this.renderExploreGrid(filtered);
+            }
+
+            renderPhraseThemes() {
+                const themes = [
+                    { id: 'all', label: 'Tutte le Frasi (11)' },
+                    { id: 'god', label: 'Su Dio & la Creazione' },
+                    { id: 'ethics', label: 'Logica, Fede & Prova' },
+                    { id: 'inner', label: 'Credere & Epistemologia' },
+                    { id: 'life', label: 'Preghiera & Caso' }
+                ];
+
+                const container = document.getElementById('phrases-theme-buttons');
+                container.innerHTML = '';
+
+                themes.forEach(t => {
+                    const btn = document.createElement('button');
+                    btn.className = `px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                        t.id === 'all' ? 'bg-purple-700 text-white border-purple-500 tab-active' : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-purple-600'
+                    } phrase-theme-btn`;
+                    btn.onclick = () => this.filterPhrases(t.id, btn);
+                    btn.innerText = t.label;
+                    container.appendChild(btn);
+                });
+            }
+
+            renderPhrases(phrases) {
+                const container = document.getElementById('phrases-container');
+                container.innerHTML = '';
+
+                if (phrases.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-sm">Nessuna frase trovata per questa ricerca.</div>`;
+                    return;
+                }
+
+                phrases.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-glass p-6 rounded-2xl border border-purple-800/40 hover:border-indigo-500/60 transition-all flex flex-col justify-between space-y-4 shadow-xl relative group';
+
+                    card.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded-full bg-purple-950 border border-purple-800 text-[10px] font-bold text-amber-300 uppercase tracking-wider flex items-center space-x-1.5">
+                                    <i class="fa-solid ${p.icon}"></i>
+                                    <span>${p.title || p.tradition}</span>
+                                </span>
+                                <button onclick="app.copyQuoteText('${p.quote.replace(/'/g, "\\'")}', '${p.author.replace(/'/g, "\\'")}')" title="Copia frase" class="text-slate-400 hover:text-amber-400 text-xs p-1">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+
+                            <p class="font-serif italic text-base sm:text-lg text-slate-100 leading-relaxed">
+                                "${p.quote}"
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-t border-purple-900/30 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-amber-400 font-serif">— ${p.author}</span>
+                                <span class="text-[10px] text-purple-300">${p.tradition}</span>
+                            </div>
+                            <i class="fa-solid fa-quote-right text-purple-900/40 text-2xl"></i>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            filterPhrases(theme, btn) {
+                this.activePhraseTheme = theme;
+                document.querySelectorAll('.phrase-theme-btn').forEach(b => b.classList.remove('tab-active'));
+                btn.classList.add('tab-active');
+
+                if (theme === 'all') {
+                    this.renderPhrases(PHRASES_DATA);
+                } else {
+                    const filtered = PHRASES_DATA.filter(p => p.theme === theme);
+                    this.renderPhrases(filtered);
+                }
+            }
+
+            filterPhrasesSearch() {
+                const query = document.getElementById('phrases-search-input').value.toLowerCase();
+                const filtered = PHRASES_DATA.filter(p => 
+                    p.quote.toLowerCase().includes(query) ||
+                    p.author.toLowerCase().includes(query) ||
+                    (p.title && p.title.toLowerCase().includes(query)) ||
+                    p.tradition.toLowerCase().includes(query)
+                );
+                this.renderPhrases(filtered);
+            }
+
+            getRandomPhrase() {
+                const randomIndex = Math.floor(Math.random() * PHRASES_DATA.length);
+                const randomPhrase = PHRASES_DATA[randomIndex];
+                this.renderPhrases([randomPhrase]);
+                this.showToast(`Estratta: ${randomPhrase.title}`);
+            }
+
+            copyQuoteText(quote, author) {
+                const text = `"${quote}" — ${author}`;
+                this.copyToClipboard(text);
+                this.showToast('Frase copiata negli appunti!');
+            }
+
+            copyResultsSummary() {
+                if (this.calculatedScores.length === 0) return;
+                const top = this.calculatedScores[0];
+                const text = `Bussola delle Credenze: La mia affinità spirituale e filosofica principale è ${top.religion.name} (${top.score}%).`;
+                this.copyToClipboard(text);
+                this.showToast('Sintesi risultati copiata negli appunti!');
+            }
+
+            copyToClipboard(text) {
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = text;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                document.body.removeChild(tempTextArea);
+            }
+
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toast-message');
+                toastMsg.innerText = message;
+                
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
+        }
+
+        // Initialize application instance
+        const app = new BeliefCompassApp();
+    </script>
+</body>
+</html>
