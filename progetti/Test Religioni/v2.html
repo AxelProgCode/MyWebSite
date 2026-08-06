@@ -1835,7 +1835,7 @@
             copyResultsSummary() {
                 if (this.calculatedScores.length === 0) return;
                 const top = this.calculatedScores[0];
-                const text = `Bussola delle Credenze: La mia affinità spirituale e filosofica principale è ${top.religion.name} (${top.score}%).`;
+                const text = `Test delle Religioni: La mia affinità religiosa principale è ${top.religion.name} (${top.score}%).`;
                 this.copyToClipboard(text);
                 this.showToast('Sintesi risultati copiata negli appunti!');
             }
