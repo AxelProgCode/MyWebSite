@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="siti.css">
     <link rel="icon" href="logo/Black.png">
-    <title>Home</title>
+    <title>Siti</title>
 </head>
 <body>
     <div class="navbar">
         <h2>SP_WebSite</h2>
         <ul>
-	        <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="siti.html">Siti</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="siti.html" class="active">Siti</a></li>
             <li><a href="app.html">App</a></li>
             <li><a href="progetti.html">Progetti</a></li>
             <li><a href="statistiche.html">Statistiche</a></li>
@@ -21,83 +21,51 @@
         <a href="login.html"><button class="hire-btn">Accedi</button></a>
     </div>
     <div class="main">
-        <h4 class="title">Creative <span>Web Developer</span></h4>
-        <p class="subtitle">I'm Design and Code Beautifully Simple Things and I Love What I Doing!</p>
-        <img src="logo/White - nobg.png">
+        <p class="title">Siti</p>
+        <p class="subtitle">Raccolta di siti web</p>
     </div>
-    <div class="section-items">
 
-        <a class="item" href="siti.html">
-            <div class="card-header">
-                <div class="icon">
-                    <i class='bx bx-link'></i>
-                </div>
-                <i class='bx bx-chevron-right indicator'></i>
-            </div>
-            <div class="info">
-                <h3>Siti</h3>
-                <p>Siti selezionati per te</p>
-            </div>
-        </a>
+    <div class="sites-container">
+        <div class="stats" id="stats"></div>
 
-        <a class="item" href="app.html">
-            <div class="card-header">
-                <div class="icon">
-                    <i class='bx bxl-android'></i>
-                </div>
-                <i class='bx bx-chevron-right indicator'></i>
-            </div>
-            <div class="info">
-                <h3>App</h3>
-                <p>App selezionate per te</p>
-            </div>
-        </a>
+        <div class="controls-container">
 
-        <a class="item" href="progetti.html">
-            <div class="card-header">
-                <div class="icon">
-                    <i class='bx bx-briefcase'></i>
+            <div class="filter-section">
+                <div class="section-title">🏷️ Categoria</div>
+                <div class="filter-grid">
+                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn" data-filter="utili">🔧 Utili</button>
+                    <button class="filter-btn" data-filter="curiosi">🎨 Curiosi</button>
+                    <button class="filter-btn" data-filter="giochi">🎮 Giochi</button>
+                    <button class="filter-btn" data-filter="AI">⚡ AI</button>
                 </div>
-                <i class='bx bx-chevron-right indicator'></i>
             </div>
-            <div class="info">
-                <h3>Progetti</h3>
-                <p>Progetti personali</p>
-            </div>
-        </a>
 
-        <a class="item" href="statistiche.html">
-            <div class="card-header">
-                <div class="icon">
-                    <i class='bx bx-bar-chart-alt-2'></i>
+            <div class="sort-section">
+                <div class="section-title">📊 Ordina</div>
+                <div class="sort-grid">
+                    <button class="sort-btn active" data-sort="name">A-Z</button>
+                    <button class="sort-btn" data-sort="reverse">Z-A</button>
+                    <button class="sort-btn" data-sort="category">Categoria</button>
                 </div>
-                <i class='bx bx-chevron-right indicator'></i>
             </div>
-            <div class="info">
-                <h3>Statistiche</h3>
-                <p>Visualizza i numeri del sito</p>
+
+            <div class="search-section">
+                <div class="section-title">🔎 Cerca</div>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Cerca per nome, descrizione o tag...">
+                </div>
             </div>
-        </a>
+
+        </div>
         
-        <div class="item placeholder-item">
-            <div class="card-header">
-                <div class="icon">
-                    <i class='bx bx-grid-alt'></i>
-                </div>
-            </div>
-            <div class="info">
-                <h3>...e altro ancora!</h3>
-                <p>Il mio sito è in continua crescita.</p>
-            </div>
+        <div class="site-cards-container" id="site-cards-container">
+            <!-- I siti saranno renderizzati qui dallo script -->
         </div>
 
-    </div><br>
+    </div>
+
     <footer>
-        <div class="start">
-            <h3>SupportMe!<i class='bx bx-heart'></i></h3>
-            <p>Ti piace il mio lavoro? Offrimi un caffè. Grazie!</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSerpqCay7qqmpJdt6z8UnIw3POuypflTTDRm62SbNxkNwVRIQ/viewform" target="_blank"><button>SupportMe!</button></a>
-        </div>
         <div class="cols">
             <div class="about-col">
                 <h3>SP_WebSite.</h3>
@@ -126,7 +94,7 @@
     </footer>
 
     <div class="mobile-bottom-nav">
-        <a href="siti.html" class="mobile-nav-item">
+        <a href="siti.html" class="mobile-nav-item active">
             <i class='bx bx-link'></i>
             <span>Siti</span>
         </a>
@@ -134,7 +102,7 @@
             <i class='bx bxl-android'></i>
             <span>App</span>
         </a>
-        <a href="index.html" class="mobile-nav-item active">
+        <a href="index.html" class="mobile-nav-item">
             <i class='bx bx-home'></i>
             <span>Home</span>
         </a>
@@ -147,5 +115,1366 @@
             <span>Stats</span>
         </a>
     </div>
+
+    <!-- Modale Confronto Siti Amazon -->
+    <div id="compare-modal" class="compare-modal-overlay" onclick="closeCompareModal(event)">
+        <div class="compare-modal">
+            <div class="compare-modal-header">
+                <h2><i class='bx bx-table'></i> Confronto Siti Prezzi Amazon</h2>
+                <button class="compare-modal-close" onclick="closeCompareModal()">&times;</button>
+            </div>
+            <p class="compare-modal-subtitle">Disponibilità per paese di ciascun sito</p>
+            <div class="compare-table-wrapper">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th class="col-rank">#</th>
+                            <th class="col-site">Sito / App</th>
+                            <th title="Italia"><img src="https://flagcdn.com/it.svg" width="20px"><span>ITA</span></th>
+                            <th title="Francia"><img src="https://flagcdn.com/fr.svg" width="20px"><span>FRA</span></th>
+                            <th title="Spagna"><img src="https://flagcdn.com/es.svg" width="20px"><span>ESP</span></th>
+                            <th title="Germania"><img src="https://flagcdn.com/de.svg" width="20px"><span>GER</span></th>
+                            <th title="Belgio"><img src="https://flagcdn.com/be.svg" width="20px"><span>BEL</span></th>
+                            <th title="Regno Unito"><img src="https://flagcdn.com/gb.svg" width="20px"><span>UK</span></th>
+                            <th title="Polonia"><img src="https://flagcdn.com/pl.svg" width="20px"><span>POL</span></th>
+                            <th title="Svezia"><img src="https://flagcdn.com/se.svg" width="20px"><span>SVE</span></th>
+                            <th title="Olanda"><img src="https://flagcdn.com/nl.svg" width="20px"><span>OLA</span></th>
+                            <th title="Irlanda"><img src="https://flagcdn.com/ie.svg" width="20px"><span>IRL</span></th>
+                            <th title="USA"><img src="https://flagcdn.com/us.svg" width="20px"><span>USA</span></th>
+                            <th title="Messico"><img src="https://flagcdn.com/mx.svg" width="20px"><span>MEX</span></th>
+                            <th title="India"><img src="https://flagcdn.com/in.svg" width="20px"><span>IND</span></th>
+                            <th title="Giappone"><img src="https://flagcdn.com/jp.svg" width="20px"><span>JPN</span></th>
+                            <th title="Brasile"><img src="https://flagcdn.com/br.svg" width="20px"><span>BRA</span></th>
+                            <th title="Canada"><img src="https://flagcdn.com/ca.svg" width="20px"><span>CAN</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="compare-table-body"></tbody>
+                </table>
+            </div>
+            <p class="compare-modal-legend"><span class="legend-yes">✔</span> Disponibile &nbsp;&nbsp; <span class="legend-no">—</span> Non disponibile</p>
+        </div>
+    </div>
+
+    <script>
+        // Array pre-ordinato
+        const compareData = [
+            { name: "Keepa",       url: "https://keepa.com/",          countries: ["ITA","FRA","ESP","GER","","UK","","","","","USA","MEX","IND","JPN","BRA","CAN"] },
+            { name: "Hagglezon",   url: "https://www.hagglezon.com/",  countries: ["ITA","FRA","ESP","GER","BEL","UK","POL","SVE","OLA","IRL","","","","","",""] },
+            { name: "Hoteudeals",  url: "https://hoteudeals.com/",     countries: ["ITA","FRA","ESP","GER","BEL","","POL","","OLA","","","","","","",""] },
+            { name: "Charlize",    url: "https://charlizeapp.com/it",  countries: ["ITA","FRA","ESP","GER","BEL","UK","POL","","","","","","","","",""] },
+            { name: "Conomiz",     url: "https://conomiz.com/it",      countries: ["ITA","FRA","ESP","GER","BEL","","","","OLA","","","","","","",""] },
+            { name: "MaxSpar",     url: "https://it.maxspar.de/",      countries: ["ITA","FRA","ESP","GER","","UK","","","","","","","","","",""] }
+        ];
+
+        const allCountries = ["ITA","FRA","ESP","GER","BEL","UK","POL","SVE","OLA","IRL","USA","MEX","IND","JPN","BRA","CAN"];
+
+        const rankMedals = { 1: "🥇", 2: "🥈", 3: "🥉" };
+
+        function buildCompareTable() {
+            const tbody = document.getElementById('compare-table-body');
+
+            // Nessun ordinamento automatico per preservare l'esatta gerarchia definita nell'array
+            const sorted = [...compareData];
+
+            tbody.innerHTML = sorted.map((site, idx) => {
+                const rank = idx + 1;
+                const medal = rankMedals[rank] || "";
+                const rankCell = `<td class="col-rank rank-${rank <= 3 ? rank : 'other'}">${medal}<span class="rank-num">${rank}</span></td>`;
+                const cells = allCountries.map((c, i) => {
+                    const available = site.countries[i] !== "";
+                    return `<td class="${available ? 'cell-yes' : 'cell-no'}">${available ? '<span class="legend-yes">✔</span>' : '<span class="legend-no">-</span>'}</td>`;
+                }).join('');
+                return `<tr class="${rank <= 3 ? 'row-top-' + rank : ''}">
+                    ${rankCell}
+                    <td class="col-site"><a href="${site.url}" target="_blank">${site.name}</a></td>
+                    ${cells}
+                </tr>`;
+            }).join('');
+        }
+
+        function openCompareModal() {
+            buildCompareTable();
+            document.getElementById('compare-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCompareModal(e) {
+            if (!e || e.target === document.getElementById('compare-modal') || e.currentTarget.classList.contains('compare-modal-close')) {
+                document.getElementById('compare-modal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeCompareModal();
+        });
+    </script>
+
+    <script>
+        const sitesData = [
+            {
+                name: "1000stars",
+                url: "https://stars.chromeexperiments.com/",
+                description: "Esplora l'universo",
+                category: "curiosi"
+            },
+			{
+                name: "Online Tools",
+                description: "Strumenti online per video, audio, pdf e conversione di file",
+                category: "utili",
+                isGroup: true,
+                links: [
+                    { name: "123apps", url: "https://123apps.com/it/" },
+                    { name: "TinyWow", url: "https://tinywow.com/" }
+                ]
+            },
+            {
+                name: "16Personalities",
+                url: "https://www.16personalities.com/it/test-della-personalita-gratis/",
+                description: "Test della personalità gratuito",
+                category: "curiosi"
+            },
+            {
+                name: "3D Changer",
+                url: "https://3dchanger.com/",
+                description: "Crea livree per auto in 3D",
+                category: "curiosi"
+            },
+            {
+                name: "3D Tuning",
+                url: "https://www.3dtuning.com/it-IT/",
+                description: "Configuratore auto 3D",
+                category: "curiosi"
+            },
+            {
+                name: "4k Wallpapers",
+                url: "https://4kwallpapers.com/",
+                description: "Sfondi 4K",
+                category: "curiosi"
+            },
+            {
+                name: "AMOLEDify",
+                url: "https://amoledify.amoled.in/",
+                description: "Trasforma nero immagine in vero nero AMOLED",
+                category: "utili"
+            },
+            {
+                name: "A Soft Murmur",
+                url: "https://asoftmurmur.com/",
+                description: "Suoni ambientali rilassanti",
+                category: "curiosi"
+            },
+            {
+                name: "AIXPLORIA",
+                url: "https://www.aixploria.com/",
+                description: "Raccolta di strumenti AI",
+                category: "AI"
+            },
+			{
+                name: "AlternativeTo",
+                url: "https://alternativeto.net/",
+                description: "Software alternativi gratis",
+                category: "utili"
+            },
+            {
+                name: "Amalgam Model Car Collection",
+                url: "https://www.amalgamcollection.com/",
+                description: "Modellini auto in scala",
+                category: "curiosi"
+            },
+            {
+                name: "AnRuler",
+                url: "https://anruler.com/it/",
+                description: "Righello online per misurare sullo schermo",
+                category: "utili"
+            },
+            {
+                name: "AutoData",
+                url: "https://www.auto-data.net/it/allbrands",
+                description: "Specifiche tecniche auto di qualsiasi marca",
+                category: "utili"
+            },
+            {
+                name: "AutoDraw",
+                url: "https://www.autodraw.com/",
+                description: "Disegni migliorati con AI",
+                category: "AI"
+            },
+            {
+                name: "AutoScout24",
+                url: "https://www.autoscout24.it/valutazione-auto/",
+                description: "Valutazione gratuita auto usate",
+                category: "utili"
+            },
+            {
+                name: "Belief-O-Matic",
+                url: "https://www.beliefnet.com/entertainment/quizzes/beliefomatic.aspx",
+                description: "Test per scoprire la tua vera religione",
+                category: "curiosi"
+            },
+	        {
+                name: "Bibata Cursor",
+                url: "https://github.com/ful1e5/Bibata_Cursor",
+                description: "Cambia aspetto cursore mouse",
+                category: "curiosi"
+            },
+            {
+                name: "BlackBox",
+                url: "https://www.blackbox.ai/",
+                description: "Chat AI",
+                category: "AI"
+            },
+            {
+                name: "BlackJack",
+                url: "https://www.blackjacksimulator.net/it/simulators/classic-blackjack/",
+                description: "Simulatore di blackjack",
+                category: "giochi"
+            },
+            {
+                name: "BugMeNot",
+                url: "https://bugmenot.com/",
+                description: "Community di login pubblici",
+                category: "utili"
+            },
+			{
+                name: "CanaryTokens",
+                url: "https://canarytokens.org/nest/",
+                description: "Ricevi avviso quando un file viene aperto",
+                category: "utili"
+            },
+            {
+                name: "CarCareKiosk",
+                url: "https://www.carcarekiosk.com/",
+                description: "Guida manutenzione auto",
+                category: "utili"
+            },
+            {
+                name: "CarSized",
+                url: "https://carsized.com/it/",
+                description: "Confronta dimensioni qualsiasi auto",
+                category: "utili"
+            },
+            {
+                name: "Confronta Prezzi Amazon",
+                description: "Confronta i prezzi Amazon nei vari paesi europei",
+                category: "utili",
+                isGroup: true,
+                hasComparison: true,
+                tags: ["amazon", "prezzi", "charlize", "conomiz", "maxspar", "hagglezon", "hotuedeals", "keepa"],
+                links: [
+                    { name: "Charlize", url: "https://charlizeapp.com/it" },
+                    { name: "Conomiz", url: "https://conomiz.com/it" },
+                    { name: "Hagglezon", url: "https://www.hagglezon.com/" },
+                    { name: "Hoteudeals", url: "https://hoteudeals.com/" },
+                    { name: "Keepa", url: "https://keepa.com/" },
+                    { name: "MaxSpar", url: "https://it.maxspar.de/" }
+                ]
+            },
+            {
+                name: "ClipDrop",
+                url: "https://clipdrop.co/",
+                description: "Strumenti AI per immagini",
+                category: "AI"
+            },
+            {
+                name: "ClipFly",
+                url: "https://www.clipfly.ai",
+                description: "AI tool per immagini e video",
+                category: "AI"
+            },
+            {
+                name: "Convertitore di file online",
+                description: "Converti qualunque file online gratis",
+                category: "utili",
+                isGroup: true,
+                links: [
+                    { name: "Convertio", url: "https://convertio.co/it/" },
+                    { name: "FreeConvert", url: "https://www.freeconvert.com/it" },
+					{ name: "CloudConvert", url: "https://cloudconvert.com/" }
+                ]
+            },
+            {
+                name: "Coolors",
+                url: "https://coolors.co/",
+                description: "Generatore di palette",
+                category: "utili"
+            },
+            {
+                name: "CyberMap (Kaspersky)",
+                url: "https://cybermap.kaspersky.com/it",
+                description: "Mappa degli attacchi informatici",
+                category: "utili"
+            },
+            {
+                name: "DeepAI",
+                url: "https://deepai.org/",
+                description: "Chat AI",
+                category: "AI"
+            },
+			{
+                name: "Delphi Tools",
+                url: "https://delphi.tools/",
+                description: "Raccolta di strumenti semplici ma utili",
+                category: "utili"
+            },
+			{
+                name: "Dialed",
+                url: "https://dialed.gg/",
+                description: "Color, sound, time and shape game",
+                category: "giochi"
+            },
+			{
+                name: "Diff Tools",
+                url: "https://www.diff.tools/",
+                description: "Strumenti per confrontare e trovare differenze",
+                category: "utili"
+            },
+            {
+                name: "Diffusion Studio",
+                url: "https://diffusion.studio/",
+                description: "Editor video online",
+                category: "AI"
+            },
+            {
+                name: "ElevenLabs",
+                url: "https://elevenlabs.io/",
+                description: "Text-to-speech avanzato",
+                category: "AI"
+            },
+            {
+                name: "Emoji Kitchen",
+                url: "https://www.google.it/search?q=emoji+kitchen/",
+                description: "Crea una nuova emoji da due emoji diverse",
+                category: "curiosi"
+            },
+            {
+                name: "Enhancor",
+                url: "https://www.enhancor.ai/",
+                description: "Migliora immagini generate da AI",
+                category: "AI"
+            },
+            {
+                name: "Euro NCAP",
+                url: "https://www.euroncap.com/en",
+                description: "Valutazione sicurezza veicoli",
+                category: "utili"
+            },
+            {
+                name: "Experiments with Google",
+                url: "https://experiments.withgoogle.com/experiments?sort=newest/",
+                description: "Raccolta di esperimenti web",
+                category: "curiosi"
+            },
+            {
+                name: "Explore Livecams",
+                url: "https://explore.org/livecams/",
+                description: "Webcam dal mondo (animali)",
+                category: "curiosi"
+            },
+            {
+                name: "FakeFace",
+                url: "https://fakeface.io/",
+                description: "Face swap e strumenti video",
+                category: "AI"
+            },
+            {
+                name: "Famelack",
+                url: "https://famelack.com/",
+                description: "Guarda TV mondiali online gratis",
+                category: "curiosi"
+            },
+            {
+                name: "FakeUpdate",
+                url: "https://updatefaker.com/",
+                description: "Simula aggiornamenti di sistema",
+                category: "curiosi"
+            },
+            {
+                name: "FakeYou",
+                url: "https://fakeyou.com/tts/",
+                description: "Clona voci",
+                category: "AI"
+            },
+            {
+                name: "FCTV33",
+                url: "https://www.fctv33.com/",
+                description: "Tutti gli sport in streaming",
+                category: "utili"
+            },
+            {
+                name: "Flagle",
+                url: "https://flagle-game.com/",
+                description: "Indovina le bandiere",
+                category: "giochi"
+            },
+            {
+                name: "Flightradar24",
+                url: "https://flightradar24.com/",
+                description: "Radar aereo live",
+                category: "utili"
+            },
+            {
+                name: "Framer",
+                url: "https://www.framer.com/",
+                description: "Crea siti senza scrivere codice",
+                category: "utili"
+            },
+            {
+                name: "FutureMe",
+                url: "https://www.futureme.org/",
+                description: "Invia email al te del futuro",
+                category: "curiosi"
+            },
+            {
+                name: "GalaxyAI",
+                url: "https://galaxy.ai/",
+                description: "Strumenti AI",
+                category: "AI"
+            },
+            {
+                name: "GeoFS",
+                url: "https://www.geo-fs.com/",
+                description: "Simulatore di volo online",
+                category: "giochi"
+            },
+			{
+                name: "GT7 Tools",
+                description: "Strumenti utili per GranTurismo7",
+                category: "utili",
+                isGroup: true,
+                tags: ["gioco", "game", "strumenti", "guida"],
+                links: [
+					{ name: "GT ENG!NE", url: "https://gt-engine.com/gt7/gt7.html" },
+                    { name: "GTPlus", url: "https://gtplus.app/" },
+                    { name: "Flux89", url: "https://www.flux89.com/" }
+                ]
+            },
+            {
+                name: "Trova Luogo da Immagine",
+                description: "Trova la posizione geografica a partire da una foto",
+                category: "AI",
+                isGroup: true,
+                tags: ["geospy", "picarta", "luogo", "immagine", "geolocalizzazione"],
+                links: [
+                    { name: "GeoSpy", url: "https://app.geospy.ai/" },
+                    { name: "Picarta", url: "https://picarta.ai/" }
+                ]
+            },
+            {
+                name: "Google Labs FX",
+                url: "https://labs.google/fx/it",
+                description: "Laboratorio AI Google",
+                category: "AI"
+            },
+			{
+                name: "Guidamici",
+                url: "https://guidamici.it/simulatore",
+                description: "Simulatore di guida con punti patente",
+                category: "giochi"
+            },
+            {
+                name: "Hack.chat",
+                description: "Chat anonima temporanea (due versioni)",
+                category: "utili",
+                isGroup: true,
+                tags: ["hack", "chat", "anonima", "temporanea", "beta"],
+                links: [
+                    { name: "Hack.chat", url: "https://hack.chat/" },
+                    { name: "Beta HackChat", url: "https://beta.hack.chat/" }
+                ]
+            },
+            {
+                name: "Have I Been Pwned",
+                description: "Controlla se le tue credenziali sono state compromesse",
+                category: "utili",
+                isGroup: true,
+                tags: ["hibp", "email", "password", "compromessa", "pwned", "sicurezza"],
+                links: [
+                    { name: "Controlla Email", url: "https://haveibeenpwned.com/" },
+                    { name: "Controlla Password", url: "https://haveibeenpwned.com/Passwords/" }
+                ]
+            },
+            {
+                name: "Higgsfield",
+                url: "https://higgsfield.ai/",
+                description: "AI Tools + Image and Video Generator",
+                category: "AI"
+            },
+            {
+                name: "Verifica Sicurezza Password",
+                description: "Controlla quanto è sicura la tua password con diversi strumenti",
+                category: "utili",
+                isGroup: true,
+                tags: ["password", "sicurezza", "nordpass", "kaspersky", "security"],
+                links: [
+                    { name: "Security.org", url: "https://www.security.org/how-secure-is-my-password" },
+                    { name: "NordPass", url: "https://nordpass.com/it/secure-password" },
+                    { name: "Kaspersky", url: "https://password.kaspersky.com/it/" }
+                ]
+            },
+            {
+                name: "Higher Lower Game",
+                description: "Cosa viene cercato di più su Google?",
+                category: "giochi",
+                isGroup: true,
+                tags: ["higher", "lower", "google", "ricerche", "gioco"],
+                links: [
+                    { name: "Higher Lower (.com)", url: "https://www.higherlowergame.com/" },
+                    { name: "Higher or Lower (IT)", url: "https://it.higherorlowergame.com/" }
+                ]
+            },
+            {
+                name: "HuggingFace Spaces",
+                url: "https://huggingface.co/spaces",
+                description: "Tool AI creati dalla community",
+                category: "AI"
+            },
+            {
+                name: "HumanBenchmark",
+                url: "https://humanbenchmark.com/",
+                description: "Test delle tue abilità cognitive",
+                category: "giochi"
+            },
+            {
+                name: "Human or Not (tools)",
+                url: "https://www.humanornot.co/",
+                description: "Raccolta di tool AI",
+                category: "AI"
+            },
+            {
+                name: "HumanOrNot?",
+                description: "Con chi stai chattando? Umano o AI? (due versioni)",
+                category: "giochi",
+                isGroup: true,
+                tags: ["human", "ai", "chatbot", "umano", "gioco"],
+                links: [
+                    { name: "HumanOrNot (.ai)", url: "https://www.humanornot.ai/" },
+                    { name: "HumanOrNot (.so)", url: "https://humanornot.so/" }
+                ]
+            },
+            {
+                name: "Iceberger",
+                url: "https://joshdata.me/iceberger.html",
+                description: "Disegna un iceberg e osserva il comportamento",
+                category: "curiosi"
+            },
+            {
+                name: "iFixit",
+                url: "https://it.ifixit.com/",
+                description: "Manuali per riparazioni fai da te",
+                category: "utili"
+            },
+            {
+                name: "ILoveImg",
+                url: "https://www.iloveimg.com/it/",
+                description: "Tools immagini online",
+                category: "utili"
+            },
+            {
+                name: "Img2Go",
+                url: "https://www.img2go.com/it/",
+                description: "Editor e conversione immagini",
+                category: "utili"
+            },
+            {
+                name: "Arrotonda Angoli Immagine",
+                description: "Strumenti online per arrotondare gli angoli delle immagini",
+                category: "utili",
+                isGroup: true,
+                tags: ["angoli", "immagine", "round", "corners", "anytools", "imgtools"],
+                links: [
+                    { name: "AnyTools", url: "https://anytools.pro/it/img/editor/corners" },
+                    { name: "ImgTools", url: "https://it.imgtools.co/round-corners-image" }
+                ]
+            },
+            {
+                name: "Image to Prompt",
+                description: "Genera un prompt testuale a partire da un'immagine",
+                category: "utili",
+                isGroup: true,
+                tags: ["image", "prompt", "gemini", "zemith", "ai"],
+                links: [
+                    { name: "Per Gemini", url: "https://geminiprompt.id/" },
+                    { name: "Zemith", url: "https://www.zemith.com/it/app/tools/image-to-prompt" }
+                ]
+            },
+            {
+                name: "IP Logger",
+                description: "Strumenti per tracciare e loggare indirizzi IP",
+                category: "utili",
+                isGroup: true,
+                tags: ["ip", "logger", "grabify", "tracciare", "iplogger"],
+                links: [
+                    { name: "IPLogger", url: "https://iplogger.org/it/" },
+                    { name: "Grabify", url: "https://grabify.link/" }
+                ]
+            },
+            {
+                name: "JustDeleteMe",
+                url: "https://justdeleteme.xyz/it",
+                description: "Guida per eliminare account da ogni sito",
+                category: "utili"
+            },
+            {
+                name: "Keepa",
+                url: "https://keepa.com/",
+                description: "Grafico storico prezzi Amazon",
+                category: "utili"
+            },
+            {
+                name: "Krea",
+                url: "https://www.krea.ai/home/",
+                description: "Strumenti AI immagini",
+                category: "AI"
+            },
+            {
+                name: "La Borsa dei Piccoli",
+                url: "https://laborsadeipiccoli.com/",
+                description: "Analisi tecnica di borsa",
+                category: "utili"
+            },
+			{
+                name: "Let's Fib!",
+                url: "https://letsfib.com/it/",
+                description: "Party game online, quiz con bluff",
+                category: "giochi"
+            },
+            {
+                name: "Lockdown Game",
+                url: "https://lockdown-game.com/",
+                description: "Simulazione interattiva del lockdown",
+                category: "giochi"
+            },
+            {
+                name: "Lovable",
+                url: "https://lovable.dev/",
+                description: "Crea web app con AI",
+                category: "AI"
+            },
+            {
+                name: "Magic Eraser",
+                url: "https://magiceraser.org/",
+                description: "Rimuovi oggetti e modifica foto gratis",
+                category: "AI"
+            },
+            {
+                name: "Magic Studio",
+                url: "https://magicstudio.com/it/",
+                description: "Strumenti AI per immagini",
+                category: "AI"
+            },
+            {
+                name: "Magic Patterns",
+                url: "https://www.magicpatterns.com/",
+                description: "Genera pattern e UI",
+                category: "AI"
+            },
+			{
+                name: "Map of GitHub",
+                url: "https://anvaka.github.io/map-of-github/",
+                description: "Mappa contenente tutti i progetti su GitHub",
+                category: "curiosi"
+            },
+            {
+                name: "Mappa Cognomi Italiani",
+                url: "https://www.mappadeicognomi.it/",
+                description: "Mappa cognomi italiani",
+                category: "curiosi"
+            },
+			{
+                name: "MCP Market",
+                url: "https://mcpmarket.com/",
+                description: "Raccolta di MCP per AI",
+                category: "utili"
+            },
+            {
+                name: "Memory Toys",
+                url: "https://memory.toys/",
+                description: "Giochi per allenare la memoria",
+                category: "giochi"
+            },
+            {
+                name: "Minecraft Seed Map",
+                url: "https://mcseedmap.net/",
+                description: "Mappa seed per Minecraft",
+                category: "curiosi"
+            },
+			{
+                name: "MiroFish",
+                url: "https://mirofish.ai/",
+                description: "Prevedi ogni cosa",
+                category: "AI"
+            },
+            {
+                name: "Mozilla Monitor",
+                url: "https://monitor.mozilla.org/it/",
+                description: "Controlla se il tuo indirizzo email è stato compromesso",
+                category: "utili"
+            },
+			{
+                name: "MultiMatte",
+                url: "https://usefeyn.com/multimatte/",
+                description: "Rimuovi sfondo dicendo cosa vuoi mantenere",
+                category: "utili"
+            },
+            {
+                name: "YouTube to MP3",
+                description: "Convertitori da YouTube a file MP3",
+                category: "utili",
+                isGroup: true,
+                tags: ["youtube", "mp3", "convertire", "musica", "ytmp3"],
+                links: [
+                    { name: "MP3COW Convert", url: "https://mp3-convert.org/youtube-to-mp3-converterss/" },
+                    { name: "YTMP3", url: "https://yt2mp3.sc/" }
+                ]
+            },
+            {
+                name: "NEAL.FUN",
+                url: "https://neal.fun/",
+                description: "Raccolta di progetti e giochi per passare il tempo",
+                category: "giochi"
+            },
+            {
+                name: "Ninite & Winstall",
+                description: "Installa più programmi contemporaneamente in un solo click",
+                category: "utili",
+                isGroup: true,
+                tags: ["installa", "click", "programmi", "veloce"],
+                links: [
+                    { name: "Ninite", url: "https://ninite.com/" },
+                    { name: "Winstall", url: "https://winstall.app/" }
+                ]
+            },
+            {
+                name: "Noiys",
+                url: "https://www.noiys.com/",
+                description: "Pubblica messaggi anonimi per 24h",
+                category: "curiosi"
+            },
+            {
+                name: "NotablePeople",
+                url: "https://tjukanovt.github.io/notable-people",
+                description: "Database persone famose",
+                category: "curiosi"
+            },
+			{
+                name: "Numista",
+                url: "https://it.numista.com/",
+                description: "Raccolta mondiale di monete e banconote",
+                category: "utili"
+            },
+            {
+                name: "Obfuscator.io",
+                url: "https://obfuscator.io/legacy-playground",
+                description: "Proteggi codice JavaScript online offuscandolo",
+                category: "utili"
+            },
+            {
+                name: "OpenFront",
+                url: "https://openfront.io/",
+                description: "Gioco di conquista online",
+                category: "giochi"
+            },
+            {
+                name: "OsintFramework",
+                url: "https://osintframework.com/",
+                description: "Raccolta di strumenti OSINT",
+                category: "utili"
+            },
+			{
+                name: "OSIRIS",
+                url: "https://osirisai.live/",
+                description: "Open Source Intelligence, monitoraggio live mondiale",
+                category: "curiosi"
+            },
+            {
+                name: "OutHorse Your Email",
+                url: "https://www.visiticeland.com/outhorse-your-email/",
+                description: "Servizio divertente per risposte email: fai rispondere alle tue mail da un cavallo islandese",
+                category: "curiosi"
+            },
+            {
+                name: "Parcels",
+                url: "https://parcelsapp.com/it/",
+                description: "Tracciamento pacchi in tempo reale",
+                category: "utili"
+            },
+            {
+                name: "Partitometro",
+                url: "https://lab.gedidigital.it/repubblica/2018/elezioni/partitometro/",
+                description: "Test per scoprire a quale partito politico sei più vicino",
+                category: "curiosi"
+            },
+            {
+                name: "Patatap",
+                url: "https://www.patatap.com/",
+                description: "Crea suoni con la tastiera",
+                category: "curiosi"
+            },
+            {
+                name: "PDF24Tools",
+                url: "https://tools.pdf24.org/it/tutti-gli-strumenti/",
+                description: "Strumenti PDF online",
+                category: "utili"
+            },
+            {
+                name: "Perchance",
+                url: "https://perchance.org/generators",
+                description: "Tool AI creati dalla community, gratis: senza filtri e senza registrazione",
+                category: "AI"
+            },
+			{
+                name: "Photopea",
+                url: "https://www.photopea.com/",
+                description: "Photoshop online gratis",
+                category: "utili"
+            },
+            {
+                name: "PimEyes",
+                url: "https://pimeyes.com/en",
+                description: "Ricerca volti sul web",
+                category: "utili"
+            },
+            {
+                name: "PixelCut",
+                url: "https://www.pixelcut.ai/it",
+                description: "Strumenti AI per immagini",
+                category: "AI"
+            },			
+            {
+                name: "Plink",
+                url: "https://plink.in/",
+                description: "Crea suoni con altri utenti",
+                category: "curiosi"
+            },
+			{
+                name: "Poe",
+                url: "https://poe.com/",
+                description: "Usa le migliori AI gratis",
+                category: "AI"
+            },
+            {
+                name: "PrezziBenzina",
+                url: "https://www.prezzibenzina.it/regioni/lombardia/",
+                description: "Prezzi carburante aggiornati dalla community",
+                category: "utili"
+            },
+			{
+                name: "Photo Manager AI",
+                description: "Organizza foto e cerca tramite parole chiave",
+                category: "utili",
+                isGroup: true,
+                tags: ["gallery", "ai", "organizza", "fotografia"],
+                links: [
+                    { name: "Prism", url: "https://prism.futc.de/" },
+                    { name: "Lap", url: "https://julyx10.github.io/lap/" }
+                ]
+            },
+            {
+                name: "QR-Code Monkey",
+                url: "https://www.qrcode-monkey.com/it/",
+                description: "Generatore di QR code",
+                category: "utili"
+            },
+            {
+                name: "QuickDraw",
+                url: "https://quickdraw.withgoogle.com/",
+                description: "L'AI indovina i tuoi disegni",
+                category: "giochi"
+            },
+			{
+                name: "Race Track Designer",
+                url: "https://racetrackdesign.com/",
+                description: "Crea circuito, anche su mappa reale",
+                category: "giochi"
+            },
+            {
+                name: "Radio Garden",
+                url: "https://radio.garden/",
+                description: "Ascolta qualsiasi stazione radio del mondo",
+                category: "curiosi"
+            },
+            {
+                name: "Random.org",
+                url: "https://www.random.org/",
+                description: "Strumento per generare numeri casuali",
+                category: "utili"
+            },
+            {
+                name: "Rave.dj",
+                url: "https://rave.dj/",
+                description: "Crea mashup musicali",
+                category: "curiosi"
+            },
+            {
+                name: "Realtime Colors",
+                url: "https://www.realtimecolors.com/",
+                description: "Crea palette colori light/dark mode",
+                category: "utili"
+            },
+            {
+                name: "Rimuovi Sfondo",
+                description: "Strumenti online per rimuovere lo sfondo dalle immagini",
+                category: "utili",
+                isGroup: true,
+                tags: ["sfondo", "remove", "background", "immagine", "removebg"],
+                links: [
+                    { name: "Remove.Photos", url: "https://remove.photos/" },
+                    { name: "remove.bg", url: "https://www.remove.bg/it/" },
+                    { name: "RemoveBG", url: "https://removebg.net/it" }
+                ]
+            },
+            {
+                name: "RenderStuff 360 Viewer",
+                url: "https://renderstuff.com/tools/360-panorama-web-viewer/",
+                description: "Visualizzatore immagini 360°",
+                category: "utili"
+            },
+            {
+                name: "Richup.io",
+                url: "https://richup.io/",
+                description: "Monopoly online",
+                category: "giochi"
+            },
+            {
+                name: "RustDesk",
+                url: "https://rustdesk.com/it/",
+                description: "Accesso Remoto Open-Source",
+                category: "utili"
+            },
+            {
+                name: "Screenshot to Code",
+                url: "https://ssc.webpilot.cc/",
+                description: "Genera codice HTML da screenshot pagina web",
+                category: "utili"
+            },
+            {
+                name: "Shodan",
+                url: "https://shodan.io/",
+                description: "Motore di ricerca per dispositivi connessi",
+                category: "curiosi"
+            },
+            {
+                name: "Smorfia del lotto",
+                url: "https://lotto-italia.it/lotto/smorfia",
+                description: "Interpretazione numeri per il lotto",
+                category: "curiosi"
+            },
+            {
+                name: "SpaceDesk",
+                url: "https://www.spacedesk.net/",
+                description: "Duplica/estendi schermo pc su altri dispositivi",
+                category: "utili"
+            },
+            {
+                name: "Speechma",
+                url: "https://speechma.com/",
+                description: "Genera audio da testo",
+                category: "AI"
+            },
+			{
+                name: "SPENT",
+                url: "https://playspent.org/html/",
+                description: "Sopravvivi 30 turni facendo scelte di vita",
+                category: "giochi"
+            },
+            {
+                name: "Start My Car",
+                url: "https://www.startmycar.com/",
+                description: "Community per problemi auto",
+                category: "utili"
+            },
+			{
+                name: "Stowaway",
+                url: "https://stowaway.live/",
+                description: "Guarda cosa vedono gli aerei e i satelliti",
+                category: "curiosi"
+            },
+            {
+                name: "StreamingCommunity",
+                url: "https://www.streaming-community.day/",
+                description: "Guarda film gratis in streaming",
+                category: "utili"
+            },
+            {
+                name: "Email Temporanea",
+                description: "Indirizzi email usa e getta",
+                category: "utili",
+                isGroup: true,
+                links: [
+                    { name: "TempMail", url: "https://temp-mail.org/it/" },
+                    { name: "TempMail 10 min", url: "https://temp-mail.org/it/10minutemail" },
+                    { name: "TMail", url: "https://temp-maill.org/" },
+                    { name: "SmailPro", url: "https://smailpro.com/temporary-email" },
+                    { name: "EmailNator", url: "https://www.emailnator.com/" }
+                ]
+            },
+			{
+                name: "Numero di Telefono Temporaneo",
+                description: "Numeri di telefono usa e getta",
+                category: "utili",
+                isGroup: true,
+                links: [
+                    { name: "Veepn", url: "https://veepn.com/it/online-sms/" },
+					{ name: "Quackr", url: "https://quackr.io/it/temporary-numbers" },
+                    { name: "SMSFast", url: "https://smsfast.com/free-numbers" }
+                ]
+            },
+			{
+                name: "Terraink",
+                url: "https://terraink.app/",
+                description: "Scarica cartina di luoghi come wallpaper",
+                category: "curiosi"
+            },
+            {
+                name: "Test QI Mensa",
+                url: "https://test.mensa.no/Home/Test/it/",
+                description: "Test del QI (Mensa Norway)",
+                category: "curiosi"
+            },
+            {
+                name: "Tests",
+                url: "https://www.idrlabs.com/tests.php?loc=it",
+                description: "Varie tipologie di test psicologici",
+                category: "curiosi"
+            },
+            {
+                name: "The Boat",
+                url: "https://www.sbs.com.au/theboat/",
+                description: "Racconto interattivo online",
+                category: "curiosi"
+            },
+            {
+                name: "The Trolley Problem",
+                description: "Simulazione del classico dilemma etico del carrello",
+                category: "giochi",
+                isGroup: true,
+                tags: ["trolley", "problem", "etica", "dilemma", "morale"],
+                links: [
+                    { name: "Bromley", url: "https://www.stevebromley.com/trolley/trolley.html" },
+                    { name: "Trolleyproblem.io", url: "https://trolleyproblem.io/" }
+                ]
+            },
+            {
+                name: "The True Size Of ...",
+                url: "https://www.thetruesize.com/",
+                description: "Confronta dimensioni reali degli stati",
+                category: "curiosi"
+            },
+            {
+                name: "The Useless Web",
+                url: "https://theuselessweb.com/",
+                description: "Portale di siti inutili ma divertenti per passare il tempo",
+                category: "curiosi"
+            },
+            {
+                name: "The World's Highest Website",
+                url: "https://worlds-highest-website.com/",
+                description: "Sito web più alto del mondo",
+                category: "curiosi"
+            },
+            {
+                name: "Thisissand",
+                url: "https://thisissand.com/",
+                description: "Crea opere con sabbia colorata",
+                category: "giochi"
+            },
+            {
+                name: "Tiii",
+                url: "https://tiii.me/",
+                description: "Calcola il tempo necessario per vedere una serie completa",
+                category: "curiosi"
+            },
+            {
+                name: "Turn Your Name Into a Face",
+                url: "https://turnyournameintoaface.com/",
+                description: "Genera volto dal nome",
+                category: "curiosi"
+            },
+			{
+                name: "Vector Racer",
+                url: "https://harmmade.com/vectorracer/",
+                description: "Gara di auto carta e penna versione online",
+                category: "giochi"
+            },
+			{
+                name: "Versus",
+                url: "https://versus.com/it",
+                description: "Confronta di tutto nella categoria elettronica",
+                category: "utili"
+            },
+            {
+                name: "Vettorizza Immagini",
+                description: "Converti immagini raster in vettoriali SVG online",
+                category: "utili",
+                isGroup: true,
+                tags: ["vettoriale", "svg", "vectorizer", "vectormagic", "immagine"],
+                links: [
+                    { name: "Vectorizer", url: "https://it.vectorizer.ai/" },
+                    { name: "VectorMagic", url: "https://it.vectormagic.com/" },
+					{ name: "12pixa", url: "https://12pixa.com/" }
+                ]
+            },
+            {
+                name: "Virtual Vacation",
+                url: "https://virtualvacation.us/",
+                description: "Viaggia virtualmente comodamente da casa",
+                category: "curiosi"
+            },
+            {
+                name: "VirusTotal",
+                url: "https://www.virustotal.com/gui/home/upload/",
+                description: "Controlla file e URL",
+                category: "utili"
+            },
+            {
+                name: "VisualPing",
+                url: "https://visualping.io",
+                description: "Traccia modifiche visive a pagine web",
+                category: "utili"
+            },
+			{
+                name: "Vizcom",
+                url: "https://vizcom.com/",
+                description: "Trasforma schizzi in render realistici",
+                category: "AI"
+            },
+            {
+                name: "VPNBOOK",
+                url: "https://www.vpnbook.com/",
+                description: "VPN gratuita e facile da usare",
+                category: "utili"
+            },
+            {
+                name: "WayBack Machine",
+                url: "https://web.archive.org/",
+                description: "Archivio storico siti web",
+                category: "curiosi"
+            },
+            {
+                name: "Which Face is Real",
+                url: "https://www.whichfaceisreal.com/",
+                description: "Sai distinguere un volto reale da uno generato dall'AI?",
+                category: "AI"
+            },
+            {
+                name: "WolframAlpha",
+                url: "https://www.wolframalpha.com/",
+                description: "Motore computazionale di conoscenza",
+                category: "utili"
+            },
+            {
+                name: "Worldometers",
+                url: "https://www.worldometers.info/",
+                description: "Statistiche mondiali in tempo reale",
+                category: "curiosi"
+            },
+            {
+                name: "Worldmonitor",
+                url: "https://www.worldmonitor.app/",
+                description: "Monitoraggio live di eventi globali",
+                category: "curiosi"
+            },
+			{
+                name: "YouMind",
+                description: "Raccolta di prompt immagini AI",
+                category: "AI",
+                isGroup: true,
+                tags: ["immagini", "image", "prompt", "libreria"],
+                links: [
+					{ name: "Nano Banana Pro", url: "https://youmind.com/it-IT/nano-banana-pro-prompts" },
+					{ name: "GPT Image 2.5", url: "https://youmind.com/it-IT/gpt-image-2-5-prompts" },
+                    { name: "GPT Image 2", url: "https://youmind.com/it-IT/gpt-image-2-prompts" },
+                    { name: "GPT Image 1.5", url: "https://youmind.com/it-IT/gpt-image-1-5-prompts" }
+                ]
+            },
+            {
+                name: "Zappr",
+                url: "https://zappr.stream/",
+                description: "Guarda TV online gratis",
+                category: "utili"
+            },
+            {
+                name: "ZZZ Code AI",
+                url: "https://zzzcode.ai/",
+                description: "Tool AI per coding",
+                category: "AI"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentSort = 'name';
+        let searchQuery = '';
+
+        const container = document.getElementById('site-cards-container');
+        const searchInput = document.getElementById('search-input');
+        const statsElement = document.getElementById('stats');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const sortBtns = document.querySelectorAll('.sort-btn');
+
+        const categoryLabels = {
+            'utili': '🔧 Utili',
+            'curiosi': '🎨 Curiosi',
+            'giochi': '🎮 Giochi',
+            'AI': '⚡ AI'
+        };
+
+        // Conta il numero reale di siti (i gruppi contano per i loro link)
+        function countSites() {
+            return sitesData.reduce((sum, s) => sum + (s.isGroup ? s.links.length : 1), 0);
+        }
+
+        // Statistiche dettagliate
+        function updateStats() {
+            const totalSites = countSites();
+
+            // Conteggio per categoria tenendo conto dei gruppi
+            const categoryCounts = sitesData.reduce((counts, site) => {
+                const category = site.category;
+                const increment = site.isGroup ? site.links.length : 1;
+                counts[category] = (counts[category] || 0) + increment;
+                return counts;
+            }, {});
+
+            let statsHtml = `
+                <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 5px;">
+                    Totale siti: ${totalSites}
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    Suddivisi per Categoria:
+                </div>
+                <ul style="list-style: none; padding: 0; margin-top: 5px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+            `;
+
+            for (const category in categoryLabels) {
+                const count = categoryCounts[category] || 0;
+                const label = categoryLabels[category];
+                if (count > 0) {
+                    statsHtml += `
+                        <li style="display: inline-flex; align-items: center; background-color: #495057; padding: 4px 10px; border-radius: 6px;">
+                            ${label}: <strong style="margin-left:4px">${count}</strong>
+                        </li>
+                    `;
+                }
+            }
+
+            statsHtml += `</ul>`;
+            statsElement.innerHTML = statsHtml;
+        }
+
+        // Evidenzia il testo trovato nella ricerca
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="background-color: #ffb742; color: #212529; border-radius: 4px; padding: 1px 3px;">$1</span>');
+        }
+
+        // Ordinamento
+        function getSortedSites(sites) {
+            let sorted = [...sites];
+            if (currentSort === 'name') {
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (currentSort === 'reverse') {
+                sorted.sort((a, b) => b.name.localeCompare(a.name));
+            } else if (currentSort === 'category') {
+                sorted.sort((a, b) => {
+                    if (a.category !== b.category) return a.category.localeCompare(b.category);
+                    return a.name.localeCompare(b.name);
+                });
+            }
+            return sorted;
+        }
+
+        // Rendering principale
+        function renderSites() {
+            // Filtraggio (i gruppi vengono cercati anche nei tag e nei nomi dei link interni)
+            const filteredSites = sitesData.filter(site => {
+                const categoryMatch = currentFilter === 'all' || site.category === currentFilter;
+
+                if (!searchQuery) return categoryMatch;
+
+                const q = searchQuery.toLowerCase();
+                const nameMatch = site.name.toLowerCase().includes(q);
+                const descMatch = site.description && site.description.toLowerCase().includes(q);
+                const tagMatch = site.tags && site.tags.some(t => t.toLowerCase().includes(q));
+                const linkMatch = site.isGroup && site.links.some(l => l.name.toLowerCase().includes(q));
+
+                return categoryMatch && (nameMatch || descMatch || tagMatch || linkMatch);
+            });
+
+            container.className = 'sites-grid';
+
+            if (filteredSites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">😕</div>
+                        <div class="empty-state-text">Nessun sito trovato</div>
+                        <div class="empty-state-sub">Prova a modificare i filtri o la ricerca</div>
+                    </div>`;
+                return;
+            }
+
+            const sortedSites = getSortedSites(filteredSites);
+
+            container.innerHTML = sortedSites.map(site => {
+                const displayName = site.name || '';
+                const description = site.description || '';
+
+                if (site.isGroup) {
+                    const buttons = site.links.map(link =>
+                        `<a href="${link.url}" target="_blank" class="visit-btn group-link-btn">${highlightText(link.name, searchQuery)}</a>`
+                    ).join('');
+                    const compareBtn = site.hasComparison
+                        ? `<button class="compare-btn" onclick="openCompareModal()"><i class='bx bx-table'></i> Confronta siti</button>`
+                        : '';
+                    return `
+                    <div class="site-card site-card--group" data-category="${site.category}">
+                        <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                        <span class="group-badge"><i class='bx bx-layer'></i> Gruppo</span>
+                        <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                        <p class="site-description">${highlightText(description, searchQuery)}</p>
+                        <div class="group-links">${buttons}</div>
+                        ${compareBtn}
+                    </div>`;
+                }
+                return `
+                <div class="site-card" data-category="${site.category}">
+                    <span class="site-category cat-${site.category}">${categoryLabels[site.category]}</span>
+                    <h3 class="site-title">${highlightText(displayName, searchQuery)}</h3>
+                    <a href="${site.url}" target="_blank" class="site-url">${highlightText(site.url.replace(/^https?:\/\//, ''), searchQuery)}</a>
+                    <p class="site-description">${highlightText(description, searchQuery)}</p>
+                    <a href="${site.url}" target="_blank" class="visit-btn">Visita il sito</a>
+                </div>`;
+            }).join('');
+        }
+
+        // Gestione eventi
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSort = btn.dataset.sort;
+                sortBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderSites();
+            });
+        });
+
+        searchInput.addEventListener('input', () => {
+            searchQuery = searchInput.value.toLowerCase().trim();
+            renderSites();
+        });
+
+        // Inizializzazione
+        updateStats();
+        renderSites();
+    </script>
 </body>
 </html>
